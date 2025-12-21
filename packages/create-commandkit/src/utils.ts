@@ -93,27 +93,16 @@ export function getInstallCommand(
 }
 
 export async function fetchAvailableExamples(): Promise<string[]> {
-  let controller: AbortController | null = null;
-  let timeoutId: NodeJS.Timeout | null = null;
-
-  try {
-    controller = new AbortController();
-    timeoutId = setTimeout(() => controller!.abort(), 10000); // 10 second timeout
-
+   try {
     const response = await fetch(
       'https://api.github.com/repos/underctrl-io/commandkit/contents/examples',
       {
-        signal: controller.signal,
+        signal: AbortSignal.timeout(10_000),
         headers: {
           'User-Agent': 'create-commandkit',
         },
       },
     );
-
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-      timeoutId = null;
-    }
 
     if (!response.ok) {
       throw new Error(`GitHub API error: ${response.status}`);
@@ -130,14 +119,6 @@ export async function fetchAvailableExamples(): Promise<string[]> {
       .map((item) => item.name)
       .sort();
   } catch (error) {
-    // Clean up on error
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-    if (controller) {
-      controller.abort();
-    }
-
     // Fallback to few known examples if API fails
     return ['basic-ts', 'basic-js', 'deno-ts', 'without-cli'];
   }
