@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: pnpm/action-setup@v4
         with:
-          version: '10.15.0'
+          version: '10.28.0'
 
       - uses: actions/checkout@v4
 
