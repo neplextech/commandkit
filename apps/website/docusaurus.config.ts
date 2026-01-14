@@ -204,6 +204,7 @@ const config: Config = {
       };
     },
     require('./src/plugins/llms-txt.js'),
+    ['vercel-analytics', {}],
   ],
   markdown: {
     mermaid: true,
