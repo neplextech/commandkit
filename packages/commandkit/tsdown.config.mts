@@ -19,7 +19,14 @@ export default defineConfig({
   outputOptions: {
     exports: 'named',
   },
-  silent: true,
+  fixedExtension: false,
+  outExtensions: (context) => {
+    return {
+      dts: '.d.ts',
+      js: context.format === 'es' ? '.mjs' : '.js',
+    };
+  },
+  logLevel: 'silent',
   unbundle: false,
   plugins: [
     {

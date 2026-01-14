@@ -36,6 +36,6 @@
     "@commandkit/cache": "workspace:*",
     "commandkit": "workspace:*",
     "tsconfig": "workspace:*",
-    "typescript": "^5.7.3"
+    "typescript": "catalog:build"
   }
 }

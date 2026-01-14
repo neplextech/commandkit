@@ -1,6 +1,6 @@
 import { MaybeArray } from '../components';
 import { CommandKitPlugin } from '../plugins';
-import type { Options as TsDownOptions } from 'tsdown';
+import type { InlineConfig as TsDownOptions } from 'tsdown';
 
 export interface CommandKitCompilerOptions {
   /**

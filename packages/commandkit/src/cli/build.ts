@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { rimraf } from 'rimraf';
-import type { Options } from 'tsdown';
+import type { InlineConfig } from 'tsdown';
 
 import { MaybeArray } from '../components';
 import { loadConfigFile } from '../config/loader';
@@ -98,7 +98,7 @@ export async function buildApplication({
           format: ['esm'],
           shims: true,
           minify: false,
-          silent: !!isDev,
+          logLevel: !!isDev ? 'silent' : 'info',
           inputOptions: {
             transform: {
               jsx: {
@@ -124,6 +124,12 @@ export async function buildApplication({
               '.node': 'binary',
             },
           },
+          outExtensions: (context) => {
+            return {
+              dts: '.d.ts',
+              js: context.format === 'cjs' ? '.cjs' : '.js',
+            };
+          },
           plugins: rolldownPlugins,
           platform: 'node',
           skipNodeModulesBundle: true,
@@ -148,7 +154,7 @@ export async function buildApplication({
           unbundle: isDev
             ? true
             : (config.compilerOptions?.disableChunking ?? false),
-        } satisfies Options,
+        } satisfies InlineConfig,
         config.compilerOptions?.tsdown,
       ),
     );
