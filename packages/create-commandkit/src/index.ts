@@ -267,9 +267,9 @@ To start your bot${projectDir !== '.' ? `, ${colors.magenta(`cd ${projectDir}`)}
   ${colors.magenta(command('start'))}   - Run your bot in production mode
 
 • Documentation: ${colors.blue('https://commandkit.dev')}
-• GitHub: ${colors.blue('https://github.com/underctrl-io/commandkit')}
-• Under Ctrl: ${colors.blue('https://underctrl.io')}
-• Discord community: ${colors.blue('https://ctrl.lol/discord')}
+• GitHub: ${colors.blue('https://github.com/neplextech/commandkit')}
+• Neplex: ${colors.blue('https://neplextech.com')}
+• Discord community: ${colors.blue('https://neplextech.com/discord')}
 
 Happy coding! 🚀`,
   );

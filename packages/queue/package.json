@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/underctrl-io/commandkit.git",
+    "url": "git+https://github.com/neplextech/commandkit.git",
     "directory": "packages/queue"
   },
   "keywords": [
@@ -36,9 +36,9 @@
   ],
   "license": "GPL-3.0-only",
   "bugs": {
-    "url": "https://github.com/underctrl-io/commandkit/issues"
+    "url": "https://github.com/neplextech/commandkit/issues"
   },
-  "homepage": "https://github.com/underctrl-io/commandkit#readme",
+  "homepage": "https://github.com/neplextech/commandkit#readme",
   "devDependencies": {
     "@discordjs/brokers": "^1.0.0",
     "tsconfig": "workspace:*",

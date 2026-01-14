@@ -21,7 +21,7 @@ help in responsibly disclosing it.
 
 To report a potential issue, please contact our security team at:
 
-📧 **[security@underctrl.io](mailto:security@underctrl.io)**
+📧 **[info@neplextech.com](mailto:info@neplextech.com)**
 
 When reporting, please include as much detail as possible:
 

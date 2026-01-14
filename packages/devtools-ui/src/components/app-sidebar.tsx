@@ -27,9 +27,9 @@ import { useClient } from '@/context/client-context';
 
 const data = {
   user: {
-    name: 'Under Ctrl',
-    username: 'underctrl-io',
-    avatar: 'https://github.com/underctrl-io.png',
+    name: 'Neplex',
+    username: 'neplextech',
+    avatar: 'https://github.com/neplextech.png',
   },
   navMain: [
     {
@@ -66,12 +66,12 @@ const data = {
   navSecondary: [
     {
       title: 'GitHub',
-      url: 'https://github.com/underctrl-io/commandkit',
+      url: 'https://github.com/neplextech/commandkit',
       icon: VscGithub,
     },
     {
       title: 'Discord',
-      url: 'https://ctrl.lol/discord',
+      url: 'https://neplextech.com/discord',
       icon: FaDiscord,
     },
   ],

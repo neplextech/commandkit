@@ -159,7 +159,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/underctrl-io/commandkit",
+    "url": "https://github.com/neplextech/commandkit",
     "directory": "packages/commandkit"
   },
   "homepage": "https://commandkit.dev",

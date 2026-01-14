@@ -62,7 +62,7 @@ event.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior
 may be reported to the community leaders responsible for enforcement
-at support@underctrl.io. All complaints will be reviewed and
+at info@neplextech.com. All complaints will be reviewed and
 investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and

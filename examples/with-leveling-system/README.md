@@ -28,7 +28,7 @@ Leveling Bot is a Discord bot for managing user levels and experience points (XP
 Ensure you have Node.js and npm installed. Clone the repository and install the dependencies:
 
 ```bash
-git clone https://github.com/underctrl-io/leveling-bot
+git clone https://github.com/neplextech/leveling-bot
 cd leveling-bot
 npm install
 ```

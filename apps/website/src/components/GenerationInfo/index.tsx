@@ -26,7 +26,7 @@ export default function MemberInfo(props: {
         <span>{props.packageName}</span>
       </a>
       <a
-        href={`https://github.com/underctrl-io/commandkit/blob/master/${props.sourceFile}#L${props.sourceLine}`}
+        href={`https://github.com/neplextech/commandkit/blob/master/${props.sourceFile}#L${props.sourceLine}`}
         target="_blank"
         className={styles.label}
       >

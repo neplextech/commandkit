@@ -46,7 +46,7 @@ export default function HeroSection(): React.JSX.Element {
             API <span className="hidden md:inline">Reference</span>
           </Link>
           <Link
-            href="https://github.com/underctrl-io/commandkit"
+            href="https://github.com/neplextech/commandkit"
             className={`font-semibold bg-gradient-to-r ${themeColors.gradients.pink} hover:from-[#f06292] hover:to-[#e91e63] py-2 px-4 rounded-full shadow-lg hover:shadow-xl flex items-center gap-2`}
           >
             <Github className="w-4 h-4" />

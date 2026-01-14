@@ -30,7 +30,7 @@ Agent is an advanced AI-powered Discord bot built with [CommandKit](https://comm
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/underctrl-io/agent.git
+git clone https://github.com/neplextech/agent.git
 cd agent
 ```
 

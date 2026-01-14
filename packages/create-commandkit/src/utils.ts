@@ -57,13 +57,13 @@ export function getDefaultExample(cliOptions: CLIOptions): string {
 }
 
 export function isOfficialExample(example: string): boolean {
-  // Check if it's a GitHub URL pointing to underctrl-io/commandkit
+  // Check if it's a GitHub URL pointing to neplextech/commandkit
   if (example.startsWith('http://') || example.startsWith('https://')) {
     try {
       const url = new URL(example);
       return (
         url.hostname === 'github.com' &&
-        url.pathname.startsWith('/underctrl-io/commandkit')
+        url.pathname.startsWith('/neplextech/commandkit')
       );
     } catch {
       return false;
@@ -93,9 +93,9 @@ export function getInstallCommand(
 }
 
 export async function fetchAvailableExamples(): Promise<string[]> {
-   try {
+  try {
     const response = await fetch(
-      'https://api.github.com/repos/underctrl-io/commandkit/contents/examples',
+      'https://api.github.com/repos/neplextech/commandkit/contents/examples',
       {
         signal: AbortSignal.timeout(10_000),
         headers: {

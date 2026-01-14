@@ -56,7 +56,7 @@ const config: Config = {
             [require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }],
           ],
           editUrl:
-            'https://github.com/underctrl-io/commandkit/tree/main/apps/website/',
+            'https://github.com/neplextech/commandkit/tree/main/apps/website/',
           sidebarItemsGenerator: async (args) => {
             const items = await args.defaultSidebarItemsGenerator(args);
 
@@ -148,12 +148,12 @@ const config: Config = {
           },
         },
         {
-          href: 'https://github.com/underctrl-io/commandkit',
+          href: 'https://github.com/neplextech/commandkit',
           label: 'GitHub',
           position: 'right',
         },
         {
-          href: 'https://ctrl.lol/discord',
+          href: 'https://neplextech.com/discord',
           label: 'Discord',
           position: 'right',
         },
@@ -162,20 +162,7 @@ const config: Config = {
     footer: {
       style: 'light',
       copyright: `
-      <a
-        href="https://www.netlify.com?utm_source=commandkit"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mx-auto"
-      >
-        <img
-          src="https://www.netlify.com/v3/img/components/netlify-color-accent.svg"
-          alt="Deploys by Netlify"
-        />
-      </a>
-      <br/>
-      <br/>
-      GPL-3.0-only © ${new Date().getFullYear()} Avraj Sahota`,
+      GPL-3.0-only © ${new Date().getFullYear()} <a href="https://neplextech.com?utm_source=commandkit" target="_blank" rel="noopener noreferrer">Neplex</a>.`,
     },
     prism: {
       theme: prismThemes.vsLight,

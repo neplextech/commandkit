@@ -33,4 +33,4 @@ deno task start
 ## Useful links
 
 - [Documentation](https://commandkit.dev)
-- [Discord](https://ctrl.lol/discord)
+- [Discord](https://neplextech.com/discord)

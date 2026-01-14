@@ -27,7 +27,7 @@ export async function fetchExample({
     sourceUrl = example;
   } else {
     // Construct URL for curated examples
-    sourceUrl = `underctrl-io/commandkit/examples/${example}`;
+    sourceUrl = `neplextech/commandkit/examples/${example}`;
   }
 
   // Create temporary directory for download
