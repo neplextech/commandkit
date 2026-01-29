@@ -30,7 +30,30 @@ export interface AiConfig<T extends ToolParameterType = ToolParameterType> {
   inputSchema: T;
 }
 
-const defaultTools: Record<string, Tool> = {
+/**
+ * A record of all built-in tools provided by the AI plugin.
+ * These tools are automatically available to the AI unless `disableBuiltInTools` is set to `true`.
+ *
+ * You can use this to selectively include specific built-in tools when `disableBuiltInTools` is enabled:
+ *
+ * @example
+ * ```ts
+ * import { configureAI, defaultTools } from '@commandkit/ai';
+ *
+ * configureAI({
+ *   disableBuiltInTools: true,
+ *   selectAiModel: async (ctx, message) => ({
+ *     model: google.languageModel('gemini-2.0-flash'),
+ *     // Only include specific built-in tools
+ *     tools: {
+ *       getAvailableCommands: defaultTools.getAvailableCommands,
+ *       getUserById: defaultTools.getUserById,
+ *     },
+ *   }),
+ * });
+ * ```
+ */
+export const defaultTools: Record<string, Tool> = {
   getAvailableCommands,
   getChannelById,
   getCurrentClientInfo,
@@ -43,7 +66,7 @@ const defaultTools: Record<string, Tool> = {
 export class AiPlugin extends RuntimePlugin<AiPluginOptions> {
   public readonly name = 'AiPlugin';
   private toolsRecord: Record<string, Tool> = {};
-  private defaultTools = defaultTools;
+  private builtInTools = defaultTools;
   private onMessageFunc: ((message: Message) => Promise<void>) | null = null;
 
   public constructor(options: AiPluginOptions) {
@@ -125,7 +148,7 @@ export class AiPlugin extends RuntimePlugin<AiPluginOptions> {
           ...modelOptions,
           tools: {
             // Include built-in least significant tools if not disabled
-            ...(!disableBuiltInTools && this.defaultTools),
+            ...(!disableBuiltInTools && this.builtInTools),
             // include tools added by configureAI()
             // this should be able to override built-in tools
             ...modelOptions.tools,
