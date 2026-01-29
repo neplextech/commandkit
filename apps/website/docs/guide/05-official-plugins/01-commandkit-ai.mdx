@@ -258,8 +258,12 @@ CommandKit provides built-in tools that the AI can use automatically:
 - **`getCurrentClientInfo`** - Gets information about the bot
 - **`getGuildById`** - Fetches server information by ID
 - **`getUserById`** - Fetches user information by ID
+- **`getMemberById`** - Fetches guild member information by ID
+- **`createEmbed`** - Creates and sends an embed message
 
-You can disable these tools if needed:
+### Disabling built-in tools
+
+You can disable all built-in tools if needed:
 
 ```ts
 configureAI({
@@ -267,6 +271,46 @@ configureAI({
   // ... other options
 });
 ```
+
+### Selectively enabling built-in tools
+
+In many cases, you may not need all built-in tools. You can selectively enable
+specific tools by disabling built-in tools and then manually adding only the
+ones you need using the exported `defaultTools` record:
+
+```ts title="src/ai.ts"
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { configureAI, defaultTools } from '@commandkit/ai';
+
+const google = createGoogleGenerativeAI({
+  apiKey: process.env.GOOGLE_API_KEY,
+});
+
+configureAI({
+  // Disable all built-in tools
+  disableBuiltInTools: true,
+
+  selectAiModel: async (ctx, message) => ({
+    model: google.languageModel('gemini-2.0-flash'),
+    maxSteps: 5,
+    temperature: 0.7,
+    // Manually add only the tools you need
+    tools: {
+      getAvailableCommands: defaultTools.getAvailableCommands,
+      getUserById: defaultTools.getUserById,
+      getGuildById: defaultTools.getGuildById,
+      // Omit tools you don't want, like createEmbed
+    },
+  }),
+
+  messageFilter: async (commandkit, message) => {
+    return message.mentions.users.has(message.client.user.id);
+  },
+});
+```
+
+This approach gives you full control over which built-in tools are available to
+the AI, making your implementation cleaner and more intentional.
 
 ## Creating custom tools
 

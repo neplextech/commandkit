@@ -1,15 +1,15 @@
 {
-    "$schema": "https://openapi.vercel.sh/vercel.json",
-    "redirects": [
-        {
-            "source": "/discord",
-            "destination": "https://discord.gg/T4faJeH84A",
-            "permanent": true
-        },
-        {
-            "source": "/github",
-            "destination": "https://github.com/neplextech/commandkit",
-            "permanent": true
-        }
-    ]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/discord",
+      "destination": "https://discord.gg/T4faJeH84A",
+      "permanent": true
+    },
+    {
+      "source": "/github",
+      "destination": "https://github.com/neplextech/commandkit",
+      "permanent": true
+    }
+  ]
 }
