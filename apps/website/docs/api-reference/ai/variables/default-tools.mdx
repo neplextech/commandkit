@@ -1,0 +1,42 @@
+---
+title: "DefaultTools"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## defaultTools
+
+<GenerationInfo sourceFile="packages/ai/src/plugin.ts" sourceLine="56" packageName="@commandkit/ai" />
+
+A record of all built-in tools provided by the AI plugin.
+These tools are automatically available to the AI unless `disableBuiltInTools` is set to `true`.
+
+You can use this to selectively include specific built-in tools when `disableBuiltInTools` is enabled:
+
+
+
+*Example*
+
+```ts
+import { configureAI, defaultTools } from '@commandkit/ai';
+
+configureAI({
+  disableBuiltInTools: true,
+  selectAiModel: async (ctx, message) => ({
+    model: google.languageModel('gemini-2.0-flash'),
+    // Only include specific built-in tools
+    tools: {
+      getAvailableCommands: defaultTools.getAvailableCommands,
+      getUserById: defaultTools.getUserById,
+    },
+  }),
+});
+```
+
