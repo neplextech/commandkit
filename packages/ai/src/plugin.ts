@@ -66,7 +66,7 @@ export const defaultTools: Record<string, Tool> = {
 export class AiPlugin extends RuntimePlugin<AiPluginOptions> {
   public readonly name = 'AiPlugin';
   private toolsRecord: Record<string, Tool> = {};
-  private defaultTools = defaultTools;
+  private builtInTools = defaultTools;
   private onMessageFunc: ((message: Message) => Promise<void>) | null = null;
 
   public constructor(options: AiPluginOptions) {
@@ -148,7 +148,7 @@ export class AiPlugin extends RuntimePlugin<AiPluginOptions> {
           ...modelOptions,
           tools: {
             // Include built-in least significant tools if not disabled
-            ...(!disableBuiltInTools && this.defaultTools),
+            ...(!disableBuiltInTools && this.builtInTools),
             // include tools added by configureAI()
             // this should be able to override built-in tools
             ...modelOptions.tools,
