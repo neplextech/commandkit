@@ -1,7 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 import { Hono } from 'hono';
-import { serve } from '@hono/node-server';
+import { serve as nodeServe } from '@hono/node-server';
 import { POST as WebhookPOST } from '{{webhookPath}}';
 import { POST as StepPOST } from '{{stepsPath}}';
 import { POST as FlowPOST } from '{{workflowPath}}';
@@ -24,7 +24,16 @@ if (!port || isNaN(Number(port))) {
   );
 }
 
-serve({
-  fetch: app.fetch,
-  port: Number(port),
-});
+if (typeof Deno !== 'undefined') {
+  Deno.serve({ port: Number(port) }, app.fetch);
+} else if (typeof Bun !== 'undefined') {
+  Bun.serve({
+    fetch: app.fetch,
+    port: Number(port),
+  });
+} else {
+  nodeServe({
+    fetch: app.fetch,
+    port: Number(port),
+  });
+}

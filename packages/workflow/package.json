@@ -49,6 +49,7 @@
   "dependencies": {
     "@hono/node-server": "^1.19.6",
     "@workflow/builders": "catalog:workflow",
+    "@workflow/rollup": "catalog:workflow",
     "hono": "^4.10.4"
   }
 }

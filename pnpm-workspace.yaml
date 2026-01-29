@@ -8,5 +8,6 @@ catalogs:
     typescript: ^5.9.3
     tsdown: ^0.20.0-beta.3
   workflow:
-    workflow: ^4.0.1-beta.12
-    '@workflow/builders': ^4.0.1-beta.8
+    workflow: ^4.0.1-beta.50
+    '@workflow/builders': ^4.0.1-beta.41
+    '@workflow/rollup': '^4.0.0-beta.8'

@@ -67,6 +67,10 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 }
 ```
 
+## Using custom Worlds
+
+You can use any world providers from [useworkflow.dev/worlds](https://useworkflow.dev/worlds) or create your own custom world. Refer to the [Building a World](https://useworkflow.dev/docs/deploying/building-a-world) documentation for more details.
+
 ## Documentation
 https://commandkit.dev/docs/next/api-reference/workflow
 
