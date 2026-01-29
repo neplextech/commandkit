@@ -21,6 +21,22 @@ export async function beforeExecute(ctx: MiddlewareContext) {
     return;
   }
 
+  let userPermissionsRequired = command.metadata?.userPermissions ?? [];
+  let botPermissionsRequired = command.metadata?.botPermissions ?? [];
+
+  if (typeof userPermissionsRequired === 'string') {
+    userPermissionsRequired = [userPermissionsRequired];
+  }
+
+  if (typeof botPermissionsRequired === 'string') {
+    botPermissionsRequired = [botPermissionsRequired];
+  }
+
+  // Only perform permission validation if required
+  if (!userPermissionsRequired.length && !botPermissionsRequired.length) {
+    return;
+  }
+
   if (
     (interaction && interaction.channel?.isDMBased()) ||
     (message && message.channel?.isDMBased())
@@ -52,26 +68,12 @@ export async function beforeExecute(ctx: MiddlewareContext) {
 
   const userPermissions =
     interaction?.memberPermissions ?? message?.member?.permissions;
-  let userPermissionsRequired = command.metadata?.userPermissions ?? [];
   let missingUserPermissions: string[] = [];
-
-  if (typeof userPermissionsRequired === 'string') {
-    userPermissionsRequired = [userPermissionsRequired];
-  }
 
   const botPermissions =
     interaction?.guild?.members.me?.permissions ??
     message?.guild?.members.me?.permissions;
-  let botPermissionsRequired = command.metadata?.botPermissions ?? [];
   let missingBotPermissions: string[] = [];
-
-  if (typeof botPermissionsRequired === 'string') {
-    botPermissionsRequired = [botPermissionsRequired];
-  }
-
-  if (!userPermissionsRequired.length && !botPermissionsRequired.length) {
-    return;
-  }
 
   if (userPermissionsRequired.length) {
     for (const permission of userPermissionsRequired) {
