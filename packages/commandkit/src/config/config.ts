@@ -77,6 +77,9 @@ export function defineConfig(
     disablePermissionsMiddleware:
       config.disablePermissionsMiddleware ??
       defaultConfig.disablePermissionsMiddleware,
+    jsxDefaultOptionalComponents:
+      config.jsxDefaultOptionalComponents ??
+      defaultConfig.jsxDefaultOptionalComponents,
   };
 
   return defined;

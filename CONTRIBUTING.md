@@ -44,8 +44,8 @@ git checkout -b your-feature-or-bugfix
 2. Make your changes. Please make sure to use the
    [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
    extension for consistent formatting and comments wherever
-   necessary. Alternatively, you can run `pnpm prettier:format` after
-   you've made your changes.
+   necessary. Alternatively, you can run `pnpm format` after you've
+   made your changes.
 
 3. Ensure that your changes don't break any existing functionality.
    You can test the functionality of your code depending on where

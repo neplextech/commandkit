@@ -11,7 +11,7 @@ import {
   StringSelectMenuOption,
   FileUpload,
 } from 'commandkit';
-import { ComponentType, MessageFlags } from 'discord.js';
+import { MessageFlags } from 'discord.js';
 
 export const command: CommandData = {
   name: 'prompt',

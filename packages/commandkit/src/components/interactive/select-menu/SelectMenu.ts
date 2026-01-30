@@ -8,6 +8,7 @@ import {
   RoleSelectMenuComponentData,
   RoleSelectMenuInteraction,
   SelectMenuComponentOptionData,
+  Snowflake,
   StringSelectMenuInteraction,
   StringSelectMenuOptionBuilder,
   UserSelectMenuComponentData,
@@ -24,6 +25,7 @@ import {
   CommandKitSelectMenuBuilderInteractionCollectorDispatchContextData,
   CommandKitSelectMenuBuilderOnEnd,
 } from './common';
+import { applyDefaultOptionalComponentBehavior } from '../../common/element';
 
 /**
  * Type for the common properties shared by all select menu builders.
@@ -39,8 +41,10 @@ export interface CommonSelectMenuProps<T, C> {
  * Type for the base select menu component data.
  */
 export interface SelectMenuProps<T, C>
-  extends Partial<Omit<BaseSelectMenuComponentData, 'type'>>,
-    CommonSelectMenuProps<T, C> {}
+  extends Partial<Omit<BaseSelectMenuComponentData, 'type' | 'required'>>,
+    CommonSelectMenuProps<T, C> {
+  required?: boolean;
+}
 
 /**
  * The properties for a string select menu component.
@@ -83,9 +87,13 @@ export type ResolveBuilderInteraction<T> = T extends StringSelectMenuKit
  */
 function applyPropsToBuilder<B extends CommonBuilderKit>(
   builder: B,
-  props: Partial<Omit<BaseSelectMenuComponentData, 'type'>> &
-    CommonSelectMenuProps<ResolveBuilderInteraction<B>, B>,
+  props: Partial<Omit<BaseSelectMenuComponentData, 'type' | 'required'>> &
+    CommonSelectMenuProps<ResolveBuilderInteraction<B>, B> & {
+      required?: boolean;
+    },
 ) {
+  applyDefaultOptionalComponentBehavior(props);
+
   builder.setCustomId(props.customId ?? `select-menu::${crypto.randomUUID()}`);
 
   if (props.maxValues != null) {
@@ -115,6 +123,10 @@ function applyPropsToBuilder<B extends CommonBuilderKit>(
   if (props.onSelect) {
     // @ts-ignore
     builder.onSelect(props.onSelect, props.options);
+  }
+
+  if (props.required != null) {
+    builder.setRequired(props.required);
   }
 }
 
@@ -182,8 +194,10 @@ export function StringSelectMenuOption(props: StringSelectMenuOptionProps) {
  * The UserSelectMenu component.
  */
 export interface UserSelectMenuProps
-  extends Partial<Omit<UserSelectMenuComponentData, 'type'>>,
-    CommonSelectMenuProps<UserSelectMenuInteraction, UserSelectMenuKit> {}
+  extends Partial<Omit<UserSelectMenuComponentData, 'type' | 'defaultValues'>>,
+    CommonSelectMenuProps<UserSelectMenuInteraction, UserSelectMenuKit> {
+  defaultValues?: MaybeArray<string | Snowflake>;
+}
 
 /**
  * The UserSelectMenu component.

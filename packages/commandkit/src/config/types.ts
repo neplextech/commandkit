@@ -114,4 +114,9 @@ export interface CommandKitConfig {
    * @default true
    */
   showUnknownPrefixCommandsWarning?: boolean;
+  /**
+   * Whether to make interaction components optional by default when using JSX (opposite of Discord's default behavior).
+   * @default true
+   */
+  jsxDefaultOptionalComponents?: boolean;
 }

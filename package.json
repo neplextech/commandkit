@@ -11,9 +11,9 @@
     "bootstrap": "turbo gen bootstrap --args",
     "check-types": "turbo run --filter=\"./packages/*\" check-types",
     "build": "turbo run --filter=\"./packages/*\" build",
-    "docgen": "tsx ./scripts/docs/generate-typescript-docs.ts && pnpm prettier:format",
+    "docgen": "tsx ./scripts/docs/generate-typescript-docs.ts && pnpm format",
     "prettier:check": "prettier --experimental-cli --check . --ignore-path=.prettierignore",
-    "prettier:format": "prettier --experimental-cli --write . --ignore-path=.prettierignore"
+    "format": "prettier --experimental-cli --write . --ignore-path=.prettierignore"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

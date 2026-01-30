@@ -5,7 +5,10 @@ import {
   FileUploadBuilder,
 } from 'discord.js';
 import { MaybeArray } from '../../common/types';
-import { CommandKitElement } from '../../common/element';
+import {
+  applyDefaultOptionalComponentBehavior,
+  CommandKitElement,
+} from '../../common/element';
 import {
   CommandKitModalBuilderInteractionCollectorDispatchContextData,
   ModalKit,
@@ -95,6 +98,7 @@ export interface TextInputProps {
 export function TextInput(
   props: TextInputProps & { style: TextInputStyle },
 ): CommandKitElement<'text-input'> {
+  applyDefaultOptionalComponentBehavior(props);
   const input = new TextInputBuilder().setStyle(props.style);
 
   if (props.customId) {
@@ -127,7 +131,7 @@ export function TextInput(
     input.setValue(props.value);
   }
 
-  if (props.required) {
+  if (props.required != null) {
     input.setRequired(props.required);
   }
 

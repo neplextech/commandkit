@@ -34,4 +34,5 @@ export const defaultConfig: ResolvedCommandKitConfig = {
     development: true,
     production: false,
   },
+  jsxDefaultOptionalComponents: true,
 };

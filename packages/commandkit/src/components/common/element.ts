@@ -1,6 +1,7 @@
 import type { ActionRowBuilder, TextInputBuilder } from 'discord.js';
 import type { ButtonKit } from '../interactive/button/ButtonKit';
 import type { ModalKit } from '../interactive/modal/ModalKit';
+import { getConfig } from '../../config/config';
 
 /**
  * Represents the types of elements that can be used in CommandKit.
@@ -102,3 +103,18 @@ export function createElement(
 }
 
 export { createElement as jsx, createElement as jsxs };
+
+let _isOptional: boolean;
+
+export function applyDefaultOptionalComponentBehavior<P>(props: P): P {
+  if (
+    props &&
+    typeof props === 'object' &&
+    (props as { required?: boolean }).required == null &&
+    (_isOptional ??= getConfig().jsxDefaultOptionalComponents)
+  ) {
+    (props as { required?: boolean }).required ??= false;
+  }
+
+  return props;
+}
