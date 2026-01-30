@@ -13,16 +13,27 @@ import MemberDescription from '@site/src/components/MemberDescription';
 
 ## SelectMenuProps
 
-<GenerationInfo sourceFile="packages/commandkit/src/components/interactive/select-menu/SelectMenu.ts" sourceLine="41" packageName="commandkit" />
+<GenerationInfo sourceFile="packages/commandkit/src/components/interactive/select-menu/SelectMenu.ts" sourceLine="43" packageName="commandkit" />
 
 Type for the base select menu component data.
 
 ```ts title="Signature"
-interface SelectMenuProps<T, C> extends Partial<Omit<BaseSelectMenuComponentData, 'type'>>,
+interface SelectMenuProps<T, C> extends Partial<Omit<BaseSelectMenuComponentData, 'type' | 'required'>>,
     CommonSelectMenuProps<T, C> {
-
+    required?: boolean;
 }
 ```
-* Extends: <code>Partial&#60;Omit&#60;BaseSelectMenuComponentData, 'type'&#62;&#62;</code>, <code><a href='/docs/api-reference/commandkit/interfaces/common-select-menu-props#commonselectmenuprops'>CommonSelectMenuProps</a>&#60;T, C&#62;</code>
+* Extends: <code>Partial&#60;Omit&#60;BaseSelectMenuComponentData, 'type' | 'required'&#62;&#62;</code>, <code><a href='/docs/api-reference/commandkit/interfaces/common-select-menu-props#commonselectmenuprops'>CommonSelectMenuProps</a>&#60;T, C&#62;</code>
 
 
+
+<div className="members-wrapper">
+
+### required
+
+<MemberInfo kind="property" type={`boolean`}   />
+
+
+
+
+</div>

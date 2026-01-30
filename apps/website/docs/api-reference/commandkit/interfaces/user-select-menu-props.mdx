@@ -13,16 +13,27 @@ import MemberDescription from '@site/src/components/MemberDescription';
 
 ## UserSelectMenuProps
 
-<GenerationInfo sourceFile="packages/commandkit/src/components/interactive/select-menu/SelectMenu.ts" sourceLine="184" packageName="commandkit" />
+<GenerationInfo sourceFile="packages/commandkit/src/components/interactive/select-menu/SelectMenu.ts" sourceLine="196" packageName="commandkit" />
 
 The UserSelectMenu component.
 
 ```ts title="Signature"
-interface UserSelectMenuProps extends Partial<Omit<UserSelectMenuComponentData, 'type'>>,
+interface UserSelectMenuProps extends Partial<Omit<UserSelectMenuComponentData, 'type' | 'defaultValues'>>,
     CommonSelectMenuProps<UserSelectMenuInteraction, UserSelectMenuKit> {
-
+    defaultValues?: MaybeArray<string | Snowflake>;
 }
 ```
-* Extends: <code>Partial&#60;Omit&#60;UserSelectMenuComponentData, 'type'&#62;&#62;</code>, <code><a href='/docs/api-reference/commandkit/interfaces/common-select-menu-props#commonselectmenuprops'>CommonSelectMenuProps</a>&#60;UserSelectMenuInteraction, <a href='/docs/api-reference/commandkit/classes/user-select-menu-kit#userselectmenukit'>UserSelectMenuKit</a>&#62;</code>
+* Extends: <code>Partial&#60;Omit&#60;UserSelectMenuComponentData, 'type' | 'defaultValues'&#62;&#62;</code>, <code><a href='/docs/api-reference/commandkit/interfaces/common-select-menu-props#commonselectmenuprops'>CommonSelectMenuProps</a>&#60;UserSelectMenuInteraction, <a href='/docs/api-reference/commandkit/classes/user-select-menu-kit#userselectmenukit'>UserSelectMenuKit</a>&#62;</code>
 
 
+
+<div className="members-wrapper">
+
+### defaultValues
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/commandkit/types/maybe-array#maybearray'>MaybeArray</a>&#60;string | Snowflake&#62;`}   />
+
+
+
+
+</div>

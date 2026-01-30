@@ -26,7 +26,7 @@ class Context<ExecutionMode extends CommandExecutionMode = CommandExecutionMode,
     public readonly guildId!: string | null;
     public readonly channel!: TextBasedChannel | null;
     public readonly channelId!: string | null;
-    public readonly client: Client;
+    public readonly client: Client<true>;
     public readonly command: LoadedCommand;
     constructor(commandkit: CommandKit, config: ContextParameters<ExecutionMode, Args>)
     store: void
@@ -87,7 +87,7 @@ The channel where the command was triggered.
 The channel id where the command was triggered.
 ### client
 
-<MemberInfo kind="property" type={`Client`}   />
+<MemberInfo kind="property" type={`Client&#60;true&#62;`}   />
 
 The client instance.
 ### command

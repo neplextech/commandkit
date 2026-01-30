@@ -58,6 +58,7 @@ interface CommandKitConfig {
     disablePrefixCommands?: boolean;
     disablePermissionsMiddleware?: boolean;
     showUnknownPrefixCommandsWarning?: boolean;
+    jsxDefaultOptionalComponents?: boolean;
 }
 ```
 
@@ -135,6 +136,11 @@ Whether or not to disable the built-in permissions middleware. This only affects
 <MemberInfo kind="property" type={`boolean`} default={`true`}   />
 
 Whether or not to show a warning when a prefix command is not found. This only affects development mode.
+### jsxDefaultOptionalComponents
+
+<MemberInfo kind="property" type={`boolean`} default={`true`}   />
+
+Whether to make interaction components optional by default when using JSX (opposite of Discord's default behavior).
 
 
 </div>
