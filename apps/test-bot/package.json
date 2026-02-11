@@ -11,7 +11,7 @@
     "node": "node"
   },
   "dependencies": {
-    "@ai-sdk/google": "^2.0.8",
+    "@ai-sdk/google": "^2.0.52",
     "@commandkit/ai": "workspace:*",
     "@commandkit/cache": "workspace:*",
     "@commandkit/devtools": "workspace:*",
