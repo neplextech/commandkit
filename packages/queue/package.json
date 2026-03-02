@@ -38,7 +38,7 @@
   "bugs": {
     "url": "https://github.com/neplextech/commandkit/issues"
   },
-  "homepage": "https://github.com/neplextech/commandkit#readme",
+  "homepage": "https://commandkit.dev",
   "devDependencies": {
     "@discordjs/brokers": "^1.0.0",
     "tsconfig": "workspace:*",

@@ -15,6 +15,10 @@
     "prettier:check": "prettier --experimental-cli --check . --ignore-path=.prettierignore",
     "format": "prettier --experimental-cli --write . --ignore-path=.prettierignore"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neplextech/commandkit"
+  },
   "devDependencies": {
     "@types/node": "^25.3.2",
     "prettier": "^3.8.1",

@@ -13,7 +13,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/neplextech/commandkit.git"
+    "url": "git+https://github.com/neplextech/commandkit.git",
+    "directory": "packages/i18n"
   },
   "keywords": [
     "commandkit",
@@ -28,7 +29,7 @@
   "bugs": {
     "url": "https://github.com/neplextech/commandkit/issues"
   },
-  "homepage": "https://github.com/neplextech/commandkit#readme",
+  "homepage": "https://commandkit.dev",
   "dependencies": {
     "i18next": "^25.8.13",
     "i18next-fs-backend": "^2.6.1"

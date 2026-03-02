@@ -25,6 +25,11 @@
     "dist",
     "ui"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neplextech/commandkit",
+    "directory": "packages/devtools"
+  },
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",

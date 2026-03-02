@@ -13,7 +13,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/neplextech/commandkit.git"
+    "url": "git+https://github.com/neplextech/commandkit.git",
+    "directory": "packages/legacy"
   },
   "keywords": [
     "commandkit",
@@ -27,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/neplextech/commandkit/issues"
   },
-  "homepage": "https://github.com/neplextech/commandkit#readme",
+  "homepage": "https://commandkit.dev",
   "devDependencies": {
     "commandkit": "workspace:*",
     "discord.js": "catalog:discordjs",

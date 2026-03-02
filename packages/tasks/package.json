@@ -45,7 +45,7 @@
   "bugs": {
     "url": "https://github.com/neplextech/commandkit/issues"
   },
-  "homepage": "https://github.com/neplextech/commandkit#readme",
+  "homepage": "https://commandkit.dev",
   "devDependencies": {
     "bullmq": "^5.70.1",
     "commandkit": "workspace:*",

@@ -10,6 +10,11 @@
     "start": "commandkit start",
     "node": "node"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neplextech/commandkit",
+    "directory": "apps/test-bot"
+  },
   "dependencies": {
     "@ai-sdk/google": "^2.0.52",
     "@commandkit/ai": "workspace:*",

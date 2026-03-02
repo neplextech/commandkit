@@ -21,7 +21,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/neplextech/commandkit.git"
+    "url": "git+https://github.com/neplextech/commandkit.git",
+    "directory": "packages/analytics"
   },
   "keywords": [
     "commandkit",
@@ -35,7 +36,7 @@
   "bugs": {
     "url": "https://github.com/neplextech/commandkit/issues"
   },
-  "homepage": "https://github.com/neplextech/commandkit#readme",
+  "homepage": "https://commandkit.dev",
   "devDependencies": {
     "@umami/node": "^0.4.0",
     "commandkit": "workspace:*",
