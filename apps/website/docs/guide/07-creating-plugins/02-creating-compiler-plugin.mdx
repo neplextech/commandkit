@@ -27,7 +27,12 @@ import {
   TransformedResult,
 } from 'commandkit';
 
-export class MyPlugin extends CompilerPlugin {
+export interface MyPluginOptions {
+  // you can define any options you want for your plugin here
+  // these options can be accessed via `this.options` inside the plugin class
+}
+
+export class MyPlugin extends CompilerPlugin<MyPluginOptions> {
   // this is the name of the plugin
   public readonly name = 'my-plugin';
 
@@ -52,8 +57,8 @@ export class MyPlugin extends CompilerPlugin {
 
     // return the transformed contents
     return {
-      contents: result,
-      loader: params.loader,
+      code: transformedContents,
+      map: null, // you can also return a source map if you want
     };
   }
 }
