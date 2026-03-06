@@ -18,7 +18,6 @@ module.exports = {
   getRemainingRequests,
   getResetTime,
   resetRateLimit,
-  RateLimitStorage,
   DEFAULT_MAX_REQUESTS,
   DEFAULT_TIMEOUT,
   MemoryRateLimitStorage,
