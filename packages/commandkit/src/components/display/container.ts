@@ -39,8 +39,8 @@ export function Container(props: ContainerProps): ContainerBuilder {
 
   applyId(props, container);
 
-  if (typeof props.accentColor != null) {
-    container.setAccentColor(resolveColor(props.accentColor!));
+  if (props.accentColor != null) {
+    container.setAccentColor(resolveColor(props.accentColor));
   }
 
   if (props.spoiler != null) {
