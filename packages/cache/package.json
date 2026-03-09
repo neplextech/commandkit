@@ -1,6 +1,6 @@
 {
   "name": "@commandkit/cache",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "CommandKit plugin that provides caching apis",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

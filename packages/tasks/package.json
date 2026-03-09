@@ -1,6 +1,6 @@
 {
   "name": "@commandkit/tasks",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Task management plugin for CommandKit",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

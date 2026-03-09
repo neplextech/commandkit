@@ -10,7 +10,7 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 jobs:
   publish:
@@ -23,6 +23,8 @@ jobs:
           version: '10.30.3'
 
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -98,3 +100,105 @@ jobs:
               fi
             fi
           done
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          VERSION="v${{ github.event.inputs.version }}"
+
+          # Find the previous version tag
+          PREV_TAG=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
+
+          if [ -z "$PREV_TAG" ]; then
+            COMMIT_RANGE="HEAD"
+            echo "No previous tag found, using all commits"
+          else
+            COMMIT_RANGE="${PREV_TAG}..HEAD"
+            echo "Generating changelog from $PREV_TAG to HEAD"
+          fi
+
+          PACKAGES=(
+            "commandkit:packages/commandkit"
+            "create-commandkit:packages/create-commandkit"
+            "@commandkit/redis:packages/redis"
+            "@commandkit/i18n:packages/i18n"
+            "@commandkit/devtools:packages/devtools"
+            "@commandkit/cache:packages/cache"
+            "@commandkit/analytics:packages/analytics"
+            "@commandkit/ai:packages/ai"
+            "@commandkit/queue:packages/queue"
+            "@commandkit/tasks:packages/tasks"
+            "@commandkit/workflow:packages/workflow"
+          )
+
+          CHANGELOG=""
+
+          for entry in "${PACKAGES[@]}"; do
+            IFS=":" read -r name path <<< "$entry"
+
+            COMMITS=$(git log "$COMMIT_RANGE" --pretty=format:"%s|%h" -- "$path" 2>/dev/null || true)
+
+            [ -z "$COMMITS" ] && continue
+
+            FEATS=""
+            FIXES=""
+            CHORES=""
+            DOCS=""
+            REFACTORS=""
+            PERFS=""
+            TESTS=""
+            OTHERS=""
+
+            while IFS='|' read -r msg hash; do
+              line="- ${msg} (\`${hash}\`)"
+              case "$msg" in
+                feat:*|feat\(*) FEATS+=$'\n'"$line" ;;
+                fix:*|fix\(*) FIXES+=$'\n'"$line" ;;
+                chore:*|chore\(*) CHORES+=$'\n'"$line" ;;
+                docs:*|docs\(*) DOCS+=$'\n'"$line" ;;
+                refactor:*|refactor\(*) REFACTORS+=$'\n'"$line" ;;
+                perf:*|perf\(*) PERFS+=$'\n'"$line" ;;
+                test:*|test\(*|tests:*|tests\(*) TESTS+=$'\n'"$line" ;;
+                *) OTHERS+=$'\n'"$line" ;;
+              esac
+            done <<< "$COMMITS"
+
+            PKG_SECTION="## ${name}"$'\n'
+            HAS_CONTENT=false
+
+            for category_label in \
+              "🚀 Features|$FEATS" \
+              "🐛 Bug Fixes|$FIXES" \
+              "🧹 Chores|$CHORES" \
+              "📖 Documentation|$DOCS" \
+              "♻️ Refactors|$REFACTORS" \
+              "⚡ Performance|$PERFS" \
+              "🧪 Tests|$TESTS" \
+              "📦 Other Changes|$OTHERS"; do
+              IFS='|' read -r label content <<< "$category_label"
+              if [ -n "$content" ]; then
+                PKG_SECTION+=$'\n'"### ${label}"$'\n'"${content}"$'\n'
+                HAS_CONTENT=true
+              fi
+            done
+
+            if [ "$HAS_CONTENT" = true ]; then
+              CHANGELOG+=$'\n'"${PKG_SECTION}"$'\n'
+            fi
+          done
+
+          if [ -z "$CHANGELOG" ]; then
+            CHANGELOG="No package changes detected since the last release."
+          fi
+
+          # Write to file to avoid shell escaping issues
+          echo "$CHANGELOG" > /tmp/changelog.md
+
+      - name: Create GitHub draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.event.inputs.version }}
+          name: v${{ github.event.inputs.version }}
+          body_path: /tmp/changelog.md
+          draft: true
+          generate_release_notes: false

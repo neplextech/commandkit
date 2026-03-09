@@ -1,6 +1,6 @@
 {
   "name": "@commandkit/redis",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Redis cache provider for CommandKit",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

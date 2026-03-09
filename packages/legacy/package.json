@@ -1,6 +1,6 @@
 {
   "name": "@commandkit/legacy",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Legacy command handler plugin for CommandKit",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

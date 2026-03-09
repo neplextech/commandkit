@@ -1,7 +1,7 @@
 {
   "name": "commandkit",
   "description": "Beginner friendly command & event handler for Discord.js",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "license": "MIT",
   "type": "commonjs",
   "main": "./dist/index.js",

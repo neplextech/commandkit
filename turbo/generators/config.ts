@@ -85,23 +85,27 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
             ? data.name
             : `@commandkit/${data.name}`;
           const packagePath = `packages/${data.name}`;
+          const entry = `"${packageName}:${packagePath}"`;
 
-          const publishPackagesMatch = template.match(
-            /PACKAGES=\(\s*([\s\S]*?)\s*\)/,
-          );
-          if (publishPackagesMatch) {
-            const packages = publishPackagesMatch[1]
-              .split('\n')
-              .filter(Boolean)
-              .map((p) => p.trim());
-            packages.push(`"${packageName}:${packagePath}"`);
-            const newPackages = packages
-              .map((p) => `            ${p}`)
-              .join('\n');
-            template = template.replace(
-              publishPackagesMatch[0],
-              `PACKAGES=(\n${newPackages}\n          )`,
-            );
+          // Update all PACKAGES=(...) arrays (publish + changelog steps)
+          const allMatches = template.match(/PACKAGES=\(\s*([\s\S]*?)\s*\)/g);
+          if (allMatches) {
+            for (const match of allMatches) {
+              const inner = match.match(/PACKAGES=\(\s*([\s\S]*?)\s*\)/);
+              if (!inner) continue;
+              const packages = inner[1]
+                .split('\n')
+                .filter(Boolean)
+                .map((p) => p.trim());
+              packages.push(entry);
+              const newPackages = packages
+                .map((p) => `            ${p}`)
+                .join('\n');
+              template = template.replace(
+                match,
+                `PACKAGES=(\n${newPackages}\n          )`,
+              );
+            }
           }
 
           return template;
