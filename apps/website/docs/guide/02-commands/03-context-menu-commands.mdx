@@ -78,6 +78,12 @@ understanding the nature of these context menu commands easier.
   </TabItem>
 </Tabs>
 
+Once the command file is loaded, CommandKit also materializes the
+context menu variants in the command handler cache. This means
+introspection APIs such as `commandHandler.getCommandsArray()` and
+tools built on top of it can see the context menu entries as distinct
+commands immediately after load.
+
 By just exporting the `messageContextMenu` function from your command
 file, CommandKit will properly update your command type before
 registering it to the Discord API. You don't have to manually set a
@@ -145,14 +151,19 @@ very similar to message context menu commands.
   </TabItem>
 </Tabs>
 
-You may have noticed that the context menu command names are the same as the message command names.
-This is because the context menu command names are borrowed from the non-context menu command names.
+You may have noticed that the context menu command names are the same
+as the message command names. This is because the context menu command
+names are borrowed from the non-context menu command names.
 
-In order to change the context menu command name, you can use the `nameAliases` option in the `CommandMetadata` object.
+In order to change the context menu command name, you can use the
+`nameAliases` option in the `CommandMetadata` object.
 
 :::warning
 
-If you are using the [i18n plugin](../05-official-plugins/05-commandkit-i18n.mdx), the plugin will add `name_localizations` to the `nameAliases` option if localization for the context menu command name is provided.
+If you are using the
+[i18n plugin](../05-official-plugins/05-commandkit-i18n.mdx), the
+plugin will add `name_localizations` to the `nameAliases` option if
+localization for the context menu command name is provided.
 
 ```json title="src/app/locales/en/command.json"
 {

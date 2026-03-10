@@ -1,4 +1,5 @@
 import {
+  ApplicationCommandType,
   AutocompleteInteraction,
   Awaitable,
   Collection,
@@ -383,7 +384,7 @@ export class AppCommandHandler {
   }
 
   /**
-   * Gets an array of all loaded commands.
+   * Gets an array of all loaded commands, including pre-generated context menu entries.
    * @returns Array of loaded commands
    */
   public getCommandsArray() {
@@ -926,24 +927,32 @@ export class AppCommandHandler {
         );
       }
 
+      const resolvedMetadata = {
+        guilds: commandJson.guilds,
+        aliases: commandJson.aliases,
+        ...metadata,
+      };
+
       this.loadedCommands.set(id, {
         discordId: null,
         command,
-        metadata: {
-          guilds: commandJson.guilds,
-          aliases: commandJson.aliases,
-          ...metadata,
-        },
+        metadata: resolvedMetadata,
         data: {
           ...commandFileData,
-          metadata: {
-            guilds: commandJson.guilds,
-            aliases: commandJson.aliases,
-            ...metadata,
-          },
+          metadata: resolvedMetadata,
           command: commandJson,
         },
       });
+
+      // Pre-generate context menu commands so the handler cache
+      // is aware of them before CommandRegistrar runs (#558)
+      this.generateContextMenuCommands(
+        id,
+        command,
+        commandFileData,
+        commandJson,
+        resolvedMetadata,
+      );
     } catch (error) {
       Logger.error`Failed to load command ${command.name} (${id}): ${error}`;
     }
@@ -968,5 +977,70 @@ export class AppCommandHandler {
       userPermissions: [],
       botPermissions: [],
     });
+  }
+
+  /**
+   * Generates context menu commands for the loaded command.
+   * @private
+   * @internal
+   */
+  private generateContextMenuCommands(
+    id: string,
+    command: Command,
+    commandFileData: AppCommandNative,
+    commandJson: CommandData,
+    metadata: CommandMetadata,
+  ) {
+    if (commandFileData.userContextMenu) {
+      const userCtxId = `${id}::user-ctx`;
+      const userCtxName = metadata.nameAliases?.user ?? commandJson.name;
+
+      this.loadedCommands.set(userCtxId, {
+        discordId: null,
+        command: {
+          ...command,
+          id: userCtxId,
+          name: userCtxName,
+        },
+        metadata,
+        data: {
+          ...commandFileData,
+          metadata,
+          command: {
+            ...commandJson,
+            name: userCtxName,
+            type: ApplicationCommandType.User,
+            description: undefined,
+            options: undefined,
+          },
+        },
+      });
+    }
+
+    if (commandFileData.messageContextMenu) {
+      const messageCtxId = `${id}::message-ctx`;
+      const messageCtxName = metadata.nameAliases?.message ?? commandJson.name;
+
+      this.loadedCommands.set(messageCtxId, {
+        discordId: null,
+        command: {
+          ...command,
+          id: messageCtxId,
+          name: messageCtxName,
+        },
+        metadata,
+        data: {
+          ...commandFileData,
+          metadata,
+          command: {
+            ...commandJson,
+            name: messageCtxName,
+            type: ApplicationCommandType.Message,
+            description: undefined,
+            options: undefined,
+          },
+        },
+      });
+    }
   }
 }

@@ -35,28 +35,55 @@ export class CommandRegistrar {
   }
 
   /**
-   * Gets the commands data.
+   * Gets the commands data, consuming pre-generated context menu entries when available.
    */
   public getCommandsData(): (CommandData & {
     __metadata?: CommandMetadata;
     __applyId(id: string): void;
   })[] {
     const handler = this.commandkit.commandHandler;
-    // Use the public method instead of accessing private property
     const commands = handler.getCommandsArray();
+    const commandIds = new Set(commands.map((command) => command.command.id));
 
     return commands.flatMap((cmd) => {
+      const isPreGeneratedCtx =
+        cmd.command.id.endsWith('::user-ctx') ||
+        cmd.command.id.endsWith('::message-ctx');
+
       const json: CommandData =
         'toJSON' in cmd.data.command
           ? cmd.data.command.toJSON()
           : cmd.data.command;
 
       const __metadata = cmd.metadata ?? cmd.data.metadata;
+      const isContextMenuType =
+        json.type === ApplicationCommandType.User ||
+        json.type === ApplicationCommandType.Message;
+      const applyId = (id: string) => {
+        cmd.discordId = id;
+      };
+
+      // Pre-generated context menu commands are already fully formed (#558)
+      if (isPreGeneratedCtx || isContextMenuType) {
+        return [
+          {
+            ...json,
+            __metadata,
+            __applyId: applyId,
+          },
+        ];
+      }
 
       const collections: (CommandData & {
         __metadata?: CommandMetadata;
         __applyId(id: string): void;
       })[] = [];
+      const hasPreGeneratedUserContextMenu = commandIds.has(
+        `${cmd.command.id}::user-ctx`,
+      );
+      const hasPreGeneratedMessageContextMenu = commandIds.has(
+        `${cmd.command.id}::message-ctx`,
+      );
 
       if (cmd.data.chatInput) {
         collections.push({
@@ -64,14 +91,13 @@ export class CommandRegistrar {
           type: ApplicationCommandType.ChatInput,
           description: json.description ?? 'No command description set.',
           __metadata,
-          __applyId: (id: string) => {
-            cmd.discordId = id;
-          },
+          __applyId: applyId,
         });
       }
 
-      // Handle context menu commands
-      if (cmd.data.userContextMenu) {
+      // Fall back to runtime generation for externally injected loaded commands
+      // that dont have pre-generated context menu siblings in the cache.
+      if (cmd.data.userContextMenu && !hasPreGeneratedUserContextMenu) {
         collections.push({
           ...json,
           name: __metadata?.nameAliases?.user ?? json.name,
@@ -80,13 +106,11 @@ export class CommandRegistrar {
           description_localizations: undefined,
           description: undefined,
           __metadata,
-          __applyId: (id: string) => {
-            cmd.discordId = id;
-          },
+          __applyId: applyId,
         });
       }
 
-      if (cmd.data.messageContextMenu) {
+      if (cmd.data.messageContextMenu && !hasPreGeneratedMessageContextMenu) {
         collections.push({
           ...json,
           name: __metadata?.nameAliases?.message ?? json.name,
@@ -95,9 +119,7 @@ export class CommandRegistrar {
           description: undefined,
           options: undefined,
           __metadata,
-          __applyId: (id: string) => {
-            cmd.discordId = id;
-          },
+          __applyId: applyId,
         });
       }
 
