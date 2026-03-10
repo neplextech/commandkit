@@ -2,6 +2,7 @@ import { getContext } from '../context/async-context';
 import colors from '../utils/colors';
 import { COMMANDKIT_IS_DEV } from '../utils/constants';
 import { ILogger } from './ILogger';
+import { Console } from 'node:console';
 import { inspect } from 'util';
 
 /**
@@ -63,7 +64,7 @@ export class DefaultLogger implements ILogger {
     public stdout = process.stdout,
     public stderr = process.stderr,
   ) {
-    this.logger = new console.Console(this.stdout, this.stderr);
+    this.logger = new Console(this.stdout, this.stderr);
   }
 
   private _formatTime(date: Date): string {
