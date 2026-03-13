@@ -1,0 +1,64 @@
+{
+  "name": "@commandkit/ratelimit",
+  "version": "0.0.0",
+  "description": "CommandKit plugin that provides advanced rate limiting",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./redis": {
+      "import": "./dist/providers/redis.js",
+      "types": "./dist/providers/redis.d.ts"
+    },
+    "./memory": {
+      "import": "./dist/providers/memory.js",
+      "types": "./dist/providers/memory.d.ts"
+    },
+    "./fallback": {
+      "import": "./dist/providers/fallback.js",
+      "types": "./dist/providers/fallback.d.ts"
+    }
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "build": "tsc",
+    "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neplextech/commandkit.git",
+    "directory": "packages/ratelimit"
+  },
+  "keywords": [
+    "commandkit",
+    "ratelimit",
+    "rate limiting"
+  ],
+  "contributors": [
+    "Twilight <hello@twlite.dev>",
+    "Avraj <avraj@underctrl.io>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/neplextech/commandkit/issues"
+  },
+  "homepage": "https://commandkit.dev",
+  "dependencies": {
+    "ioredis": "^5.10.0",
+    "ms": "^2.1.3"
+  },
+  "devDependencies": {
+    "@types/ms": "^2.1.0",
+    "commandkit": "workspace:*",
+    "discord.js": "catalog:discordjs",
+    "tsconfig": "workspace:*",
+    "typescript": "catalog:build",
+    "vitest": "^4.0.18"
+  }
+}
