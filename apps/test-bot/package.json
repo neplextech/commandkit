@@ -22,6 +22,7 @@
     "@commandkit/devtools": "workspace:*",
     "@commandkit/i18n": "workspace:*",
     "@commandkit/legacy": "workspace:*",
+    "@commandkit/ratelimit": "workspace:*",
     "@commandkit/tasks": "workspace:*",
     "@commandkit/workflow": "workspace:*",
     "commandkit": "workspace:*",
