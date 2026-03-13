@@ -1,0 +1,36 @@
+---
+title: "WithStorageKeyLock"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## withStorageKeyLock
+
+<GenerationInfo sourceFile="packages/ratelimit/src/utils/locking.ts" sourceLine="31" packageName="@commandkit/ratelimit" />
+
+
+
+```ts title="Signature"
+function withStorageKeyLock<T>(storage: RateLimitStorage, key: string, fn: LockedFn<T>): Promise<T>
+```
+Parameters
+
+### storage
+
+<MemberInfo kind="parameter" type={`<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-storage#ratelimitstorage'>RateLimitStorage</a>`} />
+
+### key
+
+<MemberInfo kind="parameter" type={`string`} />
+
+### fn
+
+<MemberInfo kind="parameter" type={`LockedFn&#60;T&#62;`} />
+

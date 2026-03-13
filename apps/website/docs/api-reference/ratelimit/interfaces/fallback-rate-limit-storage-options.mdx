@@ -1,0 +1,35 @@
+---
+title: "FallbackRateLimitStorageOptions"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## FallbackRateLimitStorageOptions
+
+<GenerationInfo sourceFile="packages/ratelimit/src/storage/fallback.ts" sourceLine="11" packageName="@commandkit/ratelimit" />
+
+Options that control fallback logging/cooldown behavior.
+
+```ts title="Signature"
+interface FallbackRateLimitStorageOptions {
+    cooldownMs?: number;
+}
+```
+
+<div className="members-wrapper">
+
+### cooldownMs
+
+<MemberInfo kind="property" type={`number`}   />
+
+Minimum time between fallback log entries (to avoid log spam).
+
+
+</div>

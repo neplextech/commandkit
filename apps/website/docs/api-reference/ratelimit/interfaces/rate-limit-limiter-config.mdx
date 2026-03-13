@@ -1,0 +1,119 @@
+---
+title: "RateLimitLimiterConfig"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitLimiterConfig
+
+<GenerationInfo sourceFile="packages/ratelimit/src/types.ts" sourceLine="199" packageName="@commandkit/ratelimit" />
+
+Core limiter configuration used by plugin and directives.
+
+```ts title="Signature"
+interface RateLimitLimiterConfig {
+    maxRequests?: number;
+    interval?: DurationLike;
+    scope?: RateLimitScope | RateLimitScope[];
+    algorithm?: RateLimitAlgorithmType;
+    burst?: number;
+    refillRate?: number;
+    leakRate?: number;
+    keyResolver?: RateLimitKeyResolver;
+    keyPrefix?: string;
+    storage?: RateLimitStorageConfig;
+    violations?: ViolationOptions;
+    queue?: RateLimitQueueOptions;
+    windows?: RateLimitWindowConfig[];
+    roleLimits?: Record<string, RateLimitLimiterConfig>;
+    roleLimitStrategy?: RateLimitRoleLimitStrategy;
+}
+```
+
+<div className="members-wrapper">
+
+### maxRequests
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### interval
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/duration-like#durationlike'>DurationLike</a>`}   />
+
+
+### scope
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-scope#ratelimitscope'>RateLimitScope</a> | <a href='/docs/api-reference/ratelimit/types/rate-limit-scope#ratelimitscope'>RateLimitScope</a>[]`}   />
+
+
+### algorithm
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-algorithm-type#ratelimitalgorithmtype'>RateLimitAlgorithmType</a>`}   />
+
+
+### burst
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### refillRate
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### leakRate
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### keyResolver
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-key-resolver#ratelimitkeyresolver'>RateLimitKeyResolver</a>`}   />
+
+
+### keyPrefix
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### storage
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-storage-config#ratelimitstorageconfig'>RateLimitStorageConfig</a>`}   />
+
+
+### violations
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/interfaces/violation-options#violationoptions'>ViolationOptions</a>`}   />
+
+
+### queue
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-queue-options#ratelimitqueueoptions'>RateLimitQueueOptions</a>`}   />
+
+
+### windows
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-window-config#ratelimitwindowconfig'>RateLimitWindowConfig</a>[]`}   />
+
+
+### roleLimits
+
+<MemberInfo kind="property" type={`Record&#60;string, <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-limiter-config#ratelimitlimiterconfig'>RateLimitLimiterConfig</a>&#62;`}   />
+
+
+### roleLimitStrategy
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-role-limit-strategy#ratelimitrolelimitstrategy'>RateLimitRoleLimitStrategy</a>`}   />
+
+
+
+
+</div>

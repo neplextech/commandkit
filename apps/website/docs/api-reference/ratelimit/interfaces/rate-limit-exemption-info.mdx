@@ -1,0 +1,53 @@
+---
+title: "RateLimitExemptionInfo"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitExemptionInfo
+
+<GenerationInfo sourceFile="packages/ratelimit/src/types.ts" sourceLine="266" packageName="@commandkit/ratelimit" />
+
+Listed exemption entry with key and expiry info.
+
+```ts title="Signature"
+interface RateLimitExemptionInfo {
+    key: string;
+    scope: RateLimitExemptionScope;
+    id: string;
+    expiresInMs: number | null;
+}
+```
+
+<div className="members-wrapper">
+
+### key
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### scope
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-exemption-scope#ratelimitexemptionscope'>RateLimitExemptionScope</a>`}   />
+
+
+### id
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### expiresInMs
+
+<MemberInfo kind="property" type={`number | null`}   />
+
+
+
+
+</div>

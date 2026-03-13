@@ -1,0 +1,83 @@
+---
+title: "RateLimitResult"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitResult
+
+<GenerationInfo sourceFile="packages/ratelimit/src/types.ts" sourceLine="84" packageName="@commandkit/ratelimit" />
+
+Result for a single limiter/window evaluation used for aggregation.
+
+```ts title="Signature"
+interface RateLimitResult {
+    key: string;
+    scope: RateLimitScope;
+    algorithm: RateLimitAlgorithmType;
+    windowId?: string;
+    limited: boolean;
+    remaining: number;
+    resetAt: number;
+    retryAfter: number;
+    limit: number;
+}
+```
+
+<div className="members-wrapper">
+
+### key
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### scope
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-scope#ratelimitscope'>RateLimitScope</a>`}   />
+
+
+### algorithm
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-algorithm-type#ratelimitalgorithmtype'>RateLimitAlgorithmType</a>`}   />
+
+
+### windowId
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### limited
+
+<MemberInfo kind="property" type={`boolean`}   />
+
+
+### remaining
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### resetAt
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### retryAfter
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### limit
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+
+
+</div>

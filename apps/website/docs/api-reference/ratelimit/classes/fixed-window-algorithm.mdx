@@ -1,0 +1,56 @@
+---
+title: "FixedWindowAlgorithm"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## FixedWindowAlgorithm
+
+<GenerationInfo sourceFile="packages/ratelimit/src/engine/algorithms/fixed-window.ts" sourceLine="29" packageName="@commandkit/ratelimit" />
+
+Basic fixed-window counter for low-cost rate limits.
+
+```ts title="Signature"
+class FixedWindowAlgorithm implements RateLimitAlgorithm {
+    public readonly type: RateLimitAlgorithmType = 'fixed-window';
+    constructor(storage: RateLimitStorage, config: FixedWindowConfig)
+    consume(key: string) => Promise<RateLimitResult>;
+    reset(key: string) => Promise<void>;
+}
+```
+* Implements: <code><a href='/docs/api-reference/ratelimit/interfaces/rate-limit-algorithm#ratelimitalgorithm'>RateLimitAlgorithm</a></code>
+
+
+
+<div className="members-wrapper">
+
+### type
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-algorithm-type#ratelimitalgorithmtype'>RateLimitAlgorithmType</a>`}   />
+
+
+### constructor
+
+<MemberInfo kind="method" type={`(storage: <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-storage#ratelimitstorage'>RateLimitStorage</a>, config: FixedWindowConfig) => FixedWindowAlgorithm`}   />
+
+
+### consume
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-result#ratelimitresult'>RateLimitResult</a>&#62;`}   />
+
+Record one attempt and return the current window status for this key.
+### reset
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;void&#62;`}   />
+
+
+
+
+</div>

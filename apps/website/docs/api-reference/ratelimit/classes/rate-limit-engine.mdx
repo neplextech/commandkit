@@ -1,0 +1,47 @@
+---
+title: "RateLimitEngine"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitEngine
+
+<GenerationInfo sourceFile="packages/ratelimit/src/engine/RateLimitEngine.ts" sourceLine="29" packageName="@commandkit/ratelimit" />
+
+Coordinates algorithm selection and violation escalation per storage.
+
+```ts title="Signature"
+class RateLimitEngine {
+    constructor(storage: RateLimitStorage)
+    consume(key: string, config: ResolvedLimiterConfig) => Promise<RateLimitConsumeOutput>;
+    reset(key: string) => Promise<void>;
+}
+```
+
+<div className="members-wrapper">
+
+### constructor
+
+<MemberInfo kind="method" type={`(storage: <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-storage#ratelimitstorage'>RateLimitStorage</a>) => RateLimitEngine`}   />
+
+
+### consume
+
+<MemberInfo kind="method" type={`(key: string, config: <a href='/docs/api-reference/ratelimit/interfaces/resolved-limiter-config#resolvedlimiterconfig'>ResolvedLimiterConfig</a>) => Promise&#60;<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-consume-output#ratelimitconsumeoutput'>RateLimitConsumeOutput</a>&#62;`}   />
+
+Consume a single key and apply escalation rules when enabled.
+### reset
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;void&#62;`}   />
+
+Reset a key and its associated violation state.
+
+
+</div>

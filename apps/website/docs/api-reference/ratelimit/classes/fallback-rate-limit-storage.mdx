@@ -1,0 +1,128 @@
+---
+title: "FallbackRateLimitStorage"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## FallbackRateLimitStorage
+
+<GenerationInfo sourceFile="packages/ratelimit/src/storage/fallback.ts" sourceLine="19" packageName="@commandkit/ratelimit" />
+
+Storage wrapper that falls back to a secondary implementation on failure.
+
+```ts title="Signature"
+class FallbackRateLimitStorage implements RateLimitStorage {
+    constructor(primary: RateLimitStorage, secondary: RateLimitStorage, options: FallbackRateLimitStorageOptions = {})
+    get(key: string) => Promise<T | null>;
+    set(key: string, value: T, ttlMs?: number) => Promise<void>;
+    delete(key: string) => Promise<void>;
+    incr(key: string, ttlMs: number) => ;
+    ttl(key: string) => ;
+    expire(key: string, ttlMs: number) => ;
+    zAdd(key: string, score: number, member: string) => ;
+    zRemRangeByScore(key: string, min: number, max: number) => ;
+    zCard(key: string) => ;
+    zRangeByScore(key: string, min: number, max: number) => ;
+    consumeFixedWindow(key: string, limit: number, windowMs: number, nowMs: number) => ;
+    consumeSlidingWindowLog(key: string, limit: number, windowMs: number, nowMs: number, member: string) => ;
+    deleteByPrefix(prefix: string) => ;
+    deleteByPattern(pattern: string) => ;
+    keysByPrefix(prefix: string) => ;
+}
+```
+* Implements: <code><a href='/docs/api-reference/ratelimit/interfaces/rate-limit-storage#ratelimitstorage'>RateLimitStorage</a></code>
+
+
+
+<div className="members-wrapper">
+
+### constructor
+
+<MemberInfo kind="method" type={`(primary: <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-storage#ratelimitstorage'>RateLimitStorage</a>, secondary: <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-storage#ratelimitstorage'>RateLimitStorage</a>, options: <a href='/docs/api-reference/ratelimit/interfaces/fallback-rate-limit-storage-options#fallbackratelimitstorageoptions'>FallbackRateLimitStorageOptions</a> = {}) => FallbackRateLimitStorage`}   />
+
+
+### get
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;T | null&#62;`}   />
+
+
+### set
+
+<MemberInfo kind="method" type={`(key: string, value: T, ttlMs?: number) => Promise&#60;void&#62;`}   />
+
+
+### delete
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;void&#62;`}   />
+
+
+### incr
+
+<MemberInfo kind="method" type={`(key: string, ttlMs: number) => `}   />
+
+
+### ttl
+
+<MemberInfo kind="method" type={`(key: string) => `}   />
+
+
+### expire
+
+<MemberInfo kind="method" type={`(key: string, ttlMs: number) => `}   />
+
+
+### zAdd
+
+<MemberInfo kind="method" type={`(key: string, score: number, member: string) => `}   />
+
+
+### zRemRangeByScore
+
+<MemberInfo kind="method" type={`(key: string, min: number, max: number) => `}   />
+
+
+### zCard
+
+<MemberInfo kind="method" type={`(key: string) => `}   />
+
+
+### zRangeByScore
+
+<MemberInfo kind="method" type={`(key: string, min: number, max: number) => `}   />
+
+
+### consumeFixedWindow
+
+<MemberInfo kind="method" type={`(key: string, limit: number, windowMs: number, nowMs: number) => `}   />
+
+
+### consumeSlidingWindowLog
+
+<MemberInfo kind="method" type={`(key: string, limit: number, windowMs: number, nowMs: number, member: string) => `}   />
+
+
+### deleteByPrefix
+
+<MemberInfo kind="method" type={`(prefix: string) => `}   />
+
+
+### deleteByPattern
+
+<MemberInfo kind="method" type={`(pattern: string) => `}   />
+
+
+### keysByPrefix
+
+<MemberInfo kind="method" type={`(prefix: string) => `}   />
+
+
+
+
+</div>

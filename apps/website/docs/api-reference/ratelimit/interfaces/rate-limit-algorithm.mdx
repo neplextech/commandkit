@@ -1,0 +1,47 @@
+---
+title: "RateLimitAlgorithm"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitAlgorithm
+
+<GenerationInfo sourceFile="packages/ratelimit/src/types.ts" sourceLine="99" packageName="@commandkit/ratelimit" />
+
+Contract for rate limit algorithms used by the engine.
+
+```ts title="Signature"
+interface RateLimitAlgorithm {
+    readonly type: RateLimitAlgorithmType;
+    consume(key: string): Promise<RateLimitResult>;
+    reset(key: string): Promise<void>;
+}
+```
+
+<div className="members-wrapper">
+
+### type
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-algorithm-type#ratelimitalgorithmtype'>RateLimitAlgorithmType</a>`}   />
+
+
+### consume
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-result#ratelimitresult'>RateLimitResult</a>&#62;`}   />
+
+
+### reset
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;void&#62;`}   />
+
+
+
+
+</div>

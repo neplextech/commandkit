@@ -1,0 +1,53 @@
+---
+title: "ViolationOptions"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## ViolationOptions
+
+<GenerationInfo sourceFile="packages/ratelimit/src/types.ts" sourceLine="166" packageName="@commandkit/ratelimit" />
+
+Escalation settings for repeated violations.
+
+```ts title="Signature"
+interface ViolationOptions {
+    escalate?: boolean;
+    maxViolations?: number;
+    escalationMultiplier?: number;
+    resetAfter?: DurationLike;
+}
+```
+
+<div className="members-wrapper">
+
+### escalate
+
+<MemberInfo kind="property" type={`boolean`}   />
+
+
+### maxViolations
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### escalationMultiplier
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### resetAfter
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/duration-like#durationlike'>DurationLike</a>`}   />
+
+
+
+
+</div>

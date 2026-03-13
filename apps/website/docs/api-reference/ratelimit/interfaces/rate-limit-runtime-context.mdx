@@ -1,0 +1,59 @@
+---
+title: "RateLimitRuntimeContext"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitRuntimeContext
+
+<GenerationInfo sourceFile="packages/ratelimit/src/types.ts" sourceLine="363" packageName="@commandkit/ratelimit" />
+
+Active runtime context shared with APIs and directives.
+
+```ts title="Signature"
+interface RateLimitRuntimeContext {
+    storage: RateLimitStorage;
+    keyPrefix?: string;
+    defaultLimiter: RateLimitLimiterConfig;
+    limiters?: Record<string, RateLimitLimiterConfig>;
+    hooks?: RateLimitHooks;
+}
+```
+
+<div className="members-wrapper">
+
+### storage
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-storage#ratelimitstorage'>RateLimitStorage</a>`}   />
+
+
+### keyPrefix
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### defaultLimiter
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-limiter-config#ratelimitlimiterconfig'>RateLimitLimiterConfig</a>`}   />
+
+
+### limiters
+
+<MemberInfo kind="property" type={`Record&#60;string, <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-limiter-config#ratelimitlimiterconfig'>RateLimitLimiterConfig</a>&#62;`}   />
+
+
+### hooks
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-hooks#ratelimithooks'>RateLimitHooks</a>`}   />
+
+
+
+
+</div>

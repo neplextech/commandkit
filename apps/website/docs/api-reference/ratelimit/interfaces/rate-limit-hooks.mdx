@@ -1,0 +1,62 @@
+---
+title: "RateLimitHooks"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitHooks
+
+<GenerationInfo sourceFile="packages/ratelimit/src/types.ts" sourceLine="285" packageName="@commandkit/ratelimit" />
+
+Optional lifecycle hooks used by the plugin to surface rate limit events.
+
+```ts title="Signature"
+interface RateLimitHooks {
+    onRateLimited?: (info: RateLimitHookContext) => void | Promise<void>;
+    onAllowed?: (info: RateLimitHookContext) => void | Promise<void>;
+    onReset?: (key: string) => void | Promise<void>;
+    onViolation?: (key: string, count: number) => void | Promise<void>;
+    onStorageError?: (
+    error: unknown,
+    fallbackUsed: boolean,
+  ) => void | Promise<void>;
+}
+```
+
+<div className="members-wrapper">
+
+### onRateLimited
+
+<MemberInfo kind="property" type={`(info: <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-hook-context#ratelimithookcontext'>RateLimitHookContext</a>) =&#62; void | Promise&#60;void&#62;`}   />
+
+
+### onAllowed
+
+<MemberInfo kind="property" type={`(info: <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-hook-context#ratelimithookcontext'>RateLimitHookContext</a>) =&#62; void | Promise&#60;void&#62;`}   />
+
+
+### onReset
+
+<MemberInfo kind="property" type={`(key: string) =&#62; void | Promise&#60;void&#62;`}   />
+
+
+### onViolation
+
+<MemberInfo kind="property" type={`(key: string, count: number) =&#62; void | Promise&#60;void&#62;`}   />
+
+
+### onStorageError
+
+<MemberInfo kind="property" type={`(     error: unknown,     fallbackUsed: boolean,   ) =&#62; void | Promise&#60;void&#62;`}   />
+
+
+
+
+</div>

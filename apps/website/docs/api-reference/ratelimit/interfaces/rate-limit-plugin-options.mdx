@@ -1,0 +1,108 @@
+---
+title: "RateLimitPluginOptions"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitPluginOptions
+
+<GenerationInfo sourceFile="packages/ratelimit/src/types.ts" sourceLine="308" packageName="@commandkit/ratelimit" />
+
+Runtime plugin options consumed by RateLimitPlugin.
+Configure these via configureRatelimit().
+
+```ts title="Signature"
+interface RateLimitPluginOptions {
+    defaultLimiter?: RateLimitLimiterConfig;
+    limiters?: Record<string, RateLimitLimiterConfig>;
+    storage?: RateLimitStorageConfig;
+    keyPrefix?: string;
+    keyResolver?: RateLimitKeyResolver;
+    bypass?: RateLimitBypassOptions;
+    hooks?: RateLimitHooks;
+    onRateLimited?: RateLimitResponseHandler;
+    queue?: RateLimitQueueOptions;
+    roleLimits?: Record<string, RateLimitLimiterConfig>;
+    roleLimitStrategy?: RateLimitRoleLimitStrategy;
+    initializeDefaultStorage?: boolean;
+    initializeDefaultDriver?: boolean;
+}
+```
+
+<div className="members-wrapper">
+
+### defaultLimiter
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-limiter-config#ratelimitlimiterconfig'>RateLimitLimiterConfig</a>`}   />
+
+
+### limiters
+
+<MemberInfo kind="property" type={`Record&#60;string, <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-limiter-config#ratelimitlimiterconfig'>RateLimitLimiterConfig</a>&#62;`}   />
+
+
+### storage
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-storage-config#ratelimitstorageconfig'>RateLimitStorageConfig</a>`}   />
+
+
+### keyPrefix
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### keyResolver
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-key-resolver#ratelimitkeyresolver'>RateLimitKeyResolver</a>`}   />
+
+
+### bypass
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-bypass-options#ratelimitbypassoptions'>RateLimitBypassOptions</a>`}   />
+
+
+### hooks
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-hooks#ratelimithooks'>RateLimitHooks</a>`}   />
+
+
+### onRateLimited
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-response-handler#ratelimitresponsehandler'>RateLimitResponseHandler</a>`}   />
+
+
+### queue
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-queue-options#ratelimitqueueoptions'>RateLimitQueueOptions</a>`}   />
+
+
+### roleLimits
+
+<MemberInfo kind="property" type={`Record&#60;string, <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-limiter-config#ratelimitlimiterconfig'>RateLimitLimiterConfig</a>&#62;`}   />
+
+
+### roleLimitStrategy
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-role-limit-strategy#ratelimitrolelimitstrategy'>RateLimitRoleLimitStrategy</a>`}   />
+
+
+### initializeDefaultStorage
+
+<MemberInfo kind="property" type={`boolean`} default={`true`}   />
+
+Whether to initialize the default in-memory storage if no storage is configured.
+### initializeDefaultDriver
+
+<MemberInfo kind="property" type={`boolean`} default={`true`}   />
+
+Alias for initializeDefaultStorage, aligned with other packages.
+
+
+</div>
