@@ -1,0 +1,56 @@
+---
+title: "LeakyBucketAlgorithm"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## LeakyBucketAlgorithm
+
+<GenerationInfo sourceFile="packages/ratelimit/src/engine/algorithms/leaky-bucket.ts" sourceLine="34" packageName="@commandkit/ratelimit" />
+
+Leaky bucket algorithm for smoothing output to a steady rate.
+
+```ts title="Signature"
+class LeakyBucketAlgorithm implements RateLimitAlgorithm {
+    public readonly type: RateLimitAlgorithmType = 'leaky-bucket';
+    constructor(storage: RateLimitStorage, config: LeakyBucketConfig)
+    consume(key: string) => Promise<RateLimitResult>;
+    reset(key: string) => Promise<void>;
+}
+```
+* Implements: <code><a href='/docs/api-reference/ratelimit/interfaces/rate-limit-algorithm#ratelimitalgorithm'>RateLimitAlgorithm</a></code>
+
+
+
+<div className="members-wrapper">
+
+### type
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-algorithm-type#ratelimitalgorithmtype'>RateLimitAlgorithmType</a>`}   />
+
+
+### constructor
+
+<MemberInfo kind="method" type={`(storage: <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-storage#ratelimitstorage'>RateLimitStorage</a>, config: LeakyBucketConfig) => LeakyBucketAlgorithm`}   />
+
+Create a leaky-bucket algorithm bound to a storage backend.
+### consume
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-result#ratelimitresult'>RateLimitResult</a>&#62;`}   />
+
+Record one attempt and return the current bucket status for this key.
+### reset
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;void&#62;`}   />
+
+Reset the stored key state for this limiter.
+
+
+</div>

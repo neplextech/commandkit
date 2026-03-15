@@ -1,0 +1,77 @@
+---
+title: "RateLimitWindowConfig"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitWindowConfig
+
+<GenerationInfo sourceFile="packages/ratelimit/src/types.ts" sourceLine="178" packageName="@commandkit/ratelimit" />
+
+Per-window overrides when a limiter defines multiple windows.
+
+```ts title="Signature"
+interface RateLimitWindowConfig {
+    id?: string;
+    maxRequests?: number;
+    interval?: DurationLike;
+    algorithm?: RateLimitAlgorithmType;
+    burst?: number;
+    refillRate?: number;
+    leakRate?: number;
+    violations?: ViolationOptions;
+}
+```
+
+<div className="members-wrapper">
+
+### id
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### maxRequests
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### interval
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/duration-like#durationlike'>DurationLike</a>`}   />
+
+
+### algorithm
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-algorithm-type#ratelimitalgorithmtype'>RateLimitAlgorithmType</a>`}   />
+
+
+### burst
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### refillRate
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### leakRate
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### violations
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/interfaces/violation-options#violationoptions'>ViolationOptions</a>`}   />
+
+
+
+
+</div>

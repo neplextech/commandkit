@@ -1,0 +1,30 @@
+---
+title: "ResolveScopeKeys"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## resolveScopeKeys
+
+<GenerationInfo sourceFile="packages/ratelimit/src/utils/keys.ts" sourceLine="314" packageName="@commandkit/ratelimit" />
+
+Resolve keys for multiple scopes, dropping unresolvable ones.
+
+```ts title="Signature"
+function resolveScopeKeys(params: Omit<ResolveScopeKeyParams, 'scope'> & {
+    scopes: RateLimitScope[];
+  }): ResolvedScopeKey[]
+```
+Parameters
+
+### params
+
+<MemberInfo kind="parameter" type={`Omit&#60;<a href='/docs/api-reference/ratelimit/interfaces/resolve-scope-key-params#resolvescopekeyparams'>ResolveScopeKeyParams</a>, 'scope'&#62; &#38; {     scopes: <a href='/docs/api-reference/ratelimit/types/rate-limit-scope#ratelimitscope'>RateLimitScope</a>[];   }`} />
+

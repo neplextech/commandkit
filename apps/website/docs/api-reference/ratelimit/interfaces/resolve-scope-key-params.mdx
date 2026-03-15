@@ -1,0 +1,65 @@
+---
+title: "ResolveScopeKeyParams"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## ResolveScopeKeyParams
+
+<GenerationInfo sourceFile="packages/ratelimit/src/utils/keys.ts" sourceLine="23" packageName="@commandkit/ratelimit" />
+
+Inputs for resolving a scope-based key from a command/source.
+
+```ts title="Signature"
+interface ResolveScopeKeyParams {
+    ctx: Context;
+    source: Interaction | Message;
+    command: LoadedCommand;
+    scope: RateLimitScope;
+    keyPrefix?: string;
+    keyResolver?: RateLimitKeyResolver;
+}
+```
+
+<div className="members-wrapper">
+
+### ctx
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/commandkit/classes/context#context'>Context</a>`}   />
+
+
+### source
+
+<MemberInfo kind="property" type={`Interaction | Message`}   />
+
+
+### command
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/commandkit/interfaces/loaded-command#loadedcommand'>LoadedCommand</a>`}   />
+
+
+### scope
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-scope#ratelimitscope'>RateLimitScope</a>`}   />
+
+
+### keyPrefix
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### keyResolver
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-key-resolver#ratelimitkeyresolver'>RateLimitKeyResolver</a>`}   />
+
+
+
+
+</div>

@@ -1,0 +1,47 @@
+---
+title: "TokenBucketConfig"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## TokenBucketConfig
+
+<GenerationInfo sourceFile="packages/ratelimit/src/engine/algorithms/token-bucket.ts" sourceLine="15" packageName="@commandkit/ratelimit" />
+
+
+
+```ts title="Signature"
+interface TokenBucketConfig {
+    capacity: number;
+    refillRate: number;
+    scope: RateLimitResult['scope'];
+}
+```
+
+<div className="members-wrapper">
+
+### capacity
+
+<MemberInfo kind="property" type={`number`}   />
+
+Maximum tokens available when the bucket is full.
+### refillRate
+
+<MemberInfo kind="property" type={`number`}   />
+
+Tokens added per second during refill.
+### scope
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-result#ratelimitresult'>RateLimitResult</a>['scope']`}   />
+
+Scope reported in rate-limit results.
+
+
+</div>

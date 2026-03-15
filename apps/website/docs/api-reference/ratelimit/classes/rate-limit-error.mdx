@@ -1,0 +1,44 @@
+---
+title: "RateLimitError"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitError
+
+<GenerationInfo sourceFile="packages/ratelimit/src/errors.ts" sourceLine="14" packageName="@commandkit/ratelimit" />
+
+Error thrown by the directive wrapper when a function is rate-limited.
+
+```ts title="Signature"
+class RateLimitError extends Error {
+    public readonly result: RateLimitStoreValue;
+    constructor(result: RateLimitStoreValue, message?: string)
+}
+```
+* Extends: <code>Error</code>
+
+
+
+<div className="members-wrapper">
+
+### result
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-store-value#ratelimitstorevalue'>RateLimitStoreValue</a>`}   />
+
+
+### constructor
+
+<MemberInfo kind="method" type={`(result: <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-store-value#ratelimitstorevalue'>RateLimitStoreValue</a>, message?: string) => RateLimitError`}   />
+
+Create a rate-limit error with the stored result payload.
+
+
+</div>

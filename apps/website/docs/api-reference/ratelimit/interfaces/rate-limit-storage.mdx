@@ -1,0 +1,130 @@
+---
+title: "RateLimitStorage"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitStorage
+
+<GenerationInfo sourceFile="packages/ratelimit/src/types.ts" sourceLine="127" packageName="@commandkit/ratelimit" />
+
+Storage contract for rate limit state, with optional optimization hooks.
+
+```ts title="Signature"
+interface RateLimitStorage {
+    get<T = unknown>(key: string): Promise<T | null>;
+    set<T = unknown>(key: string, value: T, ttlMs?: number): Promise<void>;
+    delete(key: string): Promise<void>;
+    incr?(key: string, ttlMs: number): Promise<FixedWindowConsumeResult>;
+    ttl?(key: string): Promise<number | null>;
+    expire?(key: string, ttlMs: number): Promise<void>;
+    zAdd?(key: string, score: number, member: string): Promise<void>;
+    zRemRangeByScore?(key: string, min: number, max: number): Promise<void>;
+    zCard?(key: string): Promise<number>;
+    zRangeByScore?(key: string, min: number, max: number): Promise<string[]>;
+    consumeFixedWindow?(
+    key: string,
+    limit: number,
+    windowMs: number,
+    nowMs: number,
+  ): Promise<FixedWindowConsumeResult>;
+    consumeSlidingWindowLog?(
+    key: string,
+    limit: number,
+    windowMs: number,
+    nowMs: number,
+    member: string,
+  ): Promise<SlidingWindowConsumeResult>;
+    deleteByPrefix?(prefix: string): Promise<void>;
+    deleteByPattern?(pattern: string): Promise<void>;
+    keysByPrefix?(prefix: string): Promise<string[]>;
+}
+```
+
+<div className="members-wrapper">
+
+### get
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;T | null&#62;`}   />
+
+
+### set
+
+<MemberInfo kind="method" type={`(key: string, value: T, ttlMs?: number) => Promise&#60;void&#62;`}   />
+
+
+### delete
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;void&#62;`}   />
+
+
+### incr
+
+<MemberInfo kind="method" type={`(key: string, ttlMs: number) => Promise&#60;<a href='/docs/api-reference/ratelimit/interfaces/fixed-window-consume-result#fixedwindowconsumeresult'>FixedWindowConsumeResult</a>&#62;`}   />
+
+
+### ttl
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;number | null&#62;`}   />
+
+
+### expire
+
+<MemberInfo kind="method" type={`(key: string, ttlMs: number) => Promise&#60;void&#62;`}   />
+
+
+### zAdd
+
+<MemberInfo kind="method" type={`(key: string, score: number, member: string) => Promise&#60;void&#62;`}   />
+
+
+### zRemRangeByScore
+
+<MemberInfo kind="method" type={`(key: string, min: number, max: number) => Promise&#60;void&#62;`}   />
+
+
+### zCard
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;number&#62;`}   />
+
+
+### zRangeByScore
+
+<MemberInfo kind="method" type={`(key: string, min: number, max: number) => Promise&#60;string[]&#62;`}   />
+
+
+### consumeFixedWindow
+
+<MemberInfo kind="method" type={`(key: string, limit: number, windowMs: number, nowMs: number) => Promise&#60;<a href='/docs/api-reference/ratelimit/interfaces/fixed-window-consume-result#fixedwindowconsumeresult'>FixedWindowConsumeResult</a>&#62;`}   />
+
+
+### consumeSlidingWindowLog
+
+<MemberInfo kind="method" type={`(key: string, limit: number, windowMs: number, nowMs: number, member: string) => Promise&#60;<a href='/docs/api-reference/ratelimit/interfaces/sliding-window-consume-result#slidingwindowconsumeresult'>SlidingWindowConsumeResult</a>&#62;`}   />
+
+
+### deleteByPrefix
+
+<MemberInfo kind="method" type={`(prefix: string) => Promise&#60;void&#62;`}   />
+
+
+### deleteByPattern
+
+<MemberInfo kind="method" type={`(pattern: string) => Promise&#60;void&#62;`}   />
+
+
+### keysByPrefix
+
+<MemberInfo kind="method" type={`(prefix: string) => Promise&#60;string[]&#62;`}   />
+
+
+
+
+</div>

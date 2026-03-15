@@ -1,0 +1,32 @@
+---
+title: "ParseExemptionKey"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## parseExemptionKey
+
+<GenerationInfo sourceFile="packages/ratelimit/src/utils/keys.ts" sourceLine="168" packageName="@commandkit/ratelimit" />
+
+Parse an exemption key into scope and ID for listing.
+
+```ts title="Signature"
+function parseExemptionKey(key: string, keyPrefix?: string): { scope: RateLimitExemptionScope; id: string } | null
+```
+Parameters
+
+### key
+
+<MemberInfo kind="parameter" type={`string`} />
+
+### keyPrefix
+
+<MemberInfo kind="parameter" type={`string`} />
+

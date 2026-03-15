@@ -1,0 +1,56 @@
+---
+title: "TokenBucketAlgorithm"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## TokenBucketAlgorithm
+
+<GenerationInfo sourceFile="packages/ratelimit/src/engine/algorithms/token-bucket.ts" sourceLine="34" packageName="@commandkit/ratelimit" />
+
+Token bucket algorithm for bursty traffic with steady refill.
+
+```ts title="Signature"
+class TokenBucketAlgorithm implements RateLimitAlgorithm {
+    public readonly type: RateLimitAlgorithmType = 'token-bucket';
+    constructor(storage: RateLimitStorage, config: TokenBucketConfig)
+    consume(key: string) => Promise<RateLimitResult>;
+    reset(key: string) => Promise<void>;
+}
+```
+* Implements: <code><a href='/docs/api-reference/ratelimit/interfaces/rate-limit-algorithm#ratelimitalgorithm'>RateLimitAlgorithm</a></code>
+
+
+
+<div className="members-wrapper">
+
+### type
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-algorithm-type#ratelimitalgorithmtype'>RateLimitAlgorithmType</a>`}   />
+
+
+### constructor
+
+<MemberInfo kind="method" type={`(storage: <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-storage#ratelimitstorage'>RateLimitStorage</a>, config: <a href='/docs/api-reference/ratelimit/interfaces/token-bucket-config#tokenbucketconfig'>TokenBucketConfig</a>) => TokenBucketAlgorithm`}   />
+
+Create a token-bucket algorithm bound to a storage backend.
+### consume
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-result#ratelimitresult'>RateLimitResult</a>&#62;`}   />
+
+Record one attempt and return the current bucket status for this key.
+### reset
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;void&#62;`}   />
+
+Reset the stored key state for this limiter.
+
+
+</div>

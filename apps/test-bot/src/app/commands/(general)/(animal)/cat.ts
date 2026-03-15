@@ -1,6 +1,7 @@
 import type {
   ChatInputCommand,
   CommandData,
+  CommandMetadata,
   MessageCommand,
   MessageContextMenuCommand,
 } from 'commandkit';
@@ -22,6 +23,12 @@ export const command: CommandData = {
     InteractionContextType.BotDM,
     InteractionContextType.PrivateChannel,
   ],
+};
+
+export const metadata: CommandMetadata = {
+  nameAliases: {
+    message: 'Cat Message',
+  },
 };
 
 export const messageContextMenu: MessageContextMenuCommand = async (ctx) => {

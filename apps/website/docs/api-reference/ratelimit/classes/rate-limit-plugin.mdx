@@ -1,0 +1,68 @@
+---
+title: "RateLimitPlugin"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitPlugin
+
+<GenerationInfo sourceFile="packages/ratelimit/src/plugin.ts" sourceLine="66" packageName="@commandkit/ratelimit" />
+
+Runtime plugin that enforces rate limits for CommandKit commands so handlers stay lean.
+
+```ts title="Signature"
+class RateLimitPlugin extends RuntimePlugin<RateLimitPluginOptions> {
+    public readonly name = 'RateLimitPlugin';
+    constructor(options: RateLimitPluginOptions)
+    activate(ctx: CommandKitPluginRuntime) => Promise<void>;
+    deactivate() => Promise<void>;
+    executeCommand(ctx: CommandKitPluginRuntime, env: CommandKitEnvironment, source: Interaction | Message, prepared: PreparedAppCommandExecution, execute: () => Promise<any>) => Promise<boolean>;
+    performHMR(ctx: CommandKitPluginRuntime, event: CommandKitHMREvent) => Promise<void>;
+}
+```
+* Extends: <code><a href='/docs/api-reference/commandkit/classes/runtime-plugin#runtimeplugin'>RuntimePlugin</a>&#60;<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-plugin-options#ratelimitpluginoptions'>RateLimitPluginOptions</a>&#62;</code>
+
+
+
+<div className="members-wrapper">
+
+### name
+
+<MemberInfo kind="property" type={``}   />
+
+
+### constructor
+
+<MemberInfo kind="method" type={`(options: <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-plugin-options#ratelimitpluginoptions'>RateLimitPluginOptions</a>) => RateLimitPlugin`}   />
+
+
+### activate
+
+<MemberInfo kind="method" type={`(ctx: <a href='/docs/api-reference/commandkit/classes/command-kit-plugin-runtime#commandkitpluginruntime'>CommandKitPluginRuntime</a>) => Promise&#60;void&#62;`}   />
+
+Initialize runtime storage and defaults for this plugin instance.
+### deactivate
+
+<MemberInfo kind="method" type={`() => Promise&#60;void&#62;`}   />
+
+Dispose queues and clear shared runtime state.
+### executeCommand
+
+<MemberInfo kind="method" type={`(ctx: <a href='/docs/api-reference/commandkit/classes/command-kit-plugin-runtime#commandkitpluginruntime'>CommandKitPluginRuntime</a>, env: <a href='/docs/api-reference/commandkit/classes/command-kit-environment#commandkitenvironment'>CommandKitEnvironment</a>, source: Interaction | Message, prepared: <a href='/docs/api-reference/commandkit/interfaces/prepared-app-command-execution#preparedappcommandexecution'>PreparedAppCommandExecution</a>, execute: () =&#62; Promise&#60;any&#62;) => Promise&#60;boolean&#62;`}   />
+
+Evaluate rate limits and optionally queue execution to avoid dropping commands.
+### performHMR
+
+<MemberInfo kind="method" type={`(ctx: <a href='/docs/api-reference/commandkit/classes/command-kit-plugin-runtime#commandkitpluginruntime'>CommandKitPluginRuntime</a>, event: <a href='/docs/api-reference/commandkit/interfaces/command-kit-hmrevent#commandkithmrevent'>CommandKitHMREvent</a>) => Promise&#60;void&#62;`}   />
+
+Clear matching keys when a command is hot-reloaded to avoid stale state.
+
+
+</div>

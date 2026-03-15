@@ -1,0 +1,41 @@
+---
+title: "BuildScopePrefix"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## buildScopePrefix
+
+<GenerationInfo sourceFile="packages/ratelimit/src/utils/keys.ts" sourceLine="335" packageName="@commandkit/ratelimit" />
+
+Build a prefix for resets by scope/identifier.
+
+```ts title="Signature"
+function buildScopePrefix(scope: RateLimitScope, keyPrefix: string | undefined, identifiers: {
+    userId?: string;
+    guildId?: string;
+    channelId?: string;
+    commandName?: string;
+  }): string | null
+```
+Parameters
+
+### scope
+
+<MemberInfo kind="parameter" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-scope#ratelimitscope'>RateLimitScope</a>`} />
+
+### keyPrefix
+
+<MemberInfo kind="parameter" type={`string | undefined`} />
+
+### identifiers
+
+<MemberInfo kind="parameter" type={`{     userId?: string;     guildId?: string;     channelId?: string;     commandName?: string;   }`} />
+

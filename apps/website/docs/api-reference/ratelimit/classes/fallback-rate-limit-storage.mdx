@@ -1,0 +1,128 @@
+---
+title: "FallbackRateLimitStorage"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## FallbackRateLimitStorage
+
+<GenerationInfo sourceFile="packages/ratelimit/src/storage/fallback.ts" sourceLine="27" packageName="@commandkit/ratelimit" />
+
+Storage wrapper that falls back to a secondary implementation on failure.
+
+```ts title="Signature"
+class FallbackRateLimitStorage implements RateLimitStorage {
+    constructor(primary: RateLimitStorage, secondary: RateLimitStorage, options: FallbackRateLimitStorageOptions = {})
+    get(key: string) => Promise<T | null>;
+    set(key: string, value: T, ttlMs?: number) => Promise<void>;
+    delete(key: string) => Promise<void>;
+    incr(key: string, ttlMs: number) => ;
+    ttl(key: string) => ;
+    expire(key: string, ttlMs: number) => ;
+    zAdd(key: string, score: number, member: string) => ;
+    zRemRangeByScore(key: string, min: number, max: number) => ;
+    zCard(key: string) => ;
+    zRangeByScore(key: string, min: number, max: number) => ;
+    consumeFixedWindow(key: string, limit: number, windowMs: number, nowMs: number) => ;
+    consumeSlidingWindowLog(key: string, limit: number, windowMs: number, nowMs: number, member: string) => ;
+    deleteByPrefix(prefix: string) => ;
+    deleteByPattern(pattern: string) => ;
+    keysByPrefix(prefix: string) => ;
+}
+```
+* Implements: <code><a href='/docs/api-reference/ratelimit/interfaces/rate-limit-storage#ratelimitstorage'>RateLimitStorage</a></code>
+
+
+
+<div className="members-wrapper">
+
+### constructor
+
+<MemberInfo kind="method" type={`(primary: <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-storage#ratelimitstorage'>RateLimitStorage</a>, secondary: <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-storage#ratelimitstorage'>RateLimitStorage</a>, options: <a href='/docs/api-reference/ratelimit/interfaces/fallback-rate-limit-storage-options#fallbackratelimitstorageoptions'>FallbackRateLimitStorageOptions</a> = {}) => FallbackRateLimitStorage`}   />
+
+Create a fallback wrapper with primary/secondary storages.
+### get
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;T | null&#62;`}   />
+
+Read a value using primary storage with fallback.
+### set
+
+<MemberInfo kind="method" type={`(key: string, value: T, ttlMs?: number) => Promise&#60;void&#62;`}   />
+
+Store a value using primary storage with fallback.
+### delete
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;void&#62;`}   />
+
+Delete a key using primary storage with fallback.
+### incr
+
+<MemberInfo kind="method" type={`(key: string, ttlMs: number) => `}   />
+
+Increment a fixed-window counter using primary storage with fallback.
+### ttl
+
+<MemberInfo kind="method" type={`(key: string) => `}   />
+
+Read TTL using primary storage with fallback.
+### expire
+
+<MemberInfo kind="method" type={`(key: string, ttlMs: number) => `}   />
+
+Update TTL using primary storage with fallback.
+### zAdd
+
+<MemberInfo kind="method" type={`(key: string, score: number, member: string) => `}   />
+
+Add a member to a sorted set using primary storage with fallback.
+### zRemRangeByScore
+
+<MemberInfo kind="method" type={`(key: string, min: number, max: number) => `}   />
+
+Remove sorted-set members in a score range with fallback.
+### zCard
+
+<MemberInfo kind="method" type={`(key: string) => `}   />
+
+Count sorted-set members with fallback.
+### zRangeByScore
+
+<MemberInfo kind="method" type={`(key: string, min: number, max: number) => `}   />
+
+Read sorted-set members in a score range with fallback.
+### consumeFixedWindow
+
+<MemberInfo kind="method" type={`(key: string, limit: number, windowMs: number, nowMs: number) => `}   />
+
+Atomically consume a fixed-window counter with fallback.
+### consumeSlidingWindowLog
+
+<MemberInfo kind="method" type={`(key: string, limit: number, windowMs: number, nowMs: number, member: string) => `}   />
+
+Atomically consume a sliding-window log with fallback.
+### deleteByPrefix
+
+<MemberInfo kind="method" type={`(prefix: string) => `}   />
+
+Delete keys with a prefix using primary storage with fallback.
+### deleteByPattern
+
+<MemberInfo kind="method" type={`(pattern: string) => `}   />
+
+Delete keys matching a pattern using primary storage with fallback.
+### keysByPrefix
+
+<MemberInfo kind="method" type={`(prefix: string) => `}   />
+
+List keys matching a prefix using primary storage with fallback.
+
+
+</div>

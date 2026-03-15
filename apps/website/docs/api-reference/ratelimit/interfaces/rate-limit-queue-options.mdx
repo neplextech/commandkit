@@ -1,0 +1,65 @@
+---
+title: "RateLimitQueueOptions"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitQueueOptions
+
+<GenerationInfo sourceFile="packages/ratelimit/src/types.ts" sourceLine="69" packageName="@commandkit/ratelimit" />
+
+Queue behavior for delayed retries after a limit is hit.
+
+```ts title="Signature"
+interface RateLimitQueueOptions {
+    enabled?: boolean;
+    maxSize?: number;
+    timeout?: DurationLike;
+    deferInteraction?: boolean;
+    ephemeral?: boolean;
+    concurrency?: number;
+}
+```
+
+<div className="members-wrapper">
+
+### enabled
+
+<MemberInfo kind="property" type={`boolean`}   />
+
+
+### maxSize
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### timeout
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/duration-like#durationlike'>DurationLike</a>`}   />
+
+
+### deferInteraction
+
+<MemberInfo kind="property" type={`boolean`}   />
+
+
+### ephemeral
+
+<MemberInfo kind="property" type={`boolean`}   />
+
+
+### concurrency
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+
+
+</div>

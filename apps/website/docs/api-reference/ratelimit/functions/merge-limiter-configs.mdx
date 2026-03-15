@@ -1,0 +1,28 @@
+---
+title: "MergeLimiterConfigs"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## mergeLimiterConfigs
+
+<GenerationInfo sourceFile="packages/ratelimit/src/utils/config.ts" sourceLine="38" packageName="@commandkit/ratelimit" />
+
+Merge limiter configs; later values override earlier ones for layering.
+
+```ts title="Signature"
+function mergeLimiterConfigs(configs: Array<RateLimitLimiterConfig | undefined>): RateLimitLimiterConfig
+```
+Parameters
+
+### configs
+
+<MemberInfo kind="parameter" type={`Array&#60;<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-limiter-config#ratelimitlimiterconfig'>RateLimitLimiterConfig</a> | undefined&#62;`} />
+

@@ -29,6 +29,7 @@ If you are looking for support or want to provide suggestions, check out the [Di
 - [@commandkit/queue](./packages/queue)
 - [@commandkit/redis](./packages/redis)
 - [@commandkit/tasks](./packages/tasks)
+- [@commandkit/ratelimit](./packages/ratelimit)
 
 ## Contributing
 

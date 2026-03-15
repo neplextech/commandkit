@@ -1,0 +1,32 @@
+---
+title: "Ratelimit"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## ratelimit
+
+<GenerationInfo sourceFile="packages/ratelimit/src/index.ts" sourceLine="15" packageName="@commandkit/ratelimit" />
+
+Create compiler + runtime plugins for rate limiting.
+
+Runtime options are provided via configureRatelimit().
+
+```ts title="Signature"
+function ratelimit(options?: Partial<{
+    compiler: import('commandkit').CommonDirectiveTransformerOptions;
+  }>): CommandKitPlugin[]
+```
+Parameters
+
+### options
+
+<MemberInfo kind="parameter" type={`Partial&#60;{     compiler: import('<a href='/docs/api-reference/commandkit/variables/commandkit#commandkit'>commandkit</a>').<a href='/docs/api-reference/commandkit/types/common-directive-transformer-options#commondirectivetransformeroptions'>CommonDirectiveTransformerOptions</a>;   }&#62;`} />
+

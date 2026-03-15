@@ -1,0 +1,53 @@
+---
+title: "RateLimitBypassOptions"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitBypassOptions
+
+<GenerationInfo sourceFile="packages/ratelimit/src/types.ts" sourceLine="229" packageName="@commandkit/ratelimit" />
+
+Permanent allowlist rules for rate limiting.
+
+```ts title="Signature"
+interface RateLimitBypassOptions {
+    userIds?: string[];
+    roleIds?: string[];
+    guildIds?: string[];
+    check?: (source: Interaction | Message) => boolean | Promise<boolean>;
+}
+```
+
+<div className="members-wrapper">
+
+### userIds
+
+<MemberInfo kind="property" type={`string[]`}   />
+
+
+### roleIds
+
+<MemberInfo kind="property" type={`string[]`}   />
+
+
+### guildIds
+
+<MemberInfo kind="property" type={`string[]`}   />
+
+
+### check
+
+<MemberInfo kind="property" type={`(source: Interaction | Message) =&#62; boolean | Promise&#60;boolean&#62;`}   />
+
+
+
+
+</div>

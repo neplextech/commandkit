@@ -62,6 +62,11 @@ const sections: DocsSectionConfig[] = [
     outputPath: '',
     category: 'tasks',
   },
+  {
+    sourceDirs: ['packages/ratelimit/src/'],
+    outputPath: '',
+    category: 'ratelimit',
+  },
 ];
 
 generateTypescriptDocs(sections);

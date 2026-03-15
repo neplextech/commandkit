@@ -1,0 +1,59 @@
+---
+title: "ViolationTracker"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## ViolationTracker
+
+<GenerationInfo sourceFile="packages/ratelimit/src/engine/violations.ts" sourceLine="23" packageName="@commandkit/ratelimit" />
+
+Tracks repeated violations and computes escalating cooldowns.
+
+```ts title="Signature"
+class ViolationTracker {
+    constructor(storage: RateLimitStorage)
+    getState(key: string) => Promise<ViolationState | null>;
+    checkCooldown(key: string) => Promise<ViolationState | null>;
+    recordViolation(key: string, baseRetryAfterMs: number, options?: ViolationOptions) => Promise<ViolationState>;
+    reset(key: string) => Promise<void>;
+}
+```
+
+<div className="members-wrapper">
+
+### constructor
+
+<MemberInfo kind="method" type={`(storage: <a href='/docs/api-reference/ratelimit/interfaces/rate-limit-storage#ratelimitstorage'>RateLimitStorage</a>) => ViolationTracker`}   />
+
+Create a violation tracker bound to a storage backend.
+### getState
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;ViolationState | null&#62;`}   />
+
+Read stored violation state for a key, if present.
+### checkCooldown
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;ViolationState | null&#62;`}   />
+
+Check if a cooldown is currently active for this key.
+### recordViolation
+
+<MemberInfo kind="method" type={`(key: string, baseRetryAfterMs: number, options?: <a href='/docs/api-reference/ratelimit/interfaces/violation-options#violationoptions'>ViolationOptions</a>) => Promise&#60;ViolationState&#62;`}   />
+
+Record a violation and return the updated state for callers.
+### reset
+
+<MemberInfo kind="method" type={`(key: string) => Promise&#60;void&#62;`}   />
+
+Clear stored violation state for a key.
+
+
+</div>

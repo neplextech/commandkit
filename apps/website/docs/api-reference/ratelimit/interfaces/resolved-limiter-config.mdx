@@ -1,0 +1,83 @@
+---
+title: "ResolvedLimiterConfig"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## ResolvedLimiterConfig
+
+<GenerationInfo sourceFile="packages/ratelimit/src/types.ts" sourceLine="350" packageName="@commandkit/ratelimit" />
+
+Limiter configuration after defaults are applied.
+
+```ts title="Signature"
+interface ResolvedLimiterConfig {
+    maxRequests: number;
+    intervalMs: number;
+    algorithm: RateLimitAlgorithmType;
+    scope: RateLimitScope;
+    burst: number;
+    refillRate: number;
+    leakRate: number;
+    violations?: ViolationOptions;
+    windowId?: string;
+}
+```
+
+<div className="members-wrapper">
+
+### maxRequests
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### intervalMs
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### algorithm
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-algorithm-type#ratelimitalgorithmtype'>RateLimitAlgorithmType</a>`}   />
+
+
+### scope
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-scope#ratelimitscope'>RateLimitScope</a>`}   />
+
+
+### burst
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### refillRate
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### leakRate
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+### violations
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/interfaces/violation-options#violationoptions'>ViolationOptions</a>`}   />
+
+
+### windowId
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+
+
+</div>

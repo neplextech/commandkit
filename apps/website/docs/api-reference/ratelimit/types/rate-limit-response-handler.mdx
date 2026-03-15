@@ -1,0 +1,25 @@
+---
+title: "RateLimitResponseHandler"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitResponseHandler
+
+<GenerationInfo sourceFile="packages/ratelimit/src/types.ts" sourceLine="301" packageName="@commandkit/ratelimit" />
+
+Override for responding when a command is rate-limited.
+
+```ts title="Signature"
+type RateLimitResponseHandler = (
+  ctx: Context,
+  info: RateLimitStoreValue,
+) => Promise<void> | void
+```

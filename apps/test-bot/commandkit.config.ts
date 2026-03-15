@@ -6,6 +6,7 @@ import { ai } from '@commandkit/ai';
 import { tasks, setDriver } from '@commandkit/tasks';
 import { SQLiteDriver } from '@commandkit/tasks/sqlite';
 import { workflow } from '@commandkit/workflow';
+import { ratelimit } from '@commandkit/ratelimit';
 
 noBuildOnly(() => {
   setDriver(new SQLiteDriver());
@@ -21,6 +22,7 @@ export default defineConfig({
     i18n(),
     devtools(),
     cache(),
+    ratelimit(),
     ai(),
     tasks({
       initializeDefaultDriver: false,

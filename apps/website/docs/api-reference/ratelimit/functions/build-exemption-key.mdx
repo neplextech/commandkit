@@ -1,0 +1,36 @@
+---
+title: "BuildExemptionKey"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## buildExemptionKey
+
+<GenerationInfo sourceFile="packages/ratelimit/src/utils/keys.ts" sourceLine="135" packageName="@commandkit/ratelimit" />
+
+Build a storage key for a temporary exemption entry.
+
+```ts title="Signature"
+function buildExemptionKey(scope: RateLimitExemptionScope, id: string, keyPrefix?: string): string
+```
+Parameters
+
+### scope
+
+<MemberInfo kind="parameter" type={`<a href='/docs/api-reference/ratelimit/types/rate-limit-exemption-scope#ratelimitexemptionscope'>RateLimitExemptionScope</a>`} />
+
+### id
+
+<MemberInfo kind="parameter" type={`string`} />
+
+### keyPrefix
+
+<MemberInfo kind="parameter" type={`string`} />
+

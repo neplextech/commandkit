@@ -1,18 +1,23 @@
 import {
   ChatInputCommand,
+  CommandData,
+  CommandMetadata,
   MessageCommand,
   MessageContextMenuCommand,
   UserContextMenuCommand,
 } from 'commandkit';
-import { ApplicationCommandType, ContextMenuCommandBuilder } from 'discord.js';
 
-export const command = new ContextMenuCommandBuilder()
-  .setName('translate')
-  .setType(ApplicationCommandType.User);
+export const command: CommandData = {
+  name: 'translate',
+  description: 'translate command',
+};
 
-// export const command: CommandData = {
-//   name: 'translate',
-// };
+export const metadata: CommandMetadata = {
+  nameAliases: {
+    user: 'Translate User',
+    message: 'Translate Message',
+  },
+};
 
 export const userContextMenu: UserContextMenuCommand = async ({
   interaction,

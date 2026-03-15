@@ -1,0 +1,41 @@
+---
+title: "RateLimitConsumeOutput"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## RateLimitConsumeOutput
+
+<GenerationInfo sourceFile="packages/ratelimit/src/engine/RateLimitEngine.ts" sourceLine="23" packageName="@commandkit/ratelimit" />
+
+Consume output including optional violation count for callers.
+
+```ts title="Signature"
+interface RateLimitConsumeOutput {
+    result: RateLimitResult;
+    violationCount?: number;
+}
+```
+
+<div className="members-wrapper">
+
+### result
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/ratelimit/interfaces/rate-limit-result#ratelimitresult'>RateLimitResult</a>`}   />
+
+
+### violationCount
+
+<MemberInfo kind="property" type={`number`}   />
+
+
+
+
+</div>
