@@ -6,8 +6,8 @@ import type {
   PreparedAppCommandExecution,
 } from 'commandkit';
 import { createAsyncQueue, type AsyncQueue } from 'commandkit/async-queue';
-import { EmbedBuilder, MessageFlags } from 'discord.js';
-import type { Interaction, Message } from 'discord.js';
+import { EmbedBuilder, MessageFlags, Message } from 'discord.js';
+import type { Interaction } from 'discord.js';
 import { RateLimitEngine } from './engine/RateLimitEngine';
 import type {
   RateLimitCommandConfig,
