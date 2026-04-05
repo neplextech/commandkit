@@ -43,7 +43,41 @@ import Logo from './Logo';
   </div>
 </div>
 
-## The problem
+CommandKit is a meta-framework for building Discord bots with
+discord.js. It provides a structured, convention-based approach to
+command and event handling, JSX components, middleware, and more, so
+you can focus on writing bot logic instead of boilerplate setup.
+Whether you're a beginner looking for an easy way to get started or an
+experienced developer tired of rebuilding the same architecture for
+every new bot, CommandKit has you covered.
+
+## Get started
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<!-- prettier-ignore -->
+<Tabs>
+  <TabItem value="humans" label="For humans" default>
+
+```bash npm2yarn
+npm create commandkit
+```
+
+Then run `commandkit dev` and start building.
+
+  </TabItem>
+
+  <TabItem value="agents" label="For agents">
+    
+```bash npm2yarn
+npx skills add neplextech/commandkit
+```
+
+  </TabItem>
+</Tabs>
+
+## Why CommandKit?
 
 Every time you start a new discord.js bot, you end up solving the same
 problems from scratch:
@@ -262,14 +296,6 @@ project scaffolding. Run `commandkit dev` and start building.
 CommandKit has been used in production client projects and has saved
 hours of setup time on each one. It's not overhead — it's the setup
 work you'd do anyway, already done well.
-
-## Get started
-
-```bash
-npm create commandkit
-```
-
-Then run `commandkit dev` and start building.
 
 ## Support and suggestions
 
