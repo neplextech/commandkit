@@ -89,3 +89,32 @@ You can learn more about command categories
 [here](../02-commands/07-category-directory.mdx).
 
 :::
+
+## [directory] notation
+
+By utilizing square brackets for folder names (e.g. `[settings]`), CommandKit recognizes the folder as a **Root Command** or **Subcommand Group**, merging everything inside into a single subcommand tree natively sent to Discord.
+
+```
+src/app/commands/
+└── [settings]
+    ├── +middleware.ts
+    ├── [notifications]
+    │   ├── enable.ts
+    │   └── disable.ts
+    └── options.ts
+```
+
+This transforms into the slash commands:
+
+- `/settings notifications enable`
+- `/settings notifications disable`
+- `/settings options`
+
+Any file named correctly (i.e. does not start with `_` or `+`) inside these structures operates as a leaf subcommand.
+
+:::info
+
+You can learn more about configuring tree structures
+[here](../02-commands/09-subcommand-hierarchy.mdx).
+
+:::

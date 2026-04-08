@@ -288,9 +288,7 @@ export class AppCommandHandler {
     const totalCount = flatCommands.length + hierarchicalRoots.length;
 
     console.log(
-      colors.green(
-        `Loaded ${colors.magenta(totalCount.toString())} commands:`,
-      ),
+      colors.green(`Loaded ${colors.magenta(totalCount.toString())} commands:`),
     );
 
     // ------------------------------------------------------------------
@@ -438,8 +436,7 @@ export class AppCommandHandler {
         // Print children of this root
         root.childIds.forEach((childId, idx) => {
           const isLastChild = idx === root.childIds.length - 1;
-          const childPrefix =
-            rootChildIndent + (isLastChild ? '└─' : '├─');
+          const childPrefix = rootChildIndent + (isLastChild ? '└─' : '├─');
           const childIndentNext =
             rootChildIndent + (isLastChild ? '   ' : '│  ');
           printHierarchicalNode(childId, childPrefix, childIndentNext);

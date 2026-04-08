@@ -1,0 +1,60 @@
+---
+title: Subcommand Hierarchy
+---
+
+CommandKit provides an elegant and fully filesystem-based way to configure slash command structures that involve subcommands and subcommand groups. You don't need to manually bundle choices; simply group your files within folders!
+
+## Command Directories `[command]`
+
+By wrapping a directory name in square brackets `[]` (e.g., `[settings]`), CommandKit registers that directory as a **Root Slash Command**.
+
+Inside an active command directory, any valid command file `.ts` or `.js` represents a subcommand.
+
+```text title="Directory Structure"
+src/app/commands/
+└── (general)/
+    └── [settings]/        // Root application command `/settings`
+        ├── profile.ts     // -> /settings profile
+        └── security.ts    // -> /settings security
+```
+
+The underlying code inside `profile.ts` naturally takes the properties of a standard `ChatInputCommand`, but CommandKit parses it under the parent `/settings` command automatically.
+
+## Subcommand Group Directories `[group]`
+
+You can nest another `[]` wrapped directory immediately inside your root command to define a **Subcommand Group**.
+
+```text title="Directory Structure"
+src/app/commands/
+└── [settings]/                     // Root slash command
+    └── [notifications]/            // Subcommand group
+        ├── enable.ts               // -> /settings notifications enable
+        └── disable.ts              // -> /settings notifications disable
+```
+
+Your folders will exactly mirror your intended Discord hierarchy:
+`/root_command group subcommand`.
+
+## Internal Overrides & Validations
+
+When writing subcommands using the file-structure syntax, the inner file defines its own execution handler, but the root command directory controls the top-level command description and execution state.
+
+### Resolving the Root Command Data
+
+To customize the Root Command's description (e.g. configuring the description of `/settings`), or adding middlewares or permissions to the root itself, use an index or specific metadata file.
+
+By default, any `command` object export found in the command files is merged, but since multiple files construct the tree, having specific `+middleware.ts` within the `[command]` boundaries helps secure that entire branch.
+
+```text title="Directory Structure"
+src/app/commands/
+└── [settings]/
+    ├── +middleware.ts    // Runs for all subcommands inside [settings]
+    ├── profile.ts
+    └── security.ts
+```
+
+This lets you perfectly scope execution middleware exclusively for one complex sub-command tree without spilling out to the rest of your application!
+
+:::info
+Folders named `[command]` directly register to Discord's API as an integrated command tree. Do **NOT** confuse these with transparent category folders constructed with parenthesis `(category)`, which just group files together without altering their command slash structure.
+:::

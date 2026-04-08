@@ -282,7 +282,11 @@ export class CommandsRouter {
     this.clear();
     this.initializeRootNode();
 
-    await this.traverseNormalDirectory(this.options.entrypoint, null, ROOT_NODE_ID);
+    await this.traverseNormalDirectory(
+      this.options.entrypoint,
+      null,
+      ROOT_NODE_ID,
+    );
 
     await this.applyMiddlewares();
     this.compileTree();
@@ -356,7 +360,11 @@ export class CommandsRouter {
    * @private
    * @internal
    */
-  private async traverseNormalDirectory(path: string, category: string | null, parentId: string) {
+  private async traverseNormalDirectory(
+    path: string,
+    category: string | null,
+    parentId: string,
+  ) {
     const entries = await readdir(path, {
       withFileTypes: true,
     });
@@ -437,7 +445,9 @@ export class CommandsRouter {
       }
 
       if (this.isCategory(entry.name)) {
-        const nestedCategory = category ? `${category}:${entry.name.slice(1, -1)}` : entry.name.slice(1, -1);
+        const nestedCategory = category
+          ? `${category}:${entry.name.slice(1, -1)}`
+          : entry.name.slice(1, -1);
         await this.traverseNormalDirectory(fullPath, nestedCategory, parentId);
         continue;
       }
@@ -534,9 +544,10 @@ export class CommandsRouter {
         continue;
       }
 
-
       if (this.isCategory(entry.name)) {
-        const nestedCategory = category ? `${category}:${entry.name.slice(1, -1)}` : entry.name.slice(1, -1);
+        const nestedCategory = category
+          ? `${category}:${entry.name.slice(1, -1)}`
+          : entry.name.slice(1, -1);
         await this.traverseNormalDirectory(fullPath, nestedCategory, node.id);
         continue;
       }
@@ -642,7 +653,9 @@ export class CommandsRouter {
       }
 
       if (this.isCategory(entry.name)) {
-        const nestedCategory = category ? `${category}:${entry.name.slice(1, -1)}` : entry.name.slice(1, -1);
+        const nestedCategory = category
+          ? `${category}:${entry.name.slice(1, -1)}`
+          : entry.name.slice(1, -1);
         await this.traverseNormalDirectory(fullPath, nestedCategory, node.id);
         continue;
       }
