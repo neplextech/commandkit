@@ -54,4 +54,26 @@ describe('MessageCommandParser', () => {
 
     expect(() => parser.parse()).toThrow();
   });
+
+  test('parses colon-delimited hierarchical prefix routes', () => {
+    const schemaCalls: string[] = [];
+    const parser = new MessageCommandParser(
+      createMessage('!admin:moderation:ban reason:spam'),
+      ['!'],
+      (command) => {
+        schemaCalls.push(command);
+
+        return {
+          reason: ApplicationCommandOptionType.String,
+        };
+      },
+    );
+
+    expect(parser.getCommand()).toBe('admin');
+    expect(parser.getSubcommandGroup()).toBe('moderation');
+    expect(parser.getSubcommand()).toBe('ban');
+    expect(parser.getFullCommand()).toBe('admin moderation ban');
+    expect(schemaCalls).toEqual(['admin moderation ban']);
+    expect(parser.options.getString('reason')).toBe('spam');
+  });
 });

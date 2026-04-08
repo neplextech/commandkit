@@ -1,7 +1,17 @@
-import { ApplicationCommandType, REST, Routes } from 'discord.js';
+import {
+  ApplicationCommandOptionType,
+  ApplicationCommandType,
+  REST,
+  Routes,
+} from 'discord.js';
 import type { CommandKit } from '../../commandkit';
 import { CommandData, CommandMetadata } from '../../types';
 import { Logger } from '../../logger/Logger';
+
+type RegistrationCommandData = CommandData & {
+  __metadata?: CommandMetadata;
+  __applyId(id: string): void;
+};
 
 /**
  * Event object passed to plugins before command registration.
@@ -37,10 +47,17 @@ export class CommandRegistrar {
   /**
    * Gets the commands data, consuming pre-generated context menu entries when available.
    */
-  public getCommandsData(): (CommandData & {
-    __metadata?: CommandMetadata;
-    __applyId(id: string): void;
-  })[] {
+  public getCommandsData(): RegistrationCommandData[] {
+    return [
+      ...this.getFlatCommandsData(),
+      ...this.getHierarchicalCommandsData(),
+    ];
+  }
+
+  /**
+   * Gets flat command data, consuming pre-generated context menu entries when available.
+   */
+  private getFlatCommandsData(): RegistrationCommandData[] {
     const handler = this.commandkit.commandHandler;
     const commands = handler.getCommandsArray();
     const commandIds = new Set(commands.map((command) => command.command.id));
@@ -50,10 +67,11 @@ export class CommandRegistrar {
         cmd.command.id.endsWith('::user-ctx') ||
         cmd.command.id.endsWith('::message-ctx');
 
-      const json: CommandData =
+      const json = this.sanitizeCommandData(
         'toJSON' in cmd.data.command
           ? cmd.data.command.toJSON()
-          : cmd.data.command;
+          : cmd.data.command,
+      );
 
       const __metadata = cmd.metadata ?? cmd.data.metadata;
       const isContextMenuType =
@@ -74,10 +92,7 @@ export class CommandRegistrar {
         ];
       }
 
-      const collections: (CommandData & {
-        __metadata?: CommandMetadata;
-        __applyId(id: string): void;
-      })[] = [];
+      const collections: RegistrationCommandData[] = [];
       const hasPreGeneratedUserContextMenu = commandIds.has(
         `${cmd.command.id}::user-ctx`,
       );
@@ -128,6 +143,243 @@ export class CommandRegistrar {
   }
 
   /**
+   * Gets hierarchical chat-input command payloads compiled from cached tree nodes.
+   */
+  private getHierarchicalCommandsData(): RegistrationCommandData[] {
+    const router = this.commandkit.commandsRouter;
+    if (!router) return [];
+
+    const { treeNodes } = router.getData();
+    const hierarchicalNodes = new Map(
+      this.commandkit.commandHandler
+        .getHierarchicalNodesArray()
+        .map((node) => [node.command.id, node] as const),
+    );
+
+    const rootNodes = Array.from(treeNodes.values()).filter((node) => {
+      return (
+        node.source !== 'flat' &&
+        node.kind === 'command' &&
+        node.route.length === 1
+      );
+    });
+
+    const commands: RegistrationCommandData[] = [];
+
+    for (const rootNode of rootNodes) {
+      const payload = this.buildHierarchicalRootPayload(
+        rootNode.id,
+        treeNodes,
+        hierarchicalNodes,
+      );
+
+      if (payload) {
+        commands.push(payload);
+      }
+    }
+
+    return commands;
+  }
+
+  /**
+   * Removes internal runtime-only fields before Discord registration data is emitted.
+   */
+  private sanitizeCommandData(command: CommandData | Record<string, any>) {
+    const { __routeKey, ...json } = command as Record<string, any>;
+    return json as CommandData;
+  }
+
+  /**
+   * Builds a top-level Discord payload for a hierarchical command root.
+   */
+  private buildHierarchicalRootPayload(
+    rootNodeId: string,
+    treeNodes: ReturnType<CommandKit['commandsRouter']['getData']>['treeNodes'],
+    hierarchicalNodes: Map<
+      string,
+      ReturnType<
+        CommandKit['commandHandler']['getHierarchicalNodesArray']
+      >[number]
+    >,
+  ): RegistrationCommandData | null {
+    const rootNode = treeNodes.get(rootNodeId);
+    const rootLoaded = hierarchicalNodes.get(rootNodeId);
+
+    if (!rootNode || !rootLoaded) {
+      return null;
+    }
+
+    const rootJson = this.sanitizeCommandData(
+      'toJSON' in rootLoaded.data.command
+        ? rootLoaded.data.command.toJSON()
+        : rootLoaded.data.command,
+    );
+
+    if (rootNode.executable) {
+      if (!rootLoaded.data.chatInput) return null;
+
+      return {
+        ...rootJson,
+        type: ApplicationCommandType.ChatInput,
+        description: rootJson.description ?? 'No command description set.',
+        __metadata: rootLoaded.metadata ?? rootLoaded.data.metadata,
+        __applyId: (id: string) => {
+          rootLoaded.discordId = id;
+        },
+      };
+    }
+
+    const options = rootNode.childIds
+      .map((childId) =>
+        this.buildHierarchicalOption(childId, treeNodes, hierarchicalNodes),
+      )
+      .filter(Boolean) as Record<string, any>[];
+
+    if (!options.length) {
+      return null;
+    }
+
+    const scopeKeys = new Set(
+      this.collectHierarchicalGuildScopes(
+        rootNode.childIds,
+        treeNodes,
+        hierarchicalNodes,
+      ),
+    );
+
+    if (scopeKeys.size > 1) {
+      Logger.error(
+        `Failed to register hierarchical command "${rootJson.name ?? rootNode.token}": all chat-input leaves under the same root must use the same guild scope in v1.`,
+      );
+      return null;
+    }
+
+    const scopeKey = scopeKeys.values().next().value as string | undefined;
+    const scopeGuilds = scopeKey ? scopeKey.split(',').filter(Boolean) : [];
+    const metadata = {
+      ...(rootLoaded.metadata ?? rootLoaded.data.metadata),
+      guilds: scopeGuilds.length ? scopeGuilds : undefined,
+    };
+
+    return {
+      ...rootJson,
+      type: ApplicationCommandType.ChatInput,
+      description: rootJson.description ?? 'No command description set.',
+      options: options as CommandData['options'],
+      __metadata: metadata,
+      __applyId: (id: string) => {
+        rootLoaded.discordId = id;
+      },
+    };
+  }
+
+  /**
+   * Builds a nested subcommand or subcommand-group option from a hierarchical node.
+   */
+  private buildHierarchicalOption(
+    nodeId: string,
+    treeNodes: ReturnType<CommandKit['commandsRouter']['getData']>['treeNodes'],
+    hierarchicalNodes: Map<
+      string,
+      ReturnType<
+        CommandKit['commandHandler']['getHierarchicalNodesArray']
+      >[number]
+    >,
+  ): Record<string, any> | null {
+    const node = treeNodes.get(nodeId);
+    const loadedNode = hierarchicalNodes.get(nodeId);
+
+    if (!node || !loadedNode) {
+      return null;
+    }
+
+    const json = this.sanitizeCommandData(
+      'toJSON' in loadedNode.data.command
+        ? loadedNode.data.command.toJSON()
+        : loadedNode.data.command,
+    );
+
+    if (node.kind === 'group') {
+      const options = node.childIds
+        .map((childId) =>
+          this.buildHierarchicalOption(childId, treeNodes, hierarchicalNodes),
+        )
+        .filter(Boolean) as Record<string, any>[];
+
+      if (!options.length) {
+        return null;
+      }
+
+      return {
+        ...json,
+        type: ApplicationCommandOptionType.SubcommandGroup,
+        description: json.description ?? 'No command description set.',
+        options: options as CommandData['options'],
+      };
+    }
+
+    if (!node.executable || !loadedNode.data.chatInput) {
+      return null;
+    }
+
+    return {
+      ...json,
+      type: ApplicationCommandOptionType.Subcommand,
+      description: json.description ?? 'No command description set.',
+    };
+  }
+
+  /**
+   * Collects normalized guild scopes for all chat-input leaves within a hierarchical subtree.
+   */
+  private collectHierarchicalGuildScopes(
+    nodeIds: string[],
+    treeNodes: ReturnType<CommandKit['commandsRouter']['getData']>['treeNodes'],
+    hierarchicalNodes: Map<
+      string,
+      ReturnType<
+        CommandKit['commandHandler']['getHierarchicalNodesArray']
+      >[number]
+    >,
+  ) {
+    const scopes: string[] = [];
+
+    for (const nodeId of nodeIds) {
+      const node = treeNodes.get(nodeId);
+      const loadedNode = hierarchicalNodes.get(nodeId);
+
+      if (!node || !loadedNode) {
+        continue;
+      }
+
+      if (node.kind === 'group') {
+        scopes.push(
+          ...this.collectHierarchicalGuildScopes(
+            node.childIds,
+            treeNodes,
+            hierarchicalNodes,
+          ),
+        );
+        continue;
+      }
+
+      if (!node.executable || !loadedNode.data.chatInput) {
+        continue;
+      }
+
+      scopes.push(
+        (loadedNode.metadata?.guilds ?? [])
+          .filter(Boolean)
+          .slice()
+          .sort()
+          .join(','),
+      );
+    }
+
+    return scopes;
+  }
+
+  /**
    * Registers loaded commands.
    */
   public async register() {
@@ -173,12 +425,7 @@ export class CommandRegistrar {
   /**
    * Updates the global commands.
    */
-  public async updateGlobalCommands(
-    commands: (CommandData & {
-      __metadata?: CommandMetadata;
-      __applyId(id: string): void;
-    })[],
-  ) {
+  public async updateGlobalCommands(commands: RegistrationCommandData[]) {
     if (!commands.length) return;
 
     let prevented = false;
@@ -227,12 +474,7 @@ export class CommandRegistrar {
   /**
    * Updates the guild commands.
    */
-  public async updateGuildCommands(
-    commands: (CommandData & {
-      __metadata?: CommandMetadata;
-      __applyId(id: string): void;
-    })[],
-  ) {
+  public async updateGuildCommands(commands: RegistrationCommandData[]) {
     if (!commands.length) return;
 
     let prevented = false;

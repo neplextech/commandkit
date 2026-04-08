@@ -163,15 +163,18 @@ export class MessageCommandParser {
     }
 
     const parts = content.slice(prefix.length).trim().split(' ');
-    const command = parts.shift();
+    const commandToken = parts.shift();
 
     this.#args = parts;
 
+    let command: string | undefined = commandToken;
     let subcommandGroup: string | undefined;
     let subcommand: string | undefined;
 
-    if (command?.includes(':')) {
-      const [, group, cmd] = command.split(':');
+    if (commandToken?.includes(':')) {
+      const [root, group, cmd] = commandToken.split(':');
+
+      command = root;
 
       if (!cmd && group) {
         subcommand = group;

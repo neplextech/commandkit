@@ -71,7 +71,11 @@ export class AppCommandRunner {
     const env = new CommandKitEnvironment(commandkit);
     env.setType(CommandKitEnvironmentType.CommandHandler);
     env.variables.set('commandHandlerType', 'app');
-    env.variables.set('currentCommandName', prepared.command.command.name);
+    env.variables.set(
+      'currentCommandName',
+      (prepared.command.data.command as Record<string, any>).__routeKey ??
+        prepared.command.command.name,
+    );
     env.variables.set('execHandlerKind', executionMode);
     env.variables.set('customHandler', options?.handler ?? null);
 
@@ -161,6 +165,8 @@ export class AppCommandRunner {
                     Logger.error`[${marker} - ${time}] Error executing command: ${error}`;
 
                     const commandName =
+                      (prepared.command?.data?.command as Record<string, any>)
+                        ?.__routeKey ??
                       prepared.command?.data?.command?.name ??
                       prepared.command.command.name;
 
@@ -183,6 +189,8 @@ export class AppCommandRunner {
                   );
 
                   const commandName =
+                    (prepared.command?.data?.command as Record<string, any>)
+                      ?.__routeKey ??
                     prepared.command?.data?.command?.name ??
                     prepared.command.command.name;
 
@@ -208,7 +216,11 @@ export class AppCommandRunner {
                 ? (runCommand as RunCommand)(_executeCommand)
                 : _executeCommand;
 
-            env.markStart(prepared.command.data.command.name);
+            env.markStart(
+              ((prepared.command.data.command as Record<string, any>)
+                .__routeKey as string | undefined) ??
+                prepared.command.data.command.name,
+            );
 
             const res = await commandkit.plugins.execute(
               async (ctx, plugin) => {
