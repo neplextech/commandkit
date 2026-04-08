@@ -1199,7 +1199,12 @@ export class AppCommandHandler {
       }
 
       const { commandFileData, handlerCount, commandJson, resolvedMetadata } =
-        await this.processCommandFile(command.path, command.name, command.name, false);
+        await this.processCommandFile(
+          command.path,
+          command.name,
+          command.name,
+          false,
+        );
 
       if (handlerCount === 0) {
         throw new Error(
@@ -1263,7 +1268,9 @@ export class AppCommandHandler {
         await this.processCommandFile(command.path, routeKey, node.token, true);
 
       const isRootHierarchyLeaf = node.kind === 'command';
-      const hasContextMenuHandlers = !!(commandFileData.userContextMenu || commandFileData.messageContextMenu);
+      const hasContextMenuHandlers = !!(
+        commandFileData.userContextMenu || commandFileData.messageContextMenu
+      );
       const hasExecutableSlashHandlers = !!(
         commandFileData.chatInput ||
         commandFileData.message ||

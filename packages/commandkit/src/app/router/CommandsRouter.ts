@@ -366,7 +366,7 @@ export class CommandsRouter {
     state: 'normal' | 'command' | 'group',
     category: string | null,
     parentId: string,
-    token?: string
+    token?: string,
   ) {
     let node: CommandTreeNode | null = null;
 
@@ -498,22 +498,18 @@ export class CommandsRouter {
       if (!entry.isDirectory()) continue;
 
       if (this.isCommandDirectory(entry.name)) {
-        if (state === 'command') {
-          this.addDiagnostic(
-            'NESTED_COMMAND_NOT_ALLOWED',
-            'Command directories cannot contain nested root command directories.',
+        if (state === 'command' || state === 'group') {
+          await this.traverseDirectory(
             fullPath,
-          );
-        } else if (state === 'group') {
-          this.addDiagnostic(
-            'NESTED_COMMAND_NOT_ALLOWED',
-            'Group directories cannot contain nested root command directories.',
-            fullPath,
+            'command',
+            category,
+            currentNodeId,
+            entry.name.match(COMMAND_DIRECTORY_PATTERN)![1],
           );
         } else if (currentNodeId !== ROOT_NODE_ID) {
           this.addDiagnostic(
             'NESTED_COMMAND_NOT_ALLOWED',
-            'Command directories cannot be nested under group or subcommand directories.',
+            'Command directories cannot be nested under group or subcommand directories unless they are part of a hierarchical structure.',
             fullPath,
           );
         } else {
@@ -522,7 +518,7 @@ export class CommandsRouter {
             'command',
             category,
             ROOT_NODE_ID,
-            entry.name.match(COMMAND_DIRECTORY_PATTERN)![1]
+            entry.name.match(COMMAND_DIRECTORY_PATTERN)![1],
           );
         }
         continue;
@@ -531,7 +527,7 @@ export class CommandsRouter {
       if (this.isGroupDirectory(entry.name)) {
         if (currentNodeId === ROOT_NODE_ID) {
           this.addDiagnostic(
-            'ORPHAN_GROUP_DIRECTORY',
+            'ROOT_GROUP_NOT_ALLOWED',
             'Group directories must be nested inside a command directory.',
             fullPath,
           );
@@ -541,7 +537,7 @@ export class CommandsRouter {
             'group',
             category,
             currentNodeId,
-            entry.name.match(GROUP_DIRECTORY_PATTERN)![1]
+            entry.name.match(GROUP_DIRECTORY_PATTERN)![1],
           );
         }
         continue;
@@ -551,7 +547,12 @@ export class CommandsRouter {
         const nestedCategory = category
           ? `${category}:${entry.name.slice(1, -1)}`
           : entry.name.slice(1, -1);
-        await this.traverseDirectory(fullPath, 'normal', nestedCategory, currentNodeId);
+        await this.traverseDirectory(
+          fullPath,
+          'normal',
+          nestedCategory,
+          currentNodeId,
+        );
         continue;
       }
 
