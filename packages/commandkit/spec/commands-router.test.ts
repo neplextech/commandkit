@@ -82,4 +82,101 @@ describe('CommandsRouter', () => {
       '/(General)/(Animals)/+middleware.ts',
     ]);
   });
+
+  test('discovers hierarchical nodes and compiles executable route middleware chains', async () => {
+    const entrypoint = await createCommandsFixture([
+      ['+global-middleware.ts'],
+      ['[admin]/command.ts'],
+      ['[admin]/+middleware.ts'],
+      ['[admin]/{moderation}/group.ts'],
+      ['[admin]/{moderation}/+middleware.ts'],
+      ['[admin]/{moderation}/+ban.middleware.ts'],
+      ['[admin]/{moderation}/ban.subcommand.ts'],
+      ['[admin]/{moderation}/[kick]/command.ts'],
+      ['[admin]/{moderation}/[kick]/+kick.middleware.ts'],
+    ]);
+
+    const router = new CommandsRouter({ entrypoint });
+    const result = await router.scan();
+    const treeNodes = Object.values(result.treeNodes ?? {});
+    const compiledRoutes = result.compiledRoutes ?? {};
+    const middlewares = result.middlewares;
+
+    expect(Object.values(result.commands)).toHaveLength(0);
+    expect(Object.keys(compiledRoutes).sort()).toEqual([
+      'admin.moderation.ban',
+      'admin.moderation.kick',
+    ]);
+
+    const adminNode = treeNodes.find(
+      (node) => node.route.join('.') === 'admin',
+    );
+    const moderationNode = treeNodes.find(
+      (node) => node.route.join('.') === 'admin.moderation',
+    );
+    const banNode = treeNodes.find(
+      (node) => node.route.join('.') === 'admin.moderation.ban',
+    );
+    const kickNode = treeNodes.find(
+      (node) => node.route.join('.') === 'admin.moderation.kick',
+    );
+
+    expect(adminNode).toMatchObject({
+      kind: 'command',
+      executable: false,
+    });
+    expect(moderationNode).toMatchObject({
+      kind: 'group',
+      executable: false,
+    });
+    expect(banNode).toMatchObject({
+      kind: 'subcommand',
+      shorthand: true,
+      executable: true,
+    });
+    expect(kickNode).toMatchObject({
+      kind: 'subcommand',
+      shorthand: false,
+      executable: true,
+    });
+
+    const middlewarePathsFor = (routeKey: string) => {
+      return compiledRoutes[routeKey].middlewares.map((id) => {
+        return normalizePath(middlewares[id].relativePath);
+      });
+    };
+
+    expect(middlewarePathsFor('admin.moderation.ban')).toEqual([
+      '/+global-middleware.ts',
+      '/[admin]/+middleware.ts',
+      '/[admin]/{moderation}/+middleware.ts',
+      '/[admin]/{moderation}/+ban.middleware.ts',
+    ]);
+    expect(middlewarePathsFor('admin.moderation.kick')).toEqual([
+      '/+global-middleware.ts',
+      '/[admin]/+middleware.ts',
+      '/[admin]/{moderation}/+middleware.ts',
+      '/[admin]/{moderation}/[kick]/+kick.middleware.ts',
+    ]);
+  });
+
+  test('emits diagnostics for invalid hierarchical structures', async () => {
+    const entrypoint = await createCommandsFixture([
+      ['{oops}/group.ts'],
+      ['[admin]/command.ts'],
+      ['[admin]/ban.subcommand.ts'],
+      ['[admin]/{moderation}/group.ts'],
+      ['[admin]/[ban]/command.ts'],
+      ['[broken]/+middleware.ts'],
+    ]);
+
+    const router = new CommandsRouter({ entrypoint });
+    const result = await router.scan();
+    const diagnosticCodes = (result.diagnostics ?? []).map((diag) => diag.code);
+
+    expect(diagnosticCodes).toContain('ROOT_GROUP_NOT_ALLOWED');
+    expect(diagnosticCodes).toContain('DUPLICATE_SIBLING_TOKEN');
+    expect(diagnosticCodes).toContain('MIXED_ROOT_CHILDREN');
+    expect(diagnosticCodes).toContain('MISSING_COMMAND_DEFINITION');
+  });
 });
