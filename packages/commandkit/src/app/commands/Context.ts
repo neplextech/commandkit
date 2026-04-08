@@ -489,7 +489,7 @@ export class Context<
     if (this.isInteraction()) {
       return this.interaction.commandName;
     } else {
-      return this.message.content.split(' ')[0].slice(1);
+      return this.commandName;
     }
   }
 

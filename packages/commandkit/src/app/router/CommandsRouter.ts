@@ -165,7 +165,7 @@ export class CommandsRouter {
    * Populates the router with existing command, middleware, and tree data.
    * @param data - Parsed command data to populate with
    */
-  public populate(data: ParsedCommandData) {
+  public populate(data: ParsedCommandData): void {
     this.clear();
 
     for (const [id, command] of Object.entries(data.commands)) {
@@ -266,7 +266,7 @@ export class CommandsRouter {
   /**
    * Clears all loaded commands, middleware, and compiled tree data.
    */
-  public clear() {
+  public clear(): void {
     this.commands.clear();
     this.middlewares.clear();
     this.treeNodes.clear();
@@ -278,7 +278,7 @@ export class CommandsRouter {
    * Scans the filesystem for commands and middleware files.
    * @returns Parsed command data
    */
-  public async scan() {
+  public async scan(): Promise<ParsedCommandData> {
     this.clear();
     this.initializeRootNode();
 
@@ -299,7 +299,13 @@ export class CommandsRouter {
    * Gets the raw command, middleware, and compiled tree collections.
    * @returns Object containing router collections
    */
-  public getData() {
+  public getData(): {
+    commands: Collection<string, Command>;
+    middlewares: Collection<string, Middleware>;
+    treeNodes: Collection<string, CommandTreeNode>;
+    compiledRoutes: Collection<string, CompiledCommandRoute>;
+    diagnostics: CommandRouteDiagnostic[];
+  } {
     return {
       commands: this.commands,
       middlewares: this.middlewares,
@@ -313,7 +319,11 @@ export class CommandsRouter {
    * Gets only the internal command tree and compiled route data.
    * @returns Object containing tree data
    */
-  public getTreeData() {
+  public getTreeData(): {
+    treeNodes: Collection<string, CommandTreeNode>;
+    compiledRoutes: Collection<string, CompiledCommandRoute>;
+    diagnostics: CommandRouteDiagnostic[];
+  } {
     return {
       treeNodes: this.treeNodes,
       compiledRoutes: this.compiledRoutes,
@@ -325,7 +335,7 @@ export class CommandsRouter {
    * Converts the loaded data to a JSON-serializable format.
    * @returns Plain object with commands, middleware, and tree data
    */
-  public toJSON() {
+  public toJSON(): ParsedCommandData {
     return {
       commands: Object.fromEntries(this.commands.entries()),
       middlewares: Object.fromEntries(this.middlewares.entries()),
@@ -748,18 +758,15 @@ export class CommandsRouter {
       .filter((middleware) => middleware.global)
       .map((middleware) => middleware.id);
 
-    const directoryPaths = this.getDirectoryAncestors(node.directoryPath);
-    const directoryMiddlewares = directoryPaths.flatMap((path) => {
-      return allMiddlewares
-        .filter((middleware) => {
-          return (
-            !middleware.global &&
-            !middleware.command &&
-            middleware.parentPath === path
-          );
-        })
-        .map((middleware) => middleware.id);
-    });
+    const directoryMiddlewares = allMiddlewares
+      .filter((middleware) => {
+        return (
+          !middleware.global &&
+          !middleware.command &&
+          middleware.parentPath === node.directoryPath
+        );
+      })
+      .map((middleware) => middleware.id);
 
     const commandSpecificMiddlewares = allMiddlewares
       .filter((middleware) => {
@@ -775,30 +782,6 @@ export class CommandsRouter {
       ...directoryMiddlewares,
       ...commandSpecificMiddlewares,
     ];
-  }
-
-  /**
-   * @private
-   * @internal
-   */
-  private getDirectoryAncestors(path: string) {
-    const normalizedPath = normalize(path);
-    const normalizedEntrypoint = normalize(this.options.entrypoint);
-    const ancestors: string[] = [];
-
-    let current = normalizedPath;
-
-    while (current.startsWith(normalizedEntrypoint)) {
-      ancestors.push(current);
-
-      if (current === normalizedEntrypoint) break;
-
-      const parent = normalize(dirname(current));
-      if (parent === current) break;
-      current = parent;
-    }
-
-    return ancestors.reverse();
   }
 
   /**

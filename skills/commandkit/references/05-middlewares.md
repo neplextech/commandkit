@@ -45,8 +45,9 @@ export function afterExecute(ctx: MiddlewareContext) {
   - `+global-middleware.ts`: Applies to all commands in tree.
   - `+middleware.ts`: Applies to current directory commands.
   - `+<name>.middleware.ts`: Applies to specific command only.
-- Inheritance: Subcommands inherit all global and directory-level
-  middlewares from their parents in the hierarchy.
+- Hierarchical leaves use the same rule as flat commands: only the
+  current directory contributes `+middleware.ts`, and only the same
+  directory contributes `+<name>.middleware.ts`.
 - Use exact API/export names shown in the example.
 - Keep filesystem placement aligned with enabled plugins and feature
   expectations.
@@ -57,7 +58,8 @@ export function afterExecute(ctx: MiddlewareContext) {
 
 - Use `+global-middleware.ts` for cross-cutting logic like audit
   logging.
-- Use `+middleware.ts` in `{group}` folders for group-specific auth.
+- Use `+middleware.ts` in the directory that should own the leaf's
+  shared behavior.
 - Keep snippets as baseline patterns and adapt them to real command
   names and data models.
 - Validate external inputs and permission boundaries before side
@@ -67,7 +69,8 @@ export function afterExecute(ctx: MiddlewareContext) {
 
 ## Common mistakes
 
-- Breaking middleware inheritance by misnaming files.
+- Assuming hierarchical leaves inherit ancestor `+middleware.ts`
+  files.
 - Skipping validation for user-provided inputs before side effects.
 - Changing structure/config without verifying companion files.
 - Copying snippets without adapting identifiers and environment

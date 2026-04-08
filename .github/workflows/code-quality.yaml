@@ -30,5 +30,11 @@ jobs:
       - name: Check TypeScript Types
         run: pnpm dlx turbo check-types
 
+      - name: Run CommandKit Command Handler Tests
+        run: pnpm test:commandkit
+
+      - name: Check Generated API Docs
+        run: pnpm docgen:check
+
       - name: Check Prettier Formatting
         run: pnpm prettier:check

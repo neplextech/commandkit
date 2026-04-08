@@ -38,7 +38,7 @@ async function execute(ctx: ChatInputCommandContext | MessageCommandContext) {
     shape: 'root command -> direct subcommand',
     leafStyle: 'folder leaf ([deploy]/command.ts)',
     summary:
-      'Shows a direct folder-based subcommand with leaf-directory middleware and the same prefix route syntax.',
+      'Shows a direct folder-based subcommand with middleware scoped only to the leaf directory, plus the same prefix route syntax.',
     details: [`environment: ${environment}`, `dry_run: ${dryRun}`],
   });
 }

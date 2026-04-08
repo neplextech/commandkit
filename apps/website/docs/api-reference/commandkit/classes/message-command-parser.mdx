@@ -13,7 +13,7 @@ import MemberDescription from '@site/src/components/MemberDescription';
 
 ## MessageCommandParser
 
-<GenerationInfo sourceFile="packages/commandkit/src/app/commands/MessageCommandParser.ts" sourceLine="37" packageName="commandkit" />
+<GenerationInfo sourceFile="packages/commandkit/src/app/commands/MessageCommandParser.ts" sourceLine="38" packageName="commandkit" />
 
 Parses message content into structured command data with options and subcommands.
 
@@ -24,6 +24,7 @@ class MessageCommandParser {
     options: void
     getOption(name: string) => T | undefined;
     getCommand() => string;
+    getFullRoute() => string[];
     getSubcommand() => string | undefined;
     getSubcommandGroup() => string | undefined;
     getPrefix() => ;
@@ -59,6 +60,11 @@ Gets a specific option value by name.
 <MemberInfo kind="method" type={`() => string`}   />
 
 Gets the main command name.
+### getFullRoute
+
+<MemberInfo kind="method" type={`() => string[]`}   />
+
+Gets the full command route as an array of segments.
 ### getSubcommand
 
 <MemberInfo kind="method" type={`() => string | undefined`}   />

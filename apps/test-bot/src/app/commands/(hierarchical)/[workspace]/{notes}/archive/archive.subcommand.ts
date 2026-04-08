@@ -34,7 +34,7 @@ async function execute(ctx: ChatInputCommandContext | MessageCommandContext) {
     shape: 'root command -> group -> subcommand',
     leafStyle: 'folder leaf ([archive]/command.ts)',
     summary:
-      'Shows a grouped leaf discovered from a nested command directory with leaf-directory middleware.',
+      'Shows a grouped leaf discovered from a nested command directory with middleware scoped only to that leaf directory.',
     details: [`note: ${note}`, `reason: ${reason}`],
   });
 }

@@ -1,5 +1,5 @@
 ---
-title: "AppCommand"
+title: "CommandTreeNodeSource"
 isDefaultIndex: false
 generated: true
 ---
@@ -11,13 +11,16 @@ import MemberDescription from '@site/src/components/MemberDescription';
 <!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
 
 
-## AppCommand
+## CommandTreeNodeSource
 
-<GenerationInfo sourceFile="packages/commandkit/src/app/handlers/AppCommandHandler.ts" sourceLine="84" packageName="commandkit" />
+<GenerationInfo sourceFile="packages/commandkit/src/app/router/CommandTree.ts" sourceLine="4" packageName="commandkit" />
 
-Represents a command in the CommandKit application, including its metadata and handlers.
-This type extends the native command structure with additional properties.
+Source types for command tree nodes discovered from the filesystem.
 
 ```ts title="Signature"
-type AppCommand = AppCommandNative & CustomAppCommandProps
+type CommandTreeNodeSource = | 'root'
+  | 'flat'
+  | 'directory'
+  | 'group'
+  | 'shorthand'
 ```

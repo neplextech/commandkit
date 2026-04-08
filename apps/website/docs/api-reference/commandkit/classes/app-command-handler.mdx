@@ -13,7 +13,7 @@ import MemberDescription from '@site/src/components/MemberDescription';
 
 ## AppCommandHandler
 
-<GenerationInfo sourceFile="packages/commandkit/src/app/handlers/AppCommandHandler.ts" sourceLine="195" packageName="commandkit" />
+<GenerationInfo sourceFile="packages/commandkit/src/app/handlers/AppCommandHandler.ts" sourceLine="201" packageName="commandkit" />
 
 Handles application commands for CommandKit, including loading, registration, and execution.
 Manages both slash commands and message commands with middleware support.
@@ -21,21 +21,25 @@ Manages both slash commands and message commands with middleware support.
 ```ts title="Signature"
 class AppCommandHandler {
     public readonly registrar: CommandRegistrar;
-    public readonly commandRunner = new AppCommandRunner(this);
-    public readonly externalCommandData = new Collection<string, Command>();
-    public readonly externalMiddlewareData = new Collection<string, Middleware>();
+    public readonly commandRunner: AppCommandRunner = new AppCommandRunner(this);
+    public readonly externalCommandData: Collection<string, Command> =
+    new Collection<string, Command>();
+    public readonly externalMiddlewareData: Collection<string, Middleware> =
+    new Collection<string, Middleware>();
     constructor(commandkit: CommandKit)
-    printBanner() => ;
-    getCommandsArray() => ;
-    registerCommandHandler() => ;
+    printBanner() => void;
+    getCommandsArray() => LoadedCommand[];
+    getRuntimeCommandsArray() => LoadedCommand[];
+    getHierarchicalNodesArray() => LoadedCommand[];
+    registerCommandHandler() => void;
     prepareCommandRun(source: Interaction | Message, cmdName?: string) => Promise<PreparedAppCommandExecution | null>;
     resolveMessageCommandName(name: string) => string;
-    reloadCommands() => ;
-    addExternalMiddleware(data: Middleware[]) => ;
-    addExternalCommands(data: Command[]) => ;
-    registerExternalLoadedMiddleware(data: LoadedMiddleware[]) => ;
-    registerExternalLoadedCommands(data: LoadedCommand[]) => ;
-    loadCommands() => ;
+    reloadCommands() => Promise<void>;
+    addExternalMiddleware(data: Middleware[]) => Promise<void>;
+    addExternalCommands(data: Command[]) => Promise<void>;
+    registerExternalLoadedMiddleware(data: LoadedMiddleware[]) => Promise<void>;
+    registerExternalLoadedCommands(data: LoadedCommand[]) => Promise<void>;
+    loadCommands() => Promise<void>;
     getMetadataFor(command: string, hint?: 'user' | 'message') => CommandMetadata | null;
 }
 ```
@@ -49,17 +53,17 @@ class AppCommandHandler {
 Command registrar for handling Discord API registration.
 ### commandRunner
 
-<MemberInfo kind="property" type={``}   />
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/commandkit/classes/app-command-runner#appcommandrunner'>AppCommandRunner</a>`}   />
 
 Command runner instance for executing commands.
 ### externalCommandData
 
-<MemberInfo kind="property" type={``}   />
+<MemberInfo kind="property" type={`Collection&#60;string, <a href='/docs/api-reference/commandkit/interfaces/command#command'>Command</a>&#62;`}   />
 
 External command data storage.
 ### externalMiddlewareData
 
-<MemberInfo kind="property" type={``}   />
+<MemberInfo kind="property" type={`Collection&#60;string, <a href='/docs/api-reference/commandkit/interfaces/middleware#middleware'>Middleware</a>&#62;`}   />
 
 External middleware data storage.
 ### constructor
@@ -69,17 +73,27 @@ External middleware data storage.
 Creates a new AppCommandHandler instance.
 ### printBanner
 
-<MemberInfo kind="method" type={`() => `}   />
+<MemberInfo kind="method" type={`() => void`}   />
 
 Prints a formatted banner showing all loaded commands organized by category.
 ### getCommandsArray
 
-<MemberInfo kind="method" type={`() => `}   />
+<MemberInfo kind="method" type={`() => <a href='/docs/api-reference/commandkit/interfaces/loaded-command#loadedcommand'>LoadedCommand</a>[]`}   />
 
 Gets an array of all loaded commands, including pre-generated context menu entries.
+### getRuntimeCommandsArray
+
+<MemberInfo kind="method" type={`() => <a href='/docs/api-reference/commandkit/interfaces/loaded-command#loadedcommand'>LoadedCommand</a>[]`}   />
+
+Gets all executable runtime routes, including hierarchical leaves.
+### getHierarchicalNodesArray
+
+<MemberInfo kind="method" type={`() => <a href='/docs/api-reference/commandkit/interfaces/loaded-command#loadedcommand'>LoadedCommand</a>[]`}   />
+
+Gets loaded hierarchical command nodes, including non-executable containers.
 ### registerCommandHandler
 
-<MemberInfo kind="method" type={`() => `}   />
+<MemberInfo kind="method" type={`() => void`}   />
 
 Registers event handlers for Discord interactions and messages.
 ### prepareCommandRun
@@ -94,32 +108,32 @@ Prepares a command for execution by resolving the command and its middleware.
 
 ### reloadCommands
 
-<MemberInfo kind="method" type={`() => `}   />
+<MemberInfo kind="method" type={`() => Promise&#60;void&#62;`}   />
 
 Reloads all commands and middleware from scratch.
 ### addExternalMiddleware
 
-<MemberInfo kind="method" type={`(data: <a href='/docs/api-reference/commandkit/interfaces/middleware#middleware'>Middleware</a>[]) => `}   />
+<MemberInfo kind="method" type={`(data: <a href='/docs/api-reference/commandkit/interfaces/middleware#middleware'>Middleware</a>[]) => Promise&#60;void&#62;`}   />
 
 Adds external middleware data to be loaded.
 ### addExternalCommands
 
-<MemberInfo kind="method" type={`(data: <a href='/docs/api-reference/commandkit/interfaces/command#command'>Command</a>[]) => `}   />
+<MemberInfo kind="method" type={`(data: <a href='/docs/api-reference/commandkit/interfaces/command#command'>Command</a>[]) => Promise&#60;void&#62;`}   />
 
 Adds external command data to be loaded.
 ### registerExternalLoadedMiddleware
 
-<MemberInfo kind="method" type={`(data: LoadedMiddleware[]) => `}   />
+<MemberInfo kind="method" type={`(data: LoadedMiddleware[]) => Promise&#60;void&#62;`}   />
 
 Registers externally loaded middleware.
 ### registerExternalLoadedCommands
 
-<MemberInfo kind="method" type={`(data: <a href='/docs/api-reference/commandkit/interfaces/loaded-command#loadedcommand'>LoadedCommand</a>[]) => `}   />
+<MemberInfo kind="method" type={`(data: <a href='/docs/api-reference/commandkit/interfaces/loaded-command#loadedcommand'>LoadedCommand</a>[]) => Promise&#60;void&#62;`}   />
 
 Registers externally loaded commands.
 ### loadCommands
 
-<MemberInfo kind="method" type={`() => `}   />
+<MemberInfo kind="method" type={`() => Promise&#60;void&#62;`}   />
 
 Loads all commands and middleware from the router.
 ### getMetadataFor

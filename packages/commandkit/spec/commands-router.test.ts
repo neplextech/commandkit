@@ -148,14 +148,11 @@ describe('CommandsRouter', () => {
 
     expect(middlewarePathsFor('admin.moderation.ban')).toEqual([
       '/+global-middleware.ts',
-      '/[admin]/+middleware.ts',
       '/[admin]/{moderation}/+middleware.ts',
       '/[admin]/{moderation}/+ban.middleware.ts',
     ]);
     expect(middlewarePathsFor('admin.moderation.kick')).toEqual([
       '/+global-middleware.ts',
-      '/[admin]/+middleware.ts',
-      '/[admin]/{moderation}/+middleware.ts',
       '/[admin]/{moderation}/[kick]/+kick.middleware.ts',
     ]);
   });

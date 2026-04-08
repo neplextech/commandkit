@@ -60,6 +60,7 @@ export async function replyWithHierarchyDemo(
     `Prefix: ${toMessageRoute(ctx.commandName)}`,
     `Invoked Root: ${ctx.invokedCommandName}`,
     `Execution: ${ctx.isMessage() ? 'message command' : 'chat input command'}`,
+    `Middleware Scope: global -> current directory -> command-specific`,
     `Middleware Trace: ${getHierarchyTrace(ctx).join(' -> ') || '(none)'}`,
     `Shape: ${options.shape}`,
     `Leaf Style: ${options.leafStyle}`,

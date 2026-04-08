@@ -247,17 +247,19 @@ export class AppCommandHandler {
   /**
    * Command runner instance for executing commands.
    */
-  public readonly commandRunner = new AppCommandRunner(this);
+  public readonly commandRunner: AppCommandRunner = new AppCommandRunner(this);
 
   /**
    * External command data storage.
    */
-  public readonly externalCommandData = new Collection<string, Command>();
+  public readonly externalCommandData: Collection<string, Command> =
+    new Collection<string, Command>();
 
   /**
    * External middleware data storage.
    */
-  public readonly externalMiddlewareData = new Collection<string, Middleware>();
+  public readonly externalMiddlewareData: Collection<string, Middleware> =
+    new Collection<string, Middleware>();
 
   /**
    * Creates a new AppCommandHandler instance.
@@ -270,7 +272,7 @@ export class AppCommandHandler {
   /**
    * Prints a formatted banner showing all loaded commands organized by category.
    */
-  public printBanner() {
+  public printBanner(): void {
     const uncategorized = crypto.randomUUID();
 
     // Collect flat commands
@@ -480,7 +482,7 @@ export class AppCommandHandler {
    * Gets an array of all loaded commands, including pre-generated context menu entries.
    * @returns Array of loaded commands
    */
-  public getCommandsArray() {
+  public getCommandsArray(): LoadedCommand[] {
     return Array.from(this.loadedCommands.values());
   }
 
@@ -488,7 +490,7 @@ export class AppCommandHandler {
    * Gets all executable runtime routes, including hierarchical leaves.
    * @returns Array of route-indexed commands
    */
-  public getRuntimeCommandsArray() {
+  public getRuntimeCommandsArray(): LoadedCommand[] {
     return Array.from(this.runtimeRouteIndex.values());
   }
 
@@ -496,14 +498,14 @@ export class AppCommandHandler {
    * Gets loaded hierarchical command nodes, including non-executable containers.
    * @returns Array of hierarchical node definitions
    */
-  public getHierarchicalNodesArray() {
+  public getHierarchicalNodesArray(): LoadedCommand[] {
     return Array.from(this.hierarchicalNodes.values());
   }
 
   /**
    * Registers event handlers for Discord interactions and messages.
    */
-  public registerCommandHandler() {
+  public registerCommandHandler(): void {
     this.onInteraction ??= async (interaction: Interaction) => {
       const success = await this.commandkit.plugins.execute(
         async (ctx, plugin) => {
@@ -861,7 +863,9 @@ export class AppCommandHandler {
   /**
    * Reloads all commands and middleware from scratch.
    */
-  public async reloadCommands() {
+  public async reloadCommands(): Promise<void> {
+    await this.commandkit.commandsRouter?.scan();
+
     this.loadedCommands.clear();
     this.loadedMiddlewares.clear();
     this.runtimeRouteIndex.clear();
@@ -876,7 +880,7 @@ export class AppCommandHandler {
    * Adds external middleware data to be loaded.
    * @param data - Array of middleware data to add
    */
-  public async addExternalMiddleware(data: Middleware[]) {
+  public async addExternalMiddleware(data: Middleware[]): Promise<void> {
     for (const middleware of data) {
       if (!middleware.id) continue;
 
@@ -888,7 +892,7 @@ export class AppCommandHandler {
    * Adds external command data to be loaded.
    * @param data - Array of command data to add
    */
-  public async addExternalCommands(data: Command[]) {
+  public async addExternalCommands(data: Command[]): Promise<void> {
     for (const command of data) {
       if (!command.id) continue;
 
@@ -900,7 +904,9 @@ export class AppCommandHandler {
    * Registers externally loaded middleware.
    * @param data - Array of loaded middleware to register
    */
-  public async registerExternalLoadedMiddleware(data: LoadedMiddleware[]) {
+  public async registerExternalLoadedMiddleware(
+    data: LoadedMiddleware[],
+  ): Promise<void> {
     for (const middleware of data) {
       this.loadedMiddlewares.set(middleware.middleware.id, middleware);
     }
@@ -910,7 +916,9 @@ export class AppCommandHandler {
    * Registers externally loaded commands.
    * @param data - Array of loaded commands to register
    */
-  public async registerExternalLoadedCommands(data: LoadedCommand[]) {
+  public async registerExternalLoadedCommands(
+    data: LoadedCommand[],
+  ): Promise<void> {
     for (const command of data) {
       this.loadedCommands.set(command.command.id, command);
       this.registerRuntimeRoute(command);
@@ -920,7 +928,7 @@ export class AppCommandHandler {
   /**
    * Loads all commands and middleware from the router.
    */
-  public async loadCommands() {
+  public async loadCommands(): Promise<void> {
     await this.commandkit.plugins.execute((ctx, plugin) => {
       return plugin.onBeforeCommandsLoad(ctx);
     });

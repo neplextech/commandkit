@@ -34,7 +34,7 @@ async function execute(ctx: ChatInputCommandContext | MessageCommandContext) {
     shape: 'root command -> group -> subcommand',
     leafStyle: 'shorthand file (add.subcommand.ts)',
     summary:
-      'Shows a grouped leaf discovered from a shorthand file with command-specific middleware in the group directory.',
+      'Shows a grouped shorthand leaf that uses only middleware from the current group directory, including same-directory command middleware.',
     details: [`title: ${title}`, `topic: ${topic}`],
   });
 }

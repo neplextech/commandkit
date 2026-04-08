@@ -34,7 +34,7 @@ async function execute(ctx: ChatInputCommandContext | MessageCommandContext) {
     shape: 'root command -> sibling group -> subcommand',
     leafStyle: 'shorthand file (handoff.subcommand.ts)',
     summary:
-      'Shows that one root can host multiple groups while each leaf still resolves through the same route index.',
+      'Shows that one root can host multiple groups while each leaf still resolves through the same route index and only uses middleware from its own group directory.',
     details: [`owner: ${owner}`, `project: ${project}`],
   });
 }

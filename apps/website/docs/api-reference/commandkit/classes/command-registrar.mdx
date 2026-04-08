@@ -13,26 +13,17 @@ import MemberDescription from '@site/src/components/MemberDescription';
 
 ## CommandRegistrar
 
-<GenerationInfo sourceFile="packages/commandkit/src/app/register/CommandRegistrar.ts" sourceLine="17" packageName="commandkit" />
+<GenerationInfo sourceFile="packages/commandkit/src/app/register/CommandRegistrar.ts" sourceLine="27" packageName="commandkit" />
 
 Handles registration of Discord application commands (slash commands, context menus).
 
 ```ts title="Signature"
 class CommandRegistrar {
     constructor(commandkit: CommandKit)
-    getCommandsData() => (CommandData & {
-    __metadata?: CommandMetadata;
-    __applyId(id: string): void;
-  })[];
+    getCommandsData() => RegistrationCommandData[];
     register() => ;
-    updateGlobalCommands(commands: (CommandData & {
-      __metadata?: CommandMetadata;
-      __applyId(id: string): void;
-    })[]) => ;
-    updateGuildCommands(commands: (CommandData & {
-      __metadata?: CommandMetadata;
-      __applyId(id: string): void;
-    })[]) => ;
+    updateGlobalCommands(commands: RegistrationCommandData[]) => ;
+    updateGuildCommands(commands: RegistrationCommandData[]) => ;
 }
 ```
 
@@ -45,7 +36,7 @@ class CommandRegistrar {
 Creates an instance of CommandRegistrar.
 ### getCommandsData
 
-<MemberInfo kind="method" type={`() => (<a href='/docs/api-reference/commandkit/types/command-data#commanddata'>CommandData</a> &#38; {     __metadata?: <a href='/docs/api-reference/commandkit/interfaces/command-metadata#commandmetadata'>CommandMetadata</a>;     __applyId(id: string): void;   })[]`}   />
+<MemberInfo kind="method" type={`() => RegistrationCommandData[]`}   />
 
 Gets the commands data, consuming pre-generated context menu entries when available.
 ### register
@@ -55,12 +46,12 @@ Gets the commands data, consuming pre-generated context menu entries when availa
 Registers loaded commands.
 ### updateGlobalCommands
 
-<MemberInfo kind="method" type={`(commands: (<a href='/docs/api-reference/commandkit/types/command-data#commanddata'>CommandData</a> &#38; {       __metadata?: <a href='/docs/api-reference/commandkit/interfaces/command-metadata#commandmetadata'>CommandMetadata</a>;       __applyId(id: string): void;     })[]) => `}   />
+<MemberInfo kind="method" type={`(commands: RegistrationCommandData[]) => `}   />
 
 Updates the global commands.
 ### updateGuildCommands
 
-<MemberInfo kind="method" type={`(commands: (<a href='/docs/api-reference/commandkit/types/command-data#commanddata'>CommandData</a> &#38; {       __metadata?: <a href='/docs/api-reference/commandkit/interfaces/command-metadata#commandmetadata'>CommandMetadata</a>;       __applyId(id: string): void;     })[]) => `}   />
+<MemberInfo kind="method" type={`(commands: RegistrationCommandData[]) => `}   />
 
 Updates the guild commands.
 

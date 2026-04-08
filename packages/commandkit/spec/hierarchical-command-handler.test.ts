@@ -213,7 +213,6 @@ export async function message() {}
         }),
       ).toEqual([
         '/+global-middleware.mjs',
-        '/[admin]/+middleware.mjs',
         '/[admin]/{moderation}/+middleware.mjs',
         '/[admin]/{moderation}/+ban.middleware.mjs',
         '',

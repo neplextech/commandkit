@@ -59,6 +59,11 @@ export const chatInput: ChatInputCommand = async (ctx) => {
                 name: 'Hierarchical Routes',
                 value: hierarchicalRoutes,
               },
+              {
+                name: 'Hierarchical Middleware',
+                value:
+                  'Global middleware always runs first. Hierarchical leaves then use only the current directory `+middleware` and any same-directory `+<command>.middleware`.',
+              },
             ]
           : undefined,
         footer: {
