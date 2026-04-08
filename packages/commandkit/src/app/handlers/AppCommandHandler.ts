@@ -1054,6 +1054,125 @@ export class AppCommandHandler {
    * @private
    * @internal
    */
+  private async processCommandFile(
+    fileUrl: string,
+    identifier: string,
+    fallbackName: string,
+    isHierarchical: boolean,
+  ) {
+    const commandFileData = (await import(
+      `${toFileURL(fileUrl)}?t=${Date.now()}`
+    )) as AppCommandNative;
+
+    if (!commandFileData.command) {
+      throw new Error(
+        `Invalid export for ${isHierarchical ? 'hierarchical node' : 'command'} ${identifier}: no command definition found`,
+      );
+    }
+
+    const metadataFunc = commandFileData.generateMetadata;
+    const metadataObj = commandFileData.metadata;
+
+    if (metadataFunc && metadataObj) {
+      throw new Error(
+        'A command may only export either `generateMetadata` or `metadata`, not both',
+      );
+    }
+
+    const metadata = (metadataFunc ? await metadataFunc() : metadataObj) ?? {
+      aliases: [],
+      guilds: [],
+      userPermissions: [],
+      botPermissions: [],
+    };
+
+    let commandName = commandFileData.command.name;
+
+    if (isHierarchical) {
+      if (typeof commandName === 'string' && commandName !== fallbackName) {
+        Logger.warn(
+          `Hierarchical node \`${identifier}\` overrides its command name with \`${commandName}\`. The filesystem token \`${fallbackName}\` will be used instead.`,
+        );
+      }
+      commandName = fallbackName;
+    } else {
+      commandName = commandName || fallbackName;
+    }
+
+    let commandDescription = commandFileData.command.description as
+      | string
+      | undefined;
+
+    if (!commandDescription && commandFileData.chatInput) {
+      commandDescription = 'No command description set.';
+    }
+
+    const updatedCommandData = {
+      ...commandFileData.command,
+      name: commandName,
+      description: commandDescription,
+    } as CommandData;
+
+    let handlerCount = 0;
+
+    for (const [key, propValidator] of Object.entries(commandDataSchema) as [
+      CommandDataSchemaKey,
+      CommandDataSchemaValue,
+    ][]) {
+      const exportedProp = commandFileData[key];
+
+      if (exportedProp) {
+        if (!(await propValidator(exportedProp))) {
+          throw new Error(
+            `Invalid export for ${isHierarchical ? 'hierarchical node' : 'command'} ${identifier}: ${key} does not match expected value`,
+          );
+        }
+
+        if (!KNOWN_NON_HANDLER_KEYS.includes(key)) {
+          handlerCount++;
+        }
+      }
+    }
+
+    let lastUpdated = updatedCommandData;
+
+    await this.commandkit.plugins.execute(async (ctx, plugin) => {
+      const res = await plugin.prepareCommand(ctx, lastUpdated);
+
+      if (res) {
+        lastUpdated = res as CommandData;
+      }
+    });
+
+    const commandJson =
+      'toJSON' in lastUpdated && typeof lastUpdated.toJSON === 'function'
+        ? lastUpdated.toJSON()
+        : lastUpdated;
+
+    if ('guilds' in commandJson || 'aliases' in commandJson) {
+      Logger.warn(
+        `Command \`${identifier}\` uses deprecated metadata properties. Please update to use the new \`metadata\` object or \`generateMetadata\` function.`,
+      );
+    }
+
+    const resolvedMetadata = {
+      guilds: commandJson.guilds,
+      aliases: commandJson.aliases,
+      ...metadata,
+    };
+
+    return {
+      commandFileData,
+      handlerCount,
+      commandJson,
+      resolvedMetadata,
+    };
+  }
+
+  /**
+   * @private
+   * @internal
+   */
   private async loadCommand(id: string, command: Command) {
     try {
       // Skip if path is null (directory-only command group) - external plugins
@@ -1079,104 +1198,14 @@ export class AppCommandHandler {
         return;
       }
 
-      const commandFileData = (await import(
-        `${toFileURL(command.path)}?t=${Date.now()}`
-      )) as AppCommandNative;
-
-      if (!commandFileData.command) {
-        throw new Error(
-          `Invalid export for command ${command.name}: no command definition found`,
-        );
-      }
-
-      const metadataFunc = commandFileData.generateMetadata;
-      const metadataObj = commandFileData.metadata;
-
-      if (metadataFunc && metadataObj) {
-        throw new Error(
-          'A command may only export either `generateMetadata` or `metadata`, not both',
-        );
-      }
-
-      const metadata = (metadataFunc ? await metadataFunc() : metadataObj) ?? {
-        aliases: [],
-        guilds: [],
-        userPermissions: [],
-        botPermissions: [],
-      };
-
-      // Apply the specified logic for name and description
-      const commandName = commandFileData.command.name || command.name;
-      let commandDescription = commandFileData.command.description as
-        | string
-        | undefined;
-
-      // since `CommandData.description` is optional, set a fallback description if none provided
-      if (!commandDescription && commandFileData.chatInput) {
-        commandDescription = 'No command description set.';
-      }
-
-      // Update the command data with resolved name and description
-      const updatedCommandData = {
-        ...commandFileData.command,
-        name: commandName,
-        description: commandDescription,
-      } as CommandData;
-
-      let handlerCount = 0;
-
-      for (const [key, propValidator] of Object.entries(commandDataSchema) as [
-        CommandDataSchemaKey,
-        CommandDataSchemaValue,
-      ][]) {
-        const exportedProp = commandFileData[key];
-
-        if (exportedProp) {
-          if (!(await propValidator(exportedProp))) {
-            throw new Error(
-              `Invalid export for command ${command.name}: ${key} does not match expected value`,
-            );
-          }
-
-          if (!KNOWN_NON_HANDLER_KEYS.includes(key)) {
-            // command file includes a handler function (chatInput, message, etc)
-            handlerCount++;
-          }
-        }
-      }
+      const { commandFileData, handlerCount, commandJson, resolvedMetadata } =
+        await this.processCommandFile(command.path, command.name, command.name, false);
 
       if (handlerCount === 0) {
         throw new Error(
           `Invalid export for command ${command.name}: at least one handler function must be provided`,
         );
       }
-
-      let lastUpdated = updatedCommandData;
-
-      await this.commandkit.plugins.execute(async (ctx, plugin) => {
-        const res = await plugin.prepareCommand(ctx, lastUpdated);
-
-        if (res) {
-          lastUpdated = res as CommandData;
-        }
-      });
-
-      const commandJson =
-        'toJSON' in lastUpdated && typeof lastUpdated.toJSON === 'function'
-          ? lastUpdated.toJSON()
-          : lastUpdated;
-
-      if ('guilds' in commandJson || 'aliases' in commandJson) {
-        Logger.warn(
-          `Command \`${command.name}\` uses deprecated metadata properties. Please update to use the new \`metadata\` object or \`generateMetadata\` function.`,
-        );
-      }
-
-      const resolvedMetadata = {
-        guilds: commandJson.guilds,
-        aliases: commandJson.aliases,
-        ...metadata,
-      };
 
       const loadedCommand: LoadedCommand = {
         discordId: null,
@@ -1230,83 +1259,20 @@ export class AppCommandHandler {
     };
 
     try {
-      const commandFileData = (await import(
-        `${toFileURL(command.path)}?t=${Date.now()}`
-      )) as AppCommandNative;
+      const { commandFileData, handlerCount, commandJson, resolvedMetadata } =
+        await this.processCommandFile(command.path, routeKey, node.token, true);
 
-      if (!commandFileData.command) {
+      const isRootHierarchyLeaf = node.kind === 'command';
+      const hasContextMenuHandlers = !!(commandFileData.userContextMenu || commandFileData.messageContextMenu);
+      const hasExecutableSlashHandlers = !!(
+        commandFileData.chatInput ||
+        commandFileData.message ||
+        commandFileData.autocomplete
+      );
+
+      if (!isRootHierarchyLeaf && hasContextMenuHandlers) {
         throw new Error(
-          `Invalid export for hierarchical node ${routeKey}: no command definition found`,
-        );
-      }
-
-      const metadataFunc = commandFileData.generateMetadata;
-      const metadataObj = commandFileData.metadata;
-
-      if (metadataFunc && metadataObj) {
-        throw new Error(
-          'A command may only export either `generateMetadata` or `metadata`, not both',
-        );
-      }
-
-      const metadata = (metadataFunc ? await metadataFunc() : metadataObj) ?? {
-        aliases: [],
-        guilds: [],
-        userPermissions: [],
-        botPermissions: [],
-      };
-
-      if (
-        typeof commandFileData.command.name === 'string' &&
-        commandFileData.command.name !== node.token
-      ) {
-        Logger.warn(
-          `Hierarchical node \`${routeKey}\` overrides its command name with \`${commandFileData.command.name}\`. The filesystem token \`${node.token}\` will be used instead.`,
-        );
-      }
-
-      const commandName = node.token;
-      let commandDescription = commandFileData.command.description as
-        | string
-        | undefined;
-
-      if (!commandDescription) {
-        commandDescription = 'No command description set.';
-      }
-
-      const updatedCommandData = {
-        ...commandFileData.command,
-        name: commandName,
-        description: commandDescription,
-      } as CommandData;
-
-      let handlerCount = 0;
-
-      for (const [key, propValidator] of Object.entries(commandDataSchema) as [
-        CommandDataSchemaKey,
-        CommandDataSchemaValue,
-      ][]) {
-        const exportedProp = commandFileData[key];
-
-        if (exportedProp) {
-          if (!(await propValidator(exportedProp))) {
-            throw new Error(
-              `Invalid export for hierarchical node ${routeKey}: ${key} does not match expected value`,
-            );
-          }
-
-          if (!KNOWN_NON_HANDLER_KEYS.includes(key)) {
-            handlerCount++;
-          }
-        }
-      }
-
-      if (
-        commandFileData.userContextMenu ||
-        commandFileData.messageContextMenu
-      ) {
-        throw new Error(
-          `Invalid export for hierarchical node ${routeKey}: context menu handlers are only supported for flat commands`,
+          `Invalid export for hierarchical node ${routeKey}: context menu handlers are only supported for top-level root commands.`,
         );
       }
 
@@ -1316,38 +1282,11 @@ export class AppCommandHandler {
         );
       }
 
-      if (!node.executable && handlerCount > 0) {
+      if (!node.executable && hasExecutableSlashHandlers) {
         throw new Error(
-          `Invalid export for hierarchical node ${routeKey}: non-leaf hierarchical nodes cannot export executable handlers`,
+          `Invalid export for hierarchical node ${routeKey}: non-leaf hierarchical nodes cannot export executable slash/prefix handlers`,
         );
       }
-
-      let lastUpdated = updatedCommandData;
-
-      await this.commandkit.plugins.execute(async (ctx, plugin) => {
-        const res = await plugin.prepareCommand(ctx, lastUpdated);
-
-        if (res) {
-          lastUpdated = res as CommandData;
-        }
-      });
-
-      const commandJson =
-        'toJSON' in lastUpdated && typeof lastUpdated.toJSON === 'function'
-          ? lastUpdated.toJSON()
-          : lastUpdated;
-
-      if ('guilds' in commandJson || 'aliases' in commandJson) {
-        Logger.warn(
-          `Command \`${routeKey}\` uses deprecated metadata properties. Please update to use the new \`metadata\` object or \`generateMetadata\` function.`,
-        );
-      }
-
-      const resolvedMetadata = {
-        guilds: commandJson.guilds,
-        aliases: commandJson.aliases,
-        ...metadata,
-      };
 
       const loadedCommand: LoadedCommand = {
         discordId: null,
@@ -1367,6 +1306,16 @@ export class AppCommandHandler {
 
       if (node.executable) {
         this.registerRuntimeRoute(loadedCommand, routeKey);
+      }
+
+      if (isRootHierarchyLeaf && hasContextMenuHandlers) {
+        this.generateContextMenuCommands(
+          node.id,
+          command,
+          commandFileData,
+          commandJson,
+          resolvedMetadata,
+        );
       }
     } catch (error) {
       Logger.error`Failed to load hierarchical node ${routeKey} (${node.id}): ${error}`;

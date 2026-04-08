@@ -282,8 +282,9 @@ export class CommandsRouter {
     this.clear();
     this.initializeRootNode();
 
-    await this.traverseNormalDirectory(
+    await this.traverseDirectory(
       this.options.entrypoint,
+      'normal',
       null,
       ROOT_NODE_ID,
     );
@@ -360,187 +361,189 @@ export class CommandsRouter {
    * @private
    * @internal
    */
-  private async traverseNormalDirectory(
+  private async traverseDirectory(
     path: string,
+    state: 'normal' | 'command' | 'group',
     category: string | null,
     parentId: string,
+    token?: string
   ) {
+    let node: CommandTreeNode | null = null;
+
+    if (state === 'command') {
+      node = this.createTreeNode({
+        source: 'directory',
+        token: token!,
+        category,
+        parentId,
+        directoryPath: path,
+        definitionPath: null,
+        shorthand: false,
+      });
+      if (!node) return;
+    } else if (state === 'group') {
+      node = this.createTreeNode({
+        source: 'group',
+        token: token!,
+        category,
+        parentId,
+        directoryPath: path,
+        definitionPath: null,
+        shorthand: false,
+      });
+      if (!node) return;
+    }
+
+    const currentNodeId = node ? node.id : parentId;
+
     const entries = await readdir(path, {
       withFileTypes: true,
     });
 
     for (const entry of entries) {
       if (entry.name.startsWith('_')) continue;
+
       const fullPath = join(path, entry.name);
 
       if (entry.isFile()) {
-        if (this.isSubcommandFile(entry.name)) {
-          if (parentId === ROOT_NODE_ID) {
-            this.addDiagnostic(
-              'ORPHAN_SUBCOMMAND_FILE',
-              'Subcommand shorthand files must be nested inside a command or group directory.',
-              fullPath,
-            );
-          } else {
+        if (state === 'command') {
+          if (this.isCommandDefinition(entry.name)) {
+            node!.definitionPath = fullPath;
+            node!.relativePath = this.replaceEntrypoint(fullPath);
+            continue;
+          }
+          if (this.isSubcommandFile(entry.name)) {
             this.createTreeNode({
               source: 'shorthand',
               token: entry.name.match(SUBCOMMAND_FILE_PATTERN)![1],
               category,
-              parentId,
+              parentId: currentNodeId,
               directoryPath: path,
               definitionPath: fullPath,
               shorthand: true,
             });
+            continue;
           }
-          continue;
-        }
-
-        if (this.isCommand(entry.name) || this.isMiddleware(entry.name)) {
-          const result = await this.handle(entry, category);
-
-          if (result.command) {
-            this.createFlatCommandNode(result.command);
+          if (this.isMiddleware(entry.name)) {
+            await this.handle(entry, category);
+            continue;
+          }
+          if (this.isCommand(entry.name)) {
+            this.addDiagnostic(
+              'UNSUPPORTED_FILE_IN_COMMAND_DIRECTORY',
+              'Only command.ts, middleware files, and subcommand shorthand files are supported inside a command directory.',
+              fullPath,
+            );
+          }
+        } else if (state === 'group') {
+          if (this.isGroupDefinition(entry.name)) {
+            node!.definitionPath = fullPath;
+            node!.relativePath = this.replaceEntrypoint(fullPath);
+            continue;
+          }
+          if (this.isSubcommandFile(entry.name)) {
+            this.createTreeNode({
+              source: 'shorthand',
+              token: entry.name.match(SUBCOMMAND_FILE_PATTERN)![1],
+              category,
+              parentId: currentNodeId,
+              directoryPath: path,
+              definitionPath: fullPath,
+              shorthand: true,
+            });
+            continue;
+          }
+          if (this.isMiddleware(entry.name)) {
+            await this.handle(entry, category);
+            continue;
+          }
+          if (this.isCommand(entry.name)) {
+            this.addDiagnostic(
+              'UNSUPPORTED_FILE_IN_GROUP_DIRECTORY',
+              'Only group.ts, middleware files, and subcommand shorthand files are supported inside a group directory.',
+              fullPath,
+            );
+          }
+        } else {
+          if (this.isSubcommandFile(entry.name)) {
+            if (currentNodeId === ROOT_NODE_ID) {
+              this.addDiagnostic(
+                'ORPHAN_SUBCOMMAND_FILE',
+                'Subcommand shorthand files must be nested inside a command or group directory.',
+                fullPath,
+              );
+            } else {
+              this.createTreeNode({
+                source: 'shorthand',
+                token: entry.name.match(SUBCOMMAND_FILE_PATTERN)![1],
+                category,
+                parentId: currentNodeId,
+                directoryPath: path,
+                definitionPath: fullPath,
+                shorthand: true,
+              });
+            }
+            continue;
+          }
+          if (this.isCommand(entry.name) || this.isMiddleware(entry.name)) {
+            const result = await this.handle(entry, category);
+            if (result.command) {
+              this.createFlatCommandNode(result.command);
+            }
           }
         }
-
         continue;
       }
 
       if (!entry.isDirectory()) continue;
 
       if (this.isCommandDirectory(entry.name)) {
-        if (parentId !== ROOT_NODE_ID) {
+        if (state === 'command') {
+          this.addDiagnostic(
+            'NESTED_COMMAND_NOT_ALLOWED',
+            'Command directories cannot contain nested root command directories.',
+            fullPath,
+          );
+        } else if (state === 'group') {
+          this.addDiagnostic(
+            'NESTED_COMMAND_NOT_ALLOWED',
+            'Group directories cannot contain nested root command directories.',
+            fullPath,
+          );
+        } else if (currentNodeId !== ROOT_NODE_ID) {
           this.addDiagnostic(
             'NESTED_COMMAND_NOT_ALLOWED',
             'Command directories cannot be nested under group or subcommand directories.',
             fullPath,
           );
-          continue;
+        } else {
+          await this.traverseDirectory(
+            fullPath,
+            'command',
+            category,
+            ROOT_NODE_ID,
+            entry.name.match(COMMAND_DIRECTORY_PATTERN)![1]
+          );
         }
-        await this.traverseCommandDirectory(
-          fullPath,
-          entry.name.match(COMMAND_DIRECTORY_PATTERN)![1],
-          category,
-          ROOT_NODE_ID,
-        );
         continue;
       }
 
       if (this.isGroupDirectory(entry.name)) {
-        if (parentId === ROOT_NODE_ID) {
+        if (currentNodeId === ROOT_NODE_ID) {
           this.addDiagnostic(
             'ORPHAN_GROUP_DIRECTORY',
             'Group directories must be nested inside a command directory.',
             fullPath,
           );
-          continue;
-        }
-        await this.traverseGroupDirectory(
-          fullPath,
-          entry.name.match(GROUP_DIRECTORY_PATTERN)![1],
-          category,
-          parentId,
-        );
-        continue;
-      }
-
-      if (this.isCategory(entry.name)) {
-        const nestedCategory = category
-          ? `${category}:${entry.name.slice(1, -1)}`
-          : entry.name.slice(1, -1);
-        await this.traverseNormalDirectory(fullPath, nestedCategory, parentId);
-        continue;
-      }
-
-      await this.traverseNormalDirectory(fullPath, category, parentId);
-    }
-  }
-
-  /**
-   * @private
-   * @internal
-   */
-  private async traverseCommandDirectory(
-    path: string,
-    token: string,
-    category: string | null,
-    parentId: string,
-  ) {
-    const node = this.createTreeNode({
-      source: 'directory',
-      token,
-      category,
-      parentId,
-      directoryPath: path,
-      definitionPath: null,
-      shorthand: false,
-    });
-
-    if (!node) return;
-
-    const entries = await readdir(path, {
-      withFileTypes: true,
-    });
-
-    for (const entry of entries) {
-      if (entry.name.startsWith('_')) continue;
-
-      const fullPath = join(path, entry.name);
-
-      if (entry.isFile()) {
-        if (this.isCommandDefinition(entry.name)) {
-          node.definitionPath = fullPath;
-          node.relativePath = this.replaceEntrypoint(fullPath);
-          continue;
-        }
-
-        if (this.isSubcommandFile(entry.name)) {
-          this.createTreeNode({
-            source: 'shorthand',
-            token: entry.name.match(SUBCOMMAND_FILE_PATTERN)![1],
-            category,
-            parentId: node.id,
-            directoryPath: path,
-            definitionPath: fullPath,
-            shorthand: true,
-          });
-          continue;
-        }
-
-        if (this.isMiddleware(entry.name)) {
-          await this.handle(entry, category);
-          continue;
-        }
-
-        if (this.isCommand(entry.name)) {
-          this.addDiagnostic(
-            'UNSUPPORTED_FILE_IN_COMMAND_DIRECTORY',
-            'Only command.ts, middleware files, and subcommand shorthand files are supported inside a command directory.',
+        } else {
+          await this.traverseDirectory(
             fullPath,
+            'group',
+            category,
+            currentNodeId,
+            entry.name.match(GROUP_DIRECTORY_PATTERN)![1]
           );
         }
-
-        continue;
-      }
-
-      if (!entry.isDirectory()) continue;
-
-      if (this.isCommandDirectory(entry.name)) {
-        this.addDiagnostic(
-          'NESTED_COMMAND_NOT_ALLOWED',
-          'Command directories cannot contain nested root command directories.',
-          fullPath,
-        );
-        continue;
-      }
-
-      if (this.isGroupDirectory(entry.name)) {
-        await this.traverseGroupDirectory(
-          fullPath,
-          entry.name.match(GROUP_DIRECTORY_PATTERN)![1],
-          category,
-          node.id,
-        );
         continue;
       }
 
@@ -548,122 +551,20 @@ export class CommandsRouter {
         const nestedCategory = category
           ? `${category}:${entry.name.slice(1, -1)}`
           : entry.name.slice(1, -1);
-        await this.traverseNormalDirectory(fullPath, nestedCategory, node.id);
+        await this.traverseDirectory(fullPath, 'normal', nestedCategory, currentNodeId);
         continue;
       }
 
-      await this.traverseNormalDirectory(fullPath, category, node.id);
+      await this.traverseDirectory(fullPath, 'normal', category, currentNodeId);
     }
 
-    if (!node.definitionPath) {
+    if (state === 'command' && node && !node.definitionPath) {
       this.addDiagnostic(
         'MISSING_COMMAND_DEFINITION',
         'Command directories must include a command.ts file.',
         path,
       );
-    }
-  }
-
-  /**
-   * @private
-   * @internal
-   */
-  private async traverseGroupDirectory(
-    path: string,
-    token: string,
-    category: string | null,
-    parentId: string,
-  ) {
-    const node = this.createTreeNode({
-      source: 'group',
-      token,
-      category,
-      parentId,
-      directoryPath: path,
-      definitionPath: null,
-      shorthand: false,
-    });
-
-    if (!node) return;
-
-    const entries = await readdir(path, {
-      withFileTypes: true,
-    });
-
-    for (const entry of entries) {
-      if (entry.name.startsWith('_')) continue;
-
-      const fullPath = join(path, entry.name);
-
-      if (entry.isFile()) {
-        if (this.isGroupDefinition(entry.name)) {
-          node.definitionPath = fullPath;
-          node.relativePath = this.replaceEntrypoint(fullPath);
-          continue;
-        }
-
-        if (this.isSubcommandFile(entry.name)) {
-          this.createTreeNode({
-            source: 'shorthand',
-            token: entry.name.match(SUBCOMMAND_FILE_PATTERN)![1],
-            category,
-            parentId: node.id,
-            directoryPath: path,
-            definitionPath: fullPath,
-            shorthand: true,
-          });
-          continue;
-        }
-
-        if (this.isMiddleware(entry.name)) {
-          await this.handle(entry, category);
-          continue;
-        }
-
-        if (this.isCommand(entry.name)) {
-          this.addDiagnostic(
-            'UNSUPPORTED_FILE_IN_GROUP_DIRECTORY',
-            'Only group.ts, middleware files, and subcommand shorthand files are supported inside a group directory.',
-            fullPath,
-          );
-        }
-
-        continue;
-      }
-
-      if (!entry.isDirectory()) continue;
-
-      if (this.isCommandDirectory(entry.name)) {
-        this.addDiagnostic(
-          'NESTED_COMMAND_NOT_ALLOWED',
-          'Group directories cannot contain nested root command directories.',
-          fullPath,
-        );
-        continue;
-      }
-
-      if (this.isGroupDirectory(entry.name)) {
-        await this.traverseGroupDirectory(
-          fullPath,
-          entry.name.match(GROUP_DIRECTORY_PATTERN)![1],
-          category,
-          node.id,
-        );
-        continue;
-      }
-
-      if (this.isCategory(entry.name)) {
-        const nestedCategory = category
-          ? `${category}:${entry.name.slice(1, -1)}`
-          : entry.name.slice(1, -1);
-        await this.traverseNormalDirectory(fullPath, nestedCategory, node.id);
-        continue;
-      }
-
-      await this.traverseNormalDirectory(fullPath, category, node.id);
-    }
-
-    if (!node.definitionPath) {
+    } else if (state === 'group' && node && !node.definitionPath) {
       this.addDiagnostic(
         'MISSING_GROUP_DEFINITION',
         'Group directories must include a group.ts file.',
