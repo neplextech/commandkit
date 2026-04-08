@@ -591,13 +591,7 @@ export class AppCommandHandler {
    * @internal
    */
   private buildMessageRouteKey(parser: MessageCommandParser) {
-    return [
-      parser.getCommand(),
-      parser.getSubcommandGroup(),
-      parser.getSubcommand(),
-    ]
-      .filter(Boolean)
-      .join('.');
+    return parser.getFullRoute().join('.');
   }
 
   /**
