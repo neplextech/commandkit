@@ -47,14 +47,22 @@ export function beforeExecute(ctx: MiddlewareContext) {
 ## Important details
 
 - `src/app.ts` must export the discord.js client instance.
-- Command categories use parenthesized directories (for example
-  `(Moderation)`) for organization.
+- Directory naming:
+  - `(Category)`: Organizational grouping (meta-only).
+  - `[command]`: Canonical command directory.
+  - `{group}`: Canonical subcommand group directory.
+- File naming:
+  - `command.ts`: Main logic for `[command]`.
+  - `group.ts`: Definition for `{group}`.
+  - `<name>.subcommand.ts`: Individual subcommand logic.
 - Middleware filename variants define global, directory-scoped, and
   command-scoped behavior.
 
 ## Best practices
 
 - Use descriptive, stable command filenames and folder categories.
+- Root-Group-Sub: Use the specialized brackets `[]` and braces `{}` to
+  define deep command routes.
 - Keep middleware naming exact (`+middleware`, `+global-middleware`,
   `+<command>.middleware`).
 - Keep event handlers inside event-name folders to preserve discovery
@@ -64,5 +72,7 @@ export function beforeExecute(ctx: MiddlewareContext) {
 
 - Placing handlers in custom paths not recognized by convention
   discovery.
+- Misnaming definition files (e.g., using `index.ts` instead of
+  `command.ts`).
 - Misspelling middleware filename prefixes/signatures.
 - Forgetting to export default client from `src/app.ts`.
