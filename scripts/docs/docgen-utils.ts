@@ -108,3 +108,7 @@ export function addCodeBlockIfNeeded(code: string): string {
   }
   return `\`\`\`ts\n${code}\n\`\`\``;
 }
+
+export function normalizeLineEndings(input: string): string {
+  return input.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+}

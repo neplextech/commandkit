@@ -1,5 +1,5 @@
 import { Collection, ApplicationCommandOptionType, Message } from 'discord.js';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { MessageCommandParser } from '../src/app/commands/MessageCommandParser';
 
 function createMessage(content: string) {
@@ -53,6 +53,26 @@ describe('MessageCommandParser', () => {
     );
 
     expect(() => parser.parse()).toThrow();
+  });
+
+  test('throws when the message only contains the prefix', () => {
+    const schema = vi.fn(() => ({}));
+    const parser = new MessageCommandParser(createMessage('!'), ['!'], schema);
+
+    expect(() => parser.parse()).toThrow();
+    expect(schema).not.toHaveBeenCalled();
+  });
+
+  test('throws when the message only contains the prefix and whitespace', () => {
+    const schema = vi.fn(() => ({}));
+    const parser = new MessageCommandParser(
+      createMessage('!   '),
+      ['!'],
+      schema,
+    );
+
+    expect(() => parser.parse()).toThrow();
+    expect(schema).not.toHaveBeenCalled();
   });
 
   test('parses colon-delimited hierarchical prefix routes', () => {

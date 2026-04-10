@@ -169,7 +169,13 @@ export class MessageCommandParser {
       throw createCommandKitError(CommandKitErrorCodes.InvalidCommandPrefix);
     }
 
-    const parts = content.slice(prefix.length).trim().split(' ');
+    const body = content.slice(prefix.length).trim();
+
+    if (!body) {
+      throw createCommandKitError(CommandKitErrorCodes.InvalidCommandPrefix);
+    }
+
+    const parts = body.split(' ');
     const commandToken = parts.shift();
 
     this.#args = parts;

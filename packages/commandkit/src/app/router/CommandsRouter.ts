@@ -1,7 +1,7 @@
 import { Collection } from 'discord.js';
 import { Dirent, existsSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
-import { basename, dirname, extname, join, normalize } from 'node:path';
+import { basename, extname, join, normalize } from 'node:path';
 import {
   CommandRouteDiagnostic,
   CommandTreeNode,
@@ -98,10 +98,6 @@ const COMMAND_DIRECTORY_PATTERN = /^\[([^\][\\\/]+)\]$/;
  */
 const GROUP_DIRECTORY_PATTERN = /^\{([^}{\\\/]+)\}$/;
 
-/**
- * @private
- * @internal
- */
 /**
  * @private
  * @internal
