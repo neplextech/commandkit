@@ -1,0 +1,196 @@
+---
+title: Checkbox
+---
+
+CommandKit provides `Checkbox`, `CheckboxGroup`, and `CheckboxGroupOption`
+for building checkbox inputs using Discord's component builders.
+
+## Basic usage
+
+Use `CheckboxGroup` when you want the user to pick one or more items from a
+list of options:
+
+```tsx title="src/app/commands/checkbox-group.tsx"
+import {
+  type ChatInputCommand,
+  type OnModalKitSubmit,
+  Modal,
+  Label,
+  CheckboxGroup,
+  CheckboxGroupOption,
+} from 'commandkit';
+import { MessageFlags } from 'discord.js';
+
+const handleSubmit: OnModalKitSubmit = async (interaction, context) => {
+  // returns a string[] of all selected checkbox values
+  const preferences = interaction.fields.getCheckboxGroup('notifications');
+
+  await interaction.reply({
+    content: 'Thanks! Preferences saved.',
+    flags: MessageFlags.Ephemeral,
+  });
+
+  // Clean up the modal context
+  context.dispose();
+};
+
+export const chatInput: ChatInputCommand = async ({ interaction }) => {
+  const modal = (
+    <Modal title="Preferences" onSubmit={handleSubmit}>
+      <Label
+        label="Notifications"
+        description="Select all notifications you want to receive"
+      >
+        <CheckboxGroup customId="notifications" required>
+          <CheckboxGroupOption
+            label="Releases"
+            value="releases"
+            description="New CommandKit releases"
+          />
+          <CheckboxGroupOption
+            label="Incidents"
+            value="incidents"
+            description="Service disruptions"
+          />
+          <CheckboxGroupOption
+            label="Tips"
+            value="tips"
+            description="Occasional usage tips"
+          />
+        </CheckboxGroup>
+      </Label>
+    </Modal>
+  );
+
+  await interaction.showModal(modal);
+};
+```
+
+## Default selections
+
+Use `default` on `CheckboxGroupOption` to pre-select options:
+
+```tsx title="src/app/commands/default-checkboxes.tsx"
+import {
+  type ChatInputCommand,
+  type OnModalKitSubmit,
+  Modal,
+  Label,
+  CheckboxGroup,
+  CheckboxGroupOption,
+} from 'commandkit';
+import { MessageFlags } from 'discord.js';
+
+const handleSubmit: OnModalKitSubmit = async (interaction, context) => {
+  const preferences = interaction.fields.getCheckboxGroup('topics');
+
+  await interaction.reply({
+    content: 'Saved!',
+    flags: MessageFlags.Ephemeral,
+  });
+
+  context.dispose();
+};
+
+export const chatInput: ChatInputCommand = async ({ interaction }) => {
+  const modal = (
+    <Modal title="Newsletter" onSubmit={handleSubmit}>
+      <Label label="Topics" description="Uncheck anything you're not into">
+        <CheckboxGroup customId="topics">
+          <CheckboxGroupOption label="Announcements" value="news" default />
+          <CheckboxGroupOption label="Tutorials" value="tutorials" default />
+          <CheckboxGroupOption label="Community" value="community" />
+        </CheckboxGroup>
+      </Label>
+    </Modal>
+  );
+
+  await interaction.showModal(modal);
+};
+```
+
+## Min/max values
+
+You can enforce how many options the user must pick via `minValues` and
+`maxValues`:
+
+```tsx title="src/app/commands/checkbox-limits.tsx"
+import {
+  type ChatInputCommand,
+  type OnModalKitSubmit,
+  Modal,
+  Label,
+  CheckboxGroup,
+  CheckboxGroupOption,
+} from 'commandkit';
+import { MessageFlags } from 'discord.js';
+
+const handleSubmit: OnModalKitSubmit = async (interaction, context) => {
+  const preferences = interaction.fields.getCheckboxGroup('topics');
+
+  await interaction.reply({
+    content: 'Saved!',
+    flags: MessageFlags.Ephemeral,
+  });
+
+  context.dispose();
+};
+
+export const chatInput: ChatInputCommand = async ({ interaction }) => {
+  const modal = (
+    <Modal title="Project Setup" onSubmit={handleSubmit}>
+      <Label label="Tools" description="Pick 2 to 4 tools">
+        <CheckboxGroup customId="tools" minValues={2} maxValues={4}>
+          <CheckboxGroupOption label="TypeScript" value="ts" />
+          <CheckboxGroupOption label="ESLint" value="eslint" />
+          <CheckboxGroupOption label="Prettier" value="prettier" />
+          <CheckboxGroupOption label="Vitest" value="vitest" />
+          <CheckboxGroupOption label="Playwright" value="playwright" />
+        </CheckboxGroup>
+      </Label>
+    </Modal>
+  );
+
+  await interaction.showModal(modal);
+};
+```
+
+## Single checkbox
+
+Use `Checkbox` for a single boolean input. It can be useful when you want a
+simple "yes/no" toggle:
+
+```tsx title="src/app/commands/single-checkbox.tsx"
+import {
+  type ChatInputCommand,
+  type OnModalKitSubmit,
+  Modal,
+  Label,
+  Checkbox,
+} from 'commandkit';
+import { MessageFlags } from 'discord.js';
+
+const handleSubmit: OnModalKitSubmit = async (interaction, context) => {
+  // returns a boolean indicating whether the checkbox is checked
+  const agree = interaction.fields.getCheckbox('agree');
+
+  await interaction.reply({
+    content: 'Saved!',
+    flags: MessageFlags.Ephemeral,
+  });
+
+  context.dispose();
+};
+
+export const chatInput: ChatInputCommand = async ({ interaction }) => {
+  const modal = (
+    <Modal title="Rules" onSubmit={handleSubmit}>
+      <Label label="I agree to the rules">
+        <Checkbox customId="agree" />
+      </Label>
+    </Modal>
+  );
+
+  await interaction.showModal(modal);
+};
+```
