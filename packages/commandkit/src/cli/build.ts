@@ -242,7 +242,9 @@ async function bootstrap() {
 }
 
 await bootstrap().catch((e) => {
-  console.error('Failed to bootstrap CommandKit application:\\n', e.stack);
+  const error = new Error('Failed to bootstrap the application', { cause: e });
+  console.error(error);
+  console.error(\`Caused by \${e?.stack || e}\`);
 })
 `;
 
