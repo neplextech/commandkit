@@ -18,6 +18,10 @@ export * from './interactive/select-menu/RoleSelectMenuKit';
 export * from './interactive/select-menu/SelectMenu';
 export * from './interactive/select-menu/common';
 
+// checkboxes
+export * from './interactive/checkbox/checkbox';
+export * from './interactive/radio/radio';
+
 // v2
 export * from './display/index';
 
