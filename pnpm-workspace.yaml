@@ -3,7 +3,7 @@ packages:
   - apps/*
 catalogs:
   discordjs:
-    discord.js: ^14.25.1
+    discord.js: ^14.26.2
   build:
     typescript: ^5.9.3
     tsdown: ^0.21.0-beta.2
