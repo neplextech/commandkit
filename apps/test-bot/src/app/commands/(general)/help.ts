@@ -1,5 +1,6 @@
 import { CommandData, ChatInputCommand } from 'commandkit';
 import { redEmbedColor } from '@/feature-flags/red-embed-color';
+import { toMessageRoute, toSlashRoute } from '@/utils/hierarchical-demo';
 import { Colors } from 'discord.js';
 
 export const command: CommandData = {
@@ -34,11 +35,37 @@ export const chatInput: ChatInputCommand = async (ctx) => {
     })
     .join('\n');
 
+  const hierarchicalRoutes = ctx.commandkit.commandHandler
+    .getRuntimeCommandsArray()
+    .map((command) => {
+      return (
+        (command.data.command as Record<string, any>).__routeKey ??
+        command.data.command.name
+      );
+    })
+    .filter((route) => route.includes('.'))
+    .sort()
+    .map((route) => `${toSlashRoute(route)} | ${toMessageRoute(route)}`)
+    .join('\n');
+
   return interaction.editReply({
     embeds: [
       {
         title: 'Help',
         description: commands,
+        fields: hierarchicalRoutes
+          ? [
+              {
+                name: 'Hierarchical Routes',
+                value: hierarchicalRoutes,
+              },
+              {
+                name: 'Hierarchical Middleware',
+                value:
+                  'Global middleware always runs first. Hierarchical leaves then use only the current directory `+middleware` and any same-directory `+<command>.middleware`.',
+              },
+            ]
+          : undefined,
         footer: {
           text: `Bot Version: ${botVersion} | Shard ID ${interaction.guild?.shardId ?? 'N/A'}`,
         },

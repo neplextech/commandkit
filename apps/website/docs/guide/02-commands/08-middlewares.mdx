@@ -196,8 +196,8 @@ instance of the `CommandKitErrorCodes.StopMiddlewares` error.
 ### Directory-scoped middleware
 
 Create a `+middleware.ts` file in any commands directory to apply
-middleware to all commands within that directory and its
-subdirectories.
+middleware to commands whose definition files live in that same
+directory.
 
 <Tabs>
   <TabItem value="ts" label="TypeScript" default>
@@ -205,7 +205,7 @@ subdirectories.
     import type { MiddlewareContext } from 'commandkit';
 
     export function beforeExecute(ctx: MiddlewareContext) {
-      // This middleware will run before any moderation command
+      // This middleware will run before commands defined in this directory
       if (!ctx.interaction.member.permissions.has('KickMembers')) {
         throw new Error('You need moderation permissions to use this command');
       }
@@ -223,7 +223,7 @@ subdirectories.
      * @param {MiddlewareContext} ctx - The middleware context
      */
     export function beforeExecute(ctx) {
-      // This middleware will run before any moderation command
+      // This middleware will run before commands defined in this directory
       if (!ctx.interaction.member.permissions.has('KickMembers')) {
         throw new Error('You need moderation permissions to use this command');
       }
@@ -232,6 +232,16 @@ subdirectories.
 
   </TabItem>
 </Tabs>
+
+For hierarchical command trees, "current directory" means the
+directory that contains the leaf definition:
+
+- a shorthand leaf such as `add.subcommand.ts` uses middleware from the
+  directory that contains that file
+- a folder leaf such as `[archive]/command.ts` uses middleware from the
+  `[archive]` directory
+- parent command and group directories do not automatically contribute
+  `+middleware.ts` files to deeper leaves
 
 ### Command-specific middleware
 
@@ -310,8 +320,10 @@ apply middleware to every command in your entire Discord bot.
 
 :::tip
 
-Middleware execution (both before and after) follows a hierarchy:
-global middlewares run first, then directory-scoped middlewares, and
-finally command-scoped middlewares.
+Middleware execution order is deterministic:
+
+- global middlewares run first
+- current-directory middlewares run second
+- same-directory command-scoped middlewares run last
 
 :::

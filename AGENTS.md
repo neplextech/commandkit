@@ -37,7 +37,14 @@ preserve convention-based discovery:
 - Config file at root: `commandkit.config.ts` (or `.js`)
 - App entrypoint: `src/app.ts` (exports discord.js client)
 - Commands: `src/app/commands/**`
+- Hierarchical Discovery Tokens:
+  - `[command]` - top-level command directory
+  - `{group}` - subcommand group directory
+  - `(category)` - organizational category directory
+  - `command.ts` / `group.ts` - definition files
+  - `<name>.subcommand.ts` - subcommand shorthand
 - Events: `src/app/events/**`
+
 - Optional feature paths:
   - i18n: `src/app/locales/**`
   - tasks: `src/app/tasks/**`

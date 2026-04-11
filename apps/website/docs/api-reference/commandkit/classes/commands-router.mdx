@@ -13,19 +13,30 @@ import MemberDescription from '@site/src/components/MemberDescription';
 
 ## CommandsRouter
 
-<GenerationInfo sourceFile="packages/commandkit/src/app/router/CommandsRouter.ts" sourceLine="81" packageName="commandkit" />
+<GenerationInfo sourceFile="packages/commandkit/src/app/router/CommandsRouter.ts" sourceLine="123" packageName="commandkit" />
 
 Handles discovery and parsing of command and middleware files in the filesystem.
 
 ```ts title="Signature"
 class CommandsRouter {
     constructor(options: CommandsRouterOptions)
-    populate(data: ParsedCommandData) => ;
+    populate(data: ParsedCommandData) => void;
     isValidPath() => boolean;
-    clear() => ;
-    scan() => ;
-    getData() => ;
-    toJSON() => ;
+    clear() => void;
+    scan() => Promise<ParsedCommandData>;
+    getData() => {
+    commands: Collection<string, Command>;
+    middlewares: Collection<string, Middleware>;
+    treeNodes: Collection<string, CommandTreeNode>;
+    compiledRoutes: Collection<string, CompiledCommandRoute>;
+    diagnostics: CommandRouteDiagnostic[];
+  };
+    getTreeData() => {
+    treeNodes: Collection<string, CommandTreeNode>;
+    compiledRoutes: Collection<string, CompiledCommandRoute>;
+    diagnostics: CommandRouteDiagnostic[];
+  };
+    toJSON() => ParsedCommandData;
 }
 ```
 
@@ -38,9 +49,9 @@ class CommandsRouter {
 Creates a new CommandsRouter instance.
 ### populate
 
-<MemberInfo kind="method" type={`(data: <a href='/docs/api-reference/commandkit/interfaces/parsed-command-data#parsedcommanddata'>ParsedCommandData</a>) => `}   />
+<MemberInfo kind="method" type={`(data: <a href='/docs/api-reference/commandkit/interfaces/parsed-command-data#parsedcommanddata'>ParsedCommandData</a>) => void`}   />
 
-Populates the router with existing command and middleware data.
+Populates the router with existing command, middleware, and tree data.
 ### isValidPath
 
 <MemberInfo kind="method" type={`() => boolean`}   />
@@ -48,22 +59,27 @@ Populates the router with existing command and middleware data.
 Checks if the configured entrypoint path exists.
 ### clear
 
-<MemberInfo kind="method" type={`() => `}   />
+<MemberInfo kind="method" type={`() => void`}   />
 
-Clears all loaded commands and middleware.
+Clears all loaded commands, middleware, and compiled tree data.
 ### scan
 
-<MemberInfo kind="method" type={`() => `}   />
+<MemberInfo kind="method" type={`() => Promise&#60;<a href='/docs/api-reference/commandkit/interfaces/parsed-command-data#parsedcommanddata'>ParsedCommandData</a>&#62;`}   />
 
 Scans the filesystem for commands and middleware files.
 ### getData
 
-<MemberInfo kind="method" type={`() => `}   />
+<MemberInfo kind="method" type={`() => {     commands: Collection&#60;string, <a href='/docs/api-reference/commandkit/interfaces/command#command'>Command</a>&#62;;     middlewares: Collection&#60;string, <a href='/docs/api-reference/commandkit/interfaces/middleware#middleware'>Middleware</a>&#62;;     treeNodes: Collection&#60;string, <a href='/docs/api-reference/commandkit/interfaces/command-tree-node#commandtreenode'>CommandTreeNode</a>&#62;;     compiledRoutes: Collection&#60;string, <a href='/docs/api-reference/commandkit/interfaces/compiled-command-route#compiledcommandroute'>CompiledCommandRoute</a>&#62;;     diagnostics: <a href='/docs/api-reference/commandkit/interfaces/command-route-diagnostic#commandroutediagnostic'>CommandRouteDiagnostic</a>[];   }`}   />
 
-Gets the raw command and middleware collections.
+Gets the raw command, middleware, and compiled tree collections.
+### getTreeData
+
+<MemberInfo kind="method" type={`() => {     treeNodes: Collection&#60;string, <a href='/docs/api-reference/commandkit/interfaces/command-tree-node#commandtreenode'>CommandTreeNode</a>&#62;;     compiledRoutes: Collection&#60;string, <a href='/docs/api-reference/commandkit/interfaces/compiled-command-route#compiledcommandroute'>CompiledCommandRoute</a>&#62;;     diagnostics: <a href='/docs/api-reference/commandkit/interfaces/command-route-diagnostic#commandroutediagnostic'>CommandRouteDiagnostic</a>[];   }`}   />
+
+Gets only the internal command tree and compiled route data.
 ### toJSON
 
-<MemberInfo kind="method" type={`() => `}   />
+<MemberInfo kind="method" type={`() => <a href='/docs/api-reference/commandkit/interfaces/parsed-command-data#parsedcommanddata'>ParsedCommandData</a>`}   />
 
 Converts the loaded data to a JSON-serializable format.
 

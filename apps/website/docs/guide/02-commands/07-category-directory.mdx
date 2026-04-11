@@ -40,3 +40,11 @@ plugins, or even other commands through your `commandkit` instance.
 ├── package.json
 └── tsconfig.json
 ```
+
+> [!NOTE] Transparent Categories vs Subcommand Hierarchy: Folders
+> using parenthesis `(Category)` strictly serve to group handlers
+> mentally and apply transparent middlewares. They do **not** change
+> the execution slash command (`/ban`). If you are designing
+> comprehensive setups combining sub-commands, you should establish a
+> Root Command directory using square brackets `[commandName]`. Read
+> more in the [Subcommand Hierarchy Guide](./09-subcommand-hierarchy).

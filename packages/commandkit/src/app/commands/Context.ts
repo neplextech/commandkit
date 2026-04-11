@@ -300,12 +300,25 @@ export class Context<
    * Gets the name of the current command.
    */
   public get commandName(): string {
+    const routeKey = (this.command.data.command as Record<string, any>)
+      .__routeKey;
+
+    if (typeof routeKey === 'string' && routeKey.length) {
+      return routeKey;
+    }
+
+    if (this.command.data.command.name) {
+      return this.command.data.command.name;
+    }
+
     if (this.isInteraction()) {
       return this.interaction.commandName;
     }
 
-    const maybeAlias = this.config.messageCommandParser!.getCommand();
-    return this.commandkit.commandHandler.resolveMessageCommandName(maybeAlias);
+    const parser = this.config.messageCommandParser!;
+    return this.commandkit.commandHandler.resolveMessageCommandName(
+      parser.getFullCommand(),
+    );
   }
 
   /**
@@ -476,7 +489,7 @@ export class Context<
     if (this.isInteraction()) {
       return this.interaction.commandName;
     } else {
-      return this.message.content.split(' ')[0].slice(1);
+      return this.commandName;
     }
   }
 

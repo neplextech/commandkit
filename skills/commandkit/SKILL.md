@@ -9,11 +9,12 @@ tags:
   - framework
   - commands
   - events
+  - hierarchical-commands
 description: >
   Build and maintain Discord bots with CommandKit core conventions.
-  Use when implementing command/event architecture, middleware chains,
-  JSX components, and commandkit.config setup for plugin-based
-  features.
+  Use when implementing command/event architecture (including
+  hierarchical subcommands), middleware chains, JSX components, and
+  commandkit.config setup for plugin-based features.
 ---
 
 # CommandKit Core

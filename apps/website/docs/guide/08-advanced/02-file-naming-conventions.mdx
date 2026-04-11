@@ -4,9 +4,9 @@ title: File Naming Conventions
 
 ## app.ts
 
-The `src/app.ts` (or `app.js`) is a special file that acts as the
-entry point for your application. It is where you define and export
-your `Discord.js` client instance.
+The `src/app.ts` (or `app.js`) file is the entry point for your
+application. It should define and export your `discord.js` client
+instance.
 
 ```ts title="src/app.ts"
 import { Client } from 'discord.js';
@@ -15,77 +15,104 @@ const client = new Client({
   /* options */
 });
 
-// Optional: Override the default DISCORD_TOKEN environment variable
 client.token = 'YOUR_BOT_TOKEN';
 
 export default client;
 ```
 
-## +middleware.ts
+## Middleware Files
 
-The `src/app/commands/+middleware.ts` (or `+middleware.js`) file is
-used to define middleware functions for your application. Middleware
-functions get called before and after the command execution.
+The `src/app/commands` tree supports three middleware filenames:
+
+- `+global-middleware.ts`: runs for every command
+- `+middleware.ts`: runs for leaves defined in the same directory
+- `+<command>.middleware.ts`: runs for the matching leaf token in the
+  same directory
 
 ```ts title="src/app/commands/+middleware.ts"
 import { MiddlewareContext } from 'commandkit';
 
 export function beforeExecute(context: MiddlewareContext) {
-  // This function will be executed before the command is executed
   console.log('Before command execution');
 }
 
 export function afterExecute(context: MiddlewareContext) {
-  // This function will be executed after the command is executed
   console.log('After command execution');
 }
 ```
 
-There are 3 types of middlewares you can create:
-
-- `+middleware.ts` (or `+middleware.js`): This file is used to define
-  middleware functions that will be executed for all sibling commands
-  in the application.
-- `+<command>.middleware.ts` (or `+<command>.middleware.js`): This
-  file is used to define middleware functions that will be executed
-  for a specific command in the application. The `<command>` part of
-  the filename should match the name of the command file. This is
-  useful for defining middleware functions that should be applied to a
-  specific command.
-- `+global-middleware.ts` (or `+global-middleware.js`): This file is
-  used to define middleware functions that will be executed for all
-  commands in the application, regardless of their location in the
-  file system.
-
 :::info
 
-You can learn more about middlewares
+You can learn more about middleware behavior
 [here](../02-commands/08-middlewares.mdx).
 
 :::
 
-## (category) directory
+## (category) Directory
 
-In your commands directory, you can create a category using
-parenthesis (e.g. `(Moderation)`). This is useful for organizing your
-commands into logical groups, making it easier to manage and maintain
-your code.
+Use parenthesis directories such as `(Moderation)` for organization
+only. Categories help structure the repo and category metadata, but they
+do not change slash command routes.
 
-```
+```text
 src/app/commands/
-├── (Moderation)
-│   ├── ban.ts
-│   ├── kick.ts
-│   ├── mute.ts
-│   ├── unmute.ts
-│   ├── warn.ts
-│   ├── warn-list.ts
-│   └── warn-remove.ts
+└── (Moderation)/
+    ├── ban.ts
+    ├── kick.ts
+    ├── mute.ts
+    ├── unmute.ts
+    ├── warn.ts
+    ├── warn-list.ts
+    └── warn-remove.ts
 ```
 
 :::info
 
 You can learn more about command categories
 [here](../02-commands/07-category-directory.mdx).
+
+:::
+
+## Hierarchical Command Directories
+
+CommandKit uses distinct tokens for hierarchical command trees:
+
+- `[command]` for root command directories
+- `{group}` for subcommand group directories
+- `command.ts` for directory-backed command nodes
+- `group.ts` for group definition files
+- `*.subcommand.ts` for shorthand leaves
+- `[leaf]/command.ts` for directory-backed leaves
+
+```text
+src/app/commands/
+└── [settings]/
+    ├── command.ts
+    ├── profile.subcommand.ts
+    └── {notifications}/
+        ├── group.ts
+        ├── enable.subcommand.ts
+        └── [disable]/
+            └── command.ts
+```
+
+This transforms into:
+
+- `/settings profile`
+- `/settings notifications enable`
+- `/settings notifications disable`
+
+Middleware inside these trees follows the same same-directory rule:
+
+- `+middleware.ts` applies only to leaves defined in that directory
+- `+<command>.middleware.ts` applies only to the matching leaf token in
+  that directory
+- ancestor directories do not automatically contribute middleware to
+  deeper hierarchical leaves
+
+:::info
+
+You can learn more about configuring tree structures
+[here](../02-commands/09-subcommand-hierarchy.mdx).
 
 :::

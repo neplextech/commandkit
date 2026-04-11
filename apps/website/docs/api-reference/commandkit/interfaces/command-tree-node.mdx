@@ -1,0 +1,108 @@
+---
+title: "CommandTreeNode"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## CommandTreeNode
+
+<GenerationInfo sourceFile="packages/commandkit/src/app/router/CommandTree.ts" sourceLine="25" packageName="commandkit" />
+
+Internal tree node representing either a filesystem command or a
+hierarchical container.
+
+```ts title="Signature"
+interface CommandTreeNode {
+    id: string;
+    source: CommandTreeNodeSource;
+    kind: CommandTreeNodeKind;
+    token: string;
+    route: string[];
+    category: string | null;
+    parentId: string | null;
+    childIds: string[];
+    directoryPath: string;
+    definitionPath: string | null;
+    relativePath: string;
+    shorthand: boolean;
+    executable: boolean;
+}
+```
+
+<div className="members-wrapper">
+
+### id
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### source
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/commandkit/types/command-tree-node-source#commandtreenodesource'>CommandTreeNodeSource</a>`}   />
+
+
+### kind
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/commandkit/types/command-tree-node-kind#commandtreenodekind'>CommandTreeNodeKind</a>`}   />
+
+
+### token
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### route
+
+<MemberInfo kind="property" type={`string[]`}   />
+
+
+### category
+
+<MemberInfo kind="property" type={`string | null`}   />
+
+
+### parentId
+
+<MemberInfo kind="property" type={`string | null`}   />
+
+
+### childIds
+
+<MemberInfo kind="property" type={`string[]`}   />
+
+
+### directoryPath
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### definitionPath
+
+<MemberInfo kind="property" type={`string | null`}   />
+
+
+### relativePath
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### shorthand
+
+<MemberInfo kind="property" type={`boolean`}   />
+
+
+### executable
+
+<MemberInfo kind="property" type={`boolean`}   />
+
+
+
+
+</div>

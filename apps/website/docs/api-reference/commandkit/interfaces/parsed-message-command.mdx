@@ -23,6 +23,7 @@ interface ParsedMessageCommand {
     options: { name: string; value: unknown }[];
     subcommand?: string;
     subcommandGroup?: string;
+    fullRoute: string[];
 }
 ```
 
@@ -46,6 +47,11 @@ interface ParsedMessageCommand {
 ### subcommandGroup
 
 <MemberInfo kind="property" type={`string`}   />
+
+
+### fullRoute
+
+<MemberInfo kind="property" type={`string[]`}   />
 
 
 

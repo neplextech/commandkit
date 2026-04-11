@@ -28,6 +28,7 @@ export const command: CommandData = {
 export const metadata: CommandMetadata = {
   nameAliases: {
     message: 'Cat Message',
+    user: 'Cat User',
   },
 };
 

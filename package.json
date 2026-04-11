@@ -12,6 +12,8 @@
     "check-types": "turbo run --filter=\"./packages/*\" check-types",
     "build": "turbo run --filter=\"./packages/*\" build",
     "docgen": "tsx ./scripts/docs/generate-typescript-docs.ts && pnpm format",
+    "docgen:check": "tsx ./scripts/docs/generate-typescript-docs.ts && git diff --exit-code -- apps/website/docs/api-reference",
+    "test:commandkit": "pnpm --filter commandkit test -- --run spec/reload-commands.test.ts spec/context-command-identifier.test.ts spec/hierarchical-command-registration.test.ts spec/hierarchical-command-handler.test.ts spec/commands-router.test.ts spec/message-command-parser.test.ts spec/context-menu-registration.test.ts",
     "prettier:check": "prettier --experimental-cli --check . --ignore-path=.prettierignore",
     "format": "prettier --experimental-cli --write . --ignore-path=.prettierignore"
   },
@@ -84,7 +86,7 @@
       "fast-xml-parser@>=5.0.0 <5.5.6": ">=5.5.6",
       "flatted@<=3.4.1": ">=3.4.2",
       "fast-xml-parser@>=4.0.0-beta.3 <=5.5.6": ">=5.5.7",
-      "path-to-regexp@<0.1.13": ">=0.1.13",
+      "path-to-regexp@<0.1.13": "0.1.13",
       "handlebars@>=4.0.0 <=4.7.8": ">=4.7.9",
       "brace-expansion@>=4.0.0 <5.0.5": ">=5.0.5",
       "handlebars@>=4.0.0 <4.7.9": ">=4.7.9",

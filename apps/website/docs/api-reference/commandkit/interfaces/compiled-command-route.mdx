@@ -1,0 +1,89 @@
+---
+title: "CompiledCommandRoute"
+isDefaultIndex: false
+generated: true
+---
+
+import MemberInfo from '@site/src/components/MemberInfo';
+import GenerationInfo from '@site/src/components/GenerationInfo';
+import MemberDescription from '@site/src/components/MemberDescription';
+
+<!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
+
+
+## CompiledCommandRoute
+
+<GenerationInfo sourceFile="packages/commandkit/src/app/router/CommandTree.ts" sourceLine="44" packageName="commandkit" />
+
+Executable command route produced from the internal tree.
+
+```ts title="Signature"
+interface CompiledCommandRoute {
+    id: string;
+    key: string;
+    kind: Exclude<CommandTreeNodeKind, 'root' | 'group'>;
+    token: string;
+    route: string[];
+    category: string | null;
+    definitionPath: string;
+    relativePath: string;
+    nodeId: string;
+    middlewares: string[];
+}
+```
+
+<div className="members-wrapper">
+
+### id
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### key
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### kind
+
+<MemberInfo kind="property" type={`Exclude&#60;<a href='/docs/api-reference/commandkit/types/command-tree-node-kind#commandtreenodekind'>CommandTreeNodeKind</a>, 'root' | 'group'&#62;`}   />
+
+
+### token
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### route
+
+<MemberInfo kind="property" type={`string[]`}   />
+
+
+### category
+
+<MemberInfo kind="property" type={`string | null`}   />
+
+
+### definitionPath
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### relativePath
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### nodeId
+
+<MemberInfo kind="property" type={`string`}   />
+
+
+### middlewares
+
+<MemberInfo kind="property" type={`string[]`}   />
+
+
+
+
+</div>

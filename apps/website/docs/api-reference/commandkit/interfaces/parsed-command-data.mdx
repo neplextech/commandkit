@@ -13,14 +13,17 @@ import MemberDescription from '@site/src/components/MemberDescription';
 
 ## ParsedCommandData
 
-<GenerationInfo sourceFile="packages/commandkit/src/app/router/CommandsRouter.ts" sourceLine="35" packageName="commandkit" />
+<GenerationInfo sourceFile="packages/commandkit/src/app/router/CommandsRouter.ts" sourceLine="41" packageName="commandkit" />
 
-Data structure containing parsed commands and middleware.
+Data structure containing parsed commands, middleware, and tree data.
 
 ```ts title="Signature"
 interface ParsedCommandData {
     commands: Record<string, Command>;
     middlewares: Record<string, Middleware>;
+    treeNodes?: Record<string, CommandTreeNode>;
+    compiledRoutes?: Record<string, CompiledCommandRoute>;
+    diagnostics?: CommandRouteDiagnostic[];
 }
 ```
 
@@ -34,6 +37,21 @@ interface ParsedCommandData {
 ### middlewares
 
 <MemberInfo kind="property" type={`Record&#60;string, <a href='/docs/api-reference/commandkit/interfaces/middleware#middleware'>Middleware</a>&#62;`}   />
+
+
+### treeNodes
+
+<MemberInfo kind="property" type={`Record&#60;string, <a href='/docs/api-reference/commandkit/interfaces/command-tree-node#commandtreenode'>CommandTreeNode</a>&#62;`}   />
+
+
+### compiledRoutes
+
+<MemberInfo kind="property" type={`Record&#60;string, <a href='/docs/api-reference/commandkit/interfaces/compiled-command-route#compiledcommandroute'>CompiledCommandRoute</a>&#62;`}   />
+
+
+### diagnostics
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/commandkit/interfaces/command-route-diagnostic#commandroutediagnostic'>CommandRouteDiagnostic</a>[]`}   />
 
 
 

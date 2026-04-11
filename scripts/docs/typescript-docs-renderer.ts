@@ -7,7 +7,7 @@ import { HeritageClause } from 'typescript';
 import {
   normalizeForUrlPart,
   escapeIfNeeded,
-  assertNever,
+  normalizeLineEndings,
 } from './docgen-utils';
 
 import { generateFrontMatter } from './docgen-utils';
@@ -129,7 +129,10 @@ export class TypescriptDocsRenderer {
               const indexFileContent =
                 generateFrontMatter(indexTitle, true) +
                 `\n\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />`;
-              fs.writeFileSync(indexFile, indexFileContent);
+              fs.writeFileSync(
+                indexFile,
+                normalizeLineEndings(indexFileContent),
+              );
               generatedCount++;
             }
           }
@@ -152,13 +155,19 @@ export class TypescriptDocsRenderer {
             const kindIndexFileContent =
               generateFrontMatter(kindTitle, true) +
               `\n\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />`;
-            fs.writeFileSync(kindIndexFile, kindIndexFileContent);
+            fs.writeFileSync(
+              kindIndexFile,
+              normalizeLineEndings(kindIndexFileContent),
+            );
             generatedCount++;
           }
 
           // Write the individual declaration file
           const fileName = normalizeForUrlPart(info.title);
-          fs.writeFileSync(path.join(categoryDir, fileName + '.mdx'), markdown);
+          fs.writeFileSync(
+            path.join(categoryDir, fileName + '.mdx'),
+            normalizeLineEndings(markdown),
+          );
           generatedCount++;
         }
       }
@@ -350,12 +359,15 @@ export class TypescriptDocsRenderer {
     const { fullText, members } = interfaceInfo;
     let output = '';
     output += '```ts title="Signature"\n';
-    output += `interface ${fullText} `;
+    output += `interface ${normalizeLineEndings(fullText)} `;
     if (interfaceInfo.extendsClause) {
-      output += interfaceInfo.extendsClause.getText() + ' ';
+      output +=
+        normalizeLineEndings(interfaceInfo.extendsClause.getText()) + ' ';
     }
     output += '{\n';
-    output += members.map((member) => `${INDENT}${member.fullText}`).join('\n');
+    output += members
+      .map((member) => `${INDENT}${normalizeLineEndings(member.fullText)}`)
+      .join('\n');
     output += '\n}\n';
     output += '```\n';
 
@@ -366,12 +378,13 @@ export class TypescriptDocsRenderer {
     const { fullText, members } = classInfo;
     let output = '';
     output += '```ts title="Signature"\n';
-    output += `class ${fullText} `;
+    output += `class ${normalizeLineEndings(fullText)} `;
     if (classInfo.extendsClause) {
-      output += classInfo.extendsClause.getText() + ' ';
+      output += normalizeLineEndings(classInfo.extendsClause.getText()) + ' ';
     }
     if (classInfo.implementsClause) {
-      output += classInfo.implementsClause.getText() + ' ';
+      output +=
+        normalizeLineEndings(classInfo.implementsClause.getText()) + ' ';
     }
     output += '{\n';
     const renderModifiers = (modifiers: string[]) =>
@@ -385,10 +398,10 @@ export class TypescriptDocsRenderer {
           if (member.fullText === 'constructor') {
             return `${INDENT}constructor(${args})`;
           } else {
-            return `${INDENT}${member.fullText}(${args}) => ${member.type};`;
+            return `${INDENT}${normalizeLineEndings(member.fullText)}(${args}) => ${this.normalizeTypeText(member.type)};`;
           }
         } else {
-          return `${INDENT}${member.fullText}`;
+          return `${INDENT}${normalizeLineEndings(member.fullText)}`;
         }
       })
       .join('\n');
@@ -402,15 +415,15 @@ export class TypescriptDocsRenderer {
     const { fullText, members, type } = typeAliasInfo;
     let output = '';
     output += '```ts title="Signature"\n';
-    output += `type ${fullText} = `;
+    output += `type ${normalizeLineEndings(fullText)} = `;
     if (members) {
       output += '{\n';
       output += members
-        .map((member) => `${INDENT}${member.fullText}`)
+        .map((member) => `${INDENT}${normalizeLineEndings(member.fullText)}`)
         .join('\n');
       output += '\n}\n';
     } else {
-      output += type.getText() + '\n';
+      output += normalizeLineEndings(type.getText()) + '\n';
     }
     output += '```\n';
     return output;
@@ -420,7 +433,7 @@ export class TypescriptDocsRenderer {
     const { fullText, members } = enumInfo;
     let output = '';
     output += '```ts title="Signature"\n';
-    output += `enum ${fullText} `;
+    output += `enum ${normalizeLineEndings(fullText)} `;
     if (members) {
       output += '{\n';
       output += members
@@ -428,7 +441,7 @@ export class TypescriptDocsRenderer {
           let line = member.description
             ? `${INDENT}// ${member.description}\n`
             : '';
-          line += `${INDENT}${member.fullText}`;
+          line += `${INDENT}${normalizeLineEndings(member.fullText)}`;
           return line;
         })
         .join('\n');
@@ -448,7 +461,9 @@ export class TypescriptDocsRenderer {
       .join(', ');
     let output = '';
     output += '```ts title="Signature"\n';
-    output += `function ${fullText}(${args}): ${type ? type.getText() : 'void'}\n`;
+    output += `function ${normalizeLineEndings(fullText)}(${args}): ${
+      type ? normalizeLineEndings(type.getText()) : 'void'
+    }\n`;
     output += '```\n';
     return output;
   }
@@ -534,9 +549,9 @@ export class TypescriptDocsRenderer {
   }
 
   private renderParameter(p: MethodParameterInfo, typeString: string): string {
-    return `${p.name}${p.optional ? '?' : ''}: ${typeString}${
-      p.initializer ? ` = ${p.initializer}` : ''
-    }`;
+    return `${p.name}${p.optional ? '?' : ''}: ${this.normalizeTypeText(
+      typeString,
+    )}${p.initializer ? ` = ${normalizeLineEndings(p.initializer)}` : ''}`;
   }
 
   private renderGenerationInfoShortcode(info: DeclarationInfo): string {
@@ -561,8 +576,7 @@ export class TypescriptDocsRenderer {
     knownTypeMap: TypeMap,
     docsUrl: string,
   ): string {
-    let typeText = type
-      .trim()
+    let typeText = this.normalizeTypeText(type)
       // encode HTML entities
       .replace(/[\u00A0-\u9999<>\&]/gim, (i) => '&#' + i.charCodeAt(0) + ';')
       // remove newlines
@@ -577,6 +591,10 @@ export class TypescriptDocsRenderer {
       );
     }
     return typeText;
+  }
+
+  private normalizeTypeText(type: string): string {
+    return normalizeLineEndings(type).trim();
   }
 
   /**

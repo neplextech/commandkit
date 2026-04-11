@@ -21,6 +21,7 @@ export interface ParsedMessageCommand {
   options: { name: string; value: unknown }[];
   subcommand?: string;
   subcommandGroup?: string;
+  fullRoute: string[];
 }
 
 /**
@@ -103,6 +104,14 @@ export class MessageCommandParser {
   }
 
   /**
+   * Gets the full command route as an array of segments.
+   * @returns Array of command segments
+   */
+  public getFullRoute(): string[] {
+    return this.parse().fullRoute;
+  }
+
+  /**
    * Gets the subcommand name if present.
    * @returns The subcommand name or undefined
    */
@@ -140,9 +149,7 @@ export class MessageCommandParser {
    * @returns The complete command string
    */
   public getFullCommand() {
-    return [this.getCommand(), this.getSubcommandGroup(), this.getSubcommand()]
-      .filter((v) => v)
-      .join(' ');
+    return this.getFullRoute().join(' ');
   }
 
   /**
@@ -162,28 +169,35 @@ export class MessageCommandParser {
       throw createCommandKitError(CommandKitErrorCodes.InvalidCommandPrefix);
     }
 
-    const parts = content.slice(prefix.length).trim().split(' ');
-    const command = parts.shift();
+    const body = content.slice(prefix.length).trim();
+
+    if (!body) {
+      throw createCommandKitError(CommandKitErrorCodes.InvalidCommandPrefix);
+    }
+
+    const parts = body.split(' ');
+    const commandToken = parts.shift();
 
     this.#args = parts;
 
+    let command: string | undefined = '';
     let subcommandGroup: string | undefined;
     let subcommand: string | undefined;
 
-    if (command?.includes(':')) {
-      const [, group, cmd] = command.split(':');
+    const fullRoute = commandToken?.split(':') ?? [];
 
-      if (!cmd && group) {
-        subcommand = group;
-      } else if (cmd && group) {
-        subcommandGroup = group;
-        subcommand = cmd;
+    if (fullRoute.length) {
+      command = fullRoute[0];
+
+      if (fullRoute.length === 2) {
+        subcommand = fullRoute[1];
+      } else if (fullRoute.length >= 3) {
+        subcommandGroup = fullRoute[1];
+        subcommand = fullRoute[fullRoute.length - 1];
       }
     }
 
-    const schema = this.schema(
-      [command, subcommandGroup, subcommand].filter(Boolean).join(' ').trim(),
-    );
+    const schema = this.schema(fullRoute.join(' ').trim());
 
     const options = parts
       .map((part) => {
@@ -244,6 +258,7 @@ export class MessageCommandParser {
       options,
       subcommand,
       subcommandGroup,
+      fullRoute,
     };
 
     return this.#parsed;

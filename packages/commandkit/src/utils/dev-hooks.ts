@@ -88,11 +88,11 @@ export function registerDevHooks(commandkit: CommandKit) {
 
       switch (event) {
         case HMREventType.ReloadCommands:
-          commandkit.commandHandler.reloadCommands();
+          await commandkit.commandHandler.reloadCommands();
           handled = true;
           break;
         case HMREventType.ReloadEvents:
-          commandkit.eventHandler.reloadEvents();
+          await commandkit.eventHandler.reloadEvents();
           handled = true;
           break;
         case HMREventType.Unknown:

@@ -95,25 +95,41 @@ export function debounce<R, F extends (...args: any[]) => R>(
   ms: number,
 ): F {
   let timer: NodeJS.Timeout | null = null;
-  let resolve: ((value: R | PromiseLike<R>) => void) | null = null;
+  let sharedPromise: Promise<R> | null = null;
+  let sharedResolve: ((value: R | PromiseLike<R>) => void) | null = null;
+  let sharedReject: ((reason?: any) => void) | null = null;
 
   return ((...args: any[]) => {
     if (timer) {
       clearTimeout(timer);
-      if (resolve) {
-        resolve(null as unknown as R); // Resolve with null if debounced
-      }
     }
 
-    return new Promise<R>((res) => {
-      resolve = res;
-      timer = setTimeout(() => {
-        const result = fn(...args);
-        res(result);
-        timer = null;
-        resolve = null;
-      }, ms);
-    });
+    if (!sharedPromise) {
+      sharedPromise = new Promise<R>((res, rej) => {
+        sharedResolve = res;
+        sharedReject = rej;
+      });
+    }
+
+    timer = setTimeout(async () => {
+      const currentResolve = sharedResolve;
+      const currentReject = sharedReject;
+
+      // Clear state so next call starts a new debounce window
+      timer = null;
+      sharedPromise = null;
+      sharedResolve = null;
+      sharedReject = null;
+
+      try {
+        const result = await fn(...args);
+        if (currentResolve) currentResolve(result);
+      } catch (err) {
+        if (currentReject) currentReject(err);
+      }
+    }, ms);
+
+    return sharedPromise;
   }) as F;
 }
 

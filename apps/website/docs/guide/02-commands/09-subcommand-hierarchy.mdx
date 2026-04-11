@@ -1,0 +1,129 @@
+---
+title: Subcommand Hierarchy
+---
+
+CommandKit supports fully filesystem-based slash command trees. The
+filesystem tokens are explicit:
+
+- `[command]` defines a root command directory
+- `{group}` defines a subcommand group directory
+- `command.ts` defines a directory-backed command node
+- `group.ts` defines a group node
+- `*.subcommand.ts` defines a shorthand subcommand leaf
+
+## Root Command Directories `[command]`
+
+Wrap a directory name in square brackets to declare a root slash
+command. The root directory must contain a `command.ts` file.
+
+```text title="Directory Structure"
+src/app/commands/
+└── (general)/
+    └── [settings]/
+        ├── command.ts
+        ├── profile.subcommand.ts
+        └── security.subcommand.ts
+```
+
+This produces:
+
+- `/settings profile`
+- `/settings security`
+
+Use `command.ts` to define the root command's description and shared
+options or metadata for the `/settings` root.
+
+## Group Directories `{group}`
+
+Use curly braces inside a root command directory to define a subcommand
+group. Group directories must contain a `group.ts` file.
+
+```text title="Directory Structure"
+src/app/commands/
+└── [settings]/
+    ├── command.ts
+    └── {notifications}/
+        ├── group.ts
+        ├── enable.subcommand.ts
+        └── disable.subcommand.ts
+```
+
+This produces:
+
+- `/settings notifications enable`
+- `/settings notifications disable`
+
+## Folder Leaves And Shorthand Leaves
+
+You can define leaves in two ways:
+
+1. Shorthand files with `*.subcommand.ts`
+2. Directory-backed leaves with `[leaf]/command.ts`
+
+Both compile to executable subcommands.
+
+```text title="Directory Structure"
+src/app/commands/
+└── [ops]/
+    ├── command.ts
+    ├── status.subcommand.ts
+    └── [deploy]/
+        └── command.ts
+```
+
+This produces:
+
+- `/ops status`
+- `/ops deploy`
+
+## Middleware Scope In Hierarchical Trees
+
+Hierarchical commands use the same middleware model as flat commands:
+
+- `+global-middleware.ts` always applies
+- `+middleware.ts` applies only from the current directory
+- `+<command>.middleware.ts` applies only from that same current
+  directory
+
+That means hierarchical leaves do not inherit `+middleware.ts` from
+ancestor command or group directories.
+
+Example:
+
+```text title="Directory Structure"
+src/app/commands/
+└── [workspace]/
+    ├── command.ts
+    ├── +middleware.ts
+    └── {notes}/
+        ├── group.ts
+        ├── +middleware.ts
+        ├── +add.middleware.ts
+        ├── add.subcommand.ts
+        └── [archive]/
+            ├── +middleware.ts
+            └── command.ts
+```
+
+`add.subcommand.ts` uses:
+
+- global middleware
+- `{notes}/+middleware.ts`
+- `{notes}/+add.middleware.ts`
+
+`[archive]/command.ts` uses:
+
+- global middleware
+- `[archive]/+middleware.ts`
+
+## Categories Still Work
+
+Parenthesis directories such as `(general)` remain organizational only.
+They do not change the slash route shape and they do not create command
+or group nodes by themselves.
+
+:::info
+Use `(category)` for organization, `[command]` for root commands, and
+`{group}` for subcommand groups. That separation keeps the filesystem
+shape and the generated Discord route aligned.
+:::
