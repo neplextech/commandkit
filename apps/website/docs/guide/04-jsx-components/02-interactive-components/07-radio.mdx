@@ -11,108 +11,109 @@ Use `RadioGroup` when you want the user to pick exactly one item from a list:
 
 ```tsx title="src/app/commands/radio-group.tsx"
 import {
-	type ChatInputCommand,
-	type OnModalKitSubmit,
-	Modal,
-	Label,
-	RadioGroup,
-	RadioGroupOption,
+  type ChatInputCommand,
+  type OnModalKitSubmit,
+  Modal,
+  Label,
+  RadioGroup,
+  RadioGroupOption,
 } from 'commandkit';
 import { MessageFlags } from 'discord.js';
 
 const handleSubmit: OnModalKitSubmit = async (interaction, context) => {
-	// returns the selected option's value
-	const plan = interaction.fields.getRadioGroup('plan', true);
+  // returns the selected option's value
+  const plan = interaction.fields.getRadioGroup('plan', true);
 
-	await interaction.reply({
-		content: `Selected plan: ${plan}`,
-		flags: MessageFlags.Ephemeral,
-	});
+  await interaction.reply({
+    content: `Selected plan: ${plan}`,
+    flags: MessageFlags.Ephemeral,
+  });
 
-	// Clean up the modal context
-	context.dispose();
+  // Clean up the modal context
+  context.dispose();
 };
 
 export const chatInput: ChatInputCommand = async ({ interaction }) => {
-	const modal = (
-		<Modal title="Choose a plan" onSubmit={handleSubmit}>
-			<Label label="Plan" description="Select one option">
-				<RadioGroup customId="plan" required>
-					<RadioGroupOption
-						label="Free"
-						value="free"
-						description="Basic features"
-					/>
-					<RadioGroupOption
-						label="Pro"
-						value="pro"
-						description="Extra features"
-					/>
-					<RadioGroupOption
-						label="Enterprise"
-						value="enterprise"
-						description="Custom agreement"
-					/>
-				</RadioGroup>
-			</Label>
-		</Modal>
-	);
+  const modal = (
+    <Modal title="Choose a plan" onSubmit={handleSubmit}>
+      <Label label="Plan" description="Select one option">
+        <RadioGroup customId="plan" required>
+          <RadioGroupOption
+            label="Free"
+            value="free"
+            description="Basic features"
+          />
+          <RadioGroupOption
+            label="Pro"
+            value="pro"
+            description="Extra features"
+          />
+          <RadioGroupOption
+            label="Enterprise"
+            value="enterprise"
+            description="Custom agreement"
+          />
+        </RadioGroup>
+      </Label>
+    </Modal>
+  );
 
-	await interaction.showModal(modal);
+  await interaction.showModal(modal);
 };
 ```
 
 ## Descriptions
+
 To add more context to each option, use the `description` prop on `RadioGroupOption`. This will render a smaller text below the option label, giving users more information to make their choice:
 
 ```tsx title="src/app/commands/radio-descriptions.tsx"
 import {
-	type ChatInputCommand,
-	type OnModalKitSubmit,
-	Modal,
-	Label,
-	RadioGroup,
-	RadioGroupOption,
+  type ChatInputCommand,
+  type OnModalKitSubmit,
+  Modal,
+  Label,
+  RadioGroup,
+  RadioGroupOption,
 } from 'commandkit';
 import { MessageFlags } from 'discord.js';
 
 const handleSubmit: OnModalKitSubmit = async (interaction, context) => {
-	const choice = interaction.fields.getRadioGroup('choice', true);
+  const choice = interaction.fields.getRadioGroup('choice', true);
 
-	await interaction.reply({
-		content: `You chose: ${choice}`,
-		flags: MessageFlags.Ephemeral,
-	});
+  await interaction.reply({
+    content: `You chose: ${choice}`,
+    flags: MessageFlags.Ephemeral,
+  });
 
-	context.dispose();
+  context.dispose();
 };
 
 export const chatInput: ChatInputCommand = async ({ interaction }) => {
-	const modal = (
-		<Modal title="Feedback" onSubmit={handleSubmit}>
-			<Label label="How was your experience?">
-				<RadioGroup customId="choice" required>
-					<RadioGroupOption
-						label="Good"
-						value="good"
-						description="Had a great experience"
-					/>
-					<RadioGroupOption
-						label="Okay"
-						value="okay"
-						description="It was fine, nothing special"
-					/>
-					<RadioGroupOption
-						label="Bad"
-						value="bad"
-						description="Had a poor experience"
-					/>
-				</RadioGroup>
-			</Label>
-		</Modal>
-	);
+  const modal = (
+    <Modal title="Feedback" onSubmit={handleSubmit}>
+      <Label label="How was your experience?">
+        <RadioGroup customId="choice" required>
+          <RadioGroupOption
+            label="Good"
+            value="good"
+            description="Had a great experience"
+          />
+          <RadioGroupOption
+            label="Okay"
+            value="okay"
+            description="It was fine, nothing special"
+          />
+          <RadioGroupOption
+            label="Bad"
+            value="bad"
+            description="Had a poor experience"
+          />
+        </RadioGroup>
+      </Label>
+    </Modal>
+  );
 
-	await interaction.showModal(modal);
+  await interaction.showModal(modal);
 };
 ```
 
@@ -122,40 +123,40 @@ Use `default` on `RadioGroupOption` to pre-select an option:
 
 ```tsx title="src/app/commands/default-radio.tsx"
 import {
-	type ChatInputCommand,
-	type OnModalKitSubmit,
-	Modal,
-	Label,
-	RadioGroup,
-	RadioGroupOption,
+  type ChatInputCommand,
+  type OnModalKitSubmit,
+  Modal,
+  Label,
+  RadioGroup,
+  RadioGroupOption,
 } from 'commandkit';
 import { MessageFlags } from 'discord.js';
 
 const handleSubmit: OnModalKitSubmit = async (interaction, context) => {
-	const frequency = interaction.fields.getRadioGroup('frequency', true);
+  const frequency = interaction.fields.getRadioGroup('frequency', true);
 
-	await interaction.reply({
-		content: `Notification frequency: ${frequency}`,
-		flags: MessageFlags.Ephemeral,
-	});
+  await interaction.reply({
+    content: `Notification frequency: ${frequency}`,
+    flags: MessageFlags.Ephemeral,
+  });
 
-	context.dispose();
+  context.dispose();
 };
 
 export const chatInput: ChatInputCommand = async ({ interaction }) => {
-	const modal = (
-		<Modal title="Notifications" onSubmit={handleSubmit}>
-			<Label label="How often should we notify you?">
-				<RadioGroup customId="frequency" required>
-					<RadioGroupOption label="Daily" value="daily" />
-					<RadioGroupOption label="Weekly" value="weekly" default />
-					<RadioGroupOption label="Never" value="never" />
-				</RadioGroup>
-			</Label>
-		</Modal>
-	);
+  const modal = (
+    <Modal title="Notifications" onSubmit={handleSubmit}>
+      <Label label="How often should we notify you?">
+        <RadioGroup customId="frequency" required>
+          <RadioGroupOption label="Daily" value="daily" />
+          <RadioGroupOption label="Weekly" value="weekly" default />
+          <RadioGroupOption label="Never" value="never" />
+        </RadioGroup>
+      </Label>
+    </Modal>
+  );
 
-	await interaction.showModal(modal);
+  await interaction.showModal(modal);
 };
 ```
 
@@ -167,38 +168,38 @@ When `required` is not set (or is `false`), you can read the value as
 
 ```tsx title="src/app/commands/optional-radio.tsx"
 import {
-	type ChatInputCommand,
-	type OnModalKitSubmit,
-	Modal,
-	Label,
-	RadioGroup,
-	RadioGroupOption,
+  type ChatInputCommand,
+  type OnModalKitSubmit,
+  Modal,
+  Label,
+  RadioGroup,
+  RadioGroupOption,
 } from 'commandkit';
 import { MessageFlags } from 'discord.js';
 
 const handleSubmit: OnModalKitSubmit = async (interaction, context) => {
-	const choice = interaction.fields.getRadioGroup('choice');
+  const choice = interaction.fields.getRadioGroup('choice');
 
-	await interaction.reply({
-		content: `Choice: ${choice ?? 'skipped'}`,
-		flags: MessageFlags.Ephemeral,
-	});
+  await interaction.reply({
+    content: `Choice: ${choice ?? 'skipped'}`,
+    flags: MessageFlags.Ephemeral,
+  });
 
-	context.dispose();
+  context.dispose();
 };
 
 export const chatInput: ChatInputCommand = async ({ interaction }) => {
-	const modal = (
-		<Modal title="Quick question" onSubmit={handleSubmit}>
-			<Label label="Pick one (optional)">
-				<RadioGroup customId="choice" required={false}>
-					<RadioGroupOption label="Yes" value="yes" />
-					<RadioGroupOption label="No" value="no" />
-				</RadioGroup>
-			</Label>
-		</Modal>
-	);
+  const modal = (
+    <Modal title="Quick question" onSubmit={handleSubmit}>
+      <Label label="Pick one (optional)">
+        <RadioGroup customId="choice" required={false}>
+          <RadioGroupOption label="Yes" value="yes" />
+          <RadioGroupOption label="No" value="no" />
+        </RadioGroup>
+      </Label>
+    </Modal>
+  );
 
-	await interaction.showModal(modal);
+  await interaction.showModal(modal);
 };
 ```

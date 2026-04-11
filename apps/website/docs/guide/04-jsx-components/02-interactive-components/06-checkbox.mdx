@@ -67,6 +67,7 @@ export const chatInput: ChatInputCommand = async ({ interaction }) => {
 ```
 
 ## Descriptions
+
 To provide more context about the options, you can add descriptions to `CheckboxGroupOption`:
 
 ```tsx title="src/app/commands/checkbox-descriptions.tsx"
@@ -94,10 +95,7 @@ const handleSubmit: OnModalKitSubmit = async (interaction, context) => {
 export const chatInput: ChatInputCommand = async ({ interaction }) => {
   const modal = (
     <Modal title="Feature Feedback" onSubmit={handleSubmit}>
-      <Label
-        label="Features"
-        description="Which features do you use the most?"
-      >
+      <Label label="Features" description="Which features do you use the most?">
         <CheckboxGroup customId="features">
           <CheckboxGroupOption
             label="Modals"
