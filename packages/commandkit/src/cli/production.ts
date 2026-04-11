@@ -23,7 +23,7 @@ export async function bootstrapProductionServer(configPath?: string) {
     );
   }
 
-  return createAppProcess(mainFile, cwd, false);
+  return createAppProcess(mainFile, cwd, false, config);
 }
 
 /**

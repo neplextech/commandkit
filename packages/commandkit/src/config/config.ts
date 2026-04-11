@@ -80,6 +80,10 @@ export function defineConfig(
     jsxDefaultOptionalComponents:
       config.jsxDefaultOptionalComponents ??
       defaultConfig.jsxDefaultOptionalComponents,
+    experimental: {
+      ...defaultConfig.experimental,
+      ...config.experimental,
+    },
   };
 
   return defined;

@@ -29,7 +29,7 @@ async function buildAndStart(configPath: string, skipStart = false) {
 
   if (skipStart) return null as never;
 
-  const ps = createAppProcess(mainFile, configPath, true);
+  const ps = createAppProcess(mainFile, configPath, true, config);
 
   return ps;
 }
@@ -52,7 +52,15 @@ const isEventSource = (p: string) =>
  * @private
  * @internal
  */
-export async function bootstrapDevelopmentServer(configPath?: string) {
+export async function bootstrapDevelopmentServer(configPath?: string): Promise<{
+  watcher: ReturnType<typeof watch>;
+  isConfigUpdate: (path: string) => boolean;
+  performHMR: (path?: string) => Promise<boolean>;
+  hmrHandler: (path: string) => Promise<void>;
+  sendHmrEvent: (event: HMREventType, path?: string) => Promise<boolean>;
+  getProcess: () => ChildProcess | null;
+  buildAndStart: typeof buildAndStart;
+}> {
   process.env.COMMANDKIT_BOOTSTRAP_MODE = 'development';
   process.env.COMMANDKIT_INTERNAL_IS_CLI_PROCESS = 'true';
   const start = performance.now();
