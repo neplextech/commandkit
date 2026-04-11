@@ -2,6 +2,11 @@ import { MaybeArray } from '../components';
 import { CommandKitPlugin } from '../plugins';
 import type { InlineConfig as TsDownOptions } from 'tsdown';
 
+/**
+ * The JavaScript runtime to use for the development server.
+ */
+export type CommandKitJsRuntime = 'node' | 'bun' | 'deno' | 'auto';
+
 export interface CommandKitCompilerOptions {
   /**
    * The macro compiler options to use with CommandKit.
@@ -119,4 +124,14 @@ export interface CommandKitConfig {
    * @default true
    */
   jsxDefaultOptionalComponents?: boolean;
+  /**
+   * Experimental features configuration. These features are not stable and may be removed or changed without a major version bump. Use with caution.
+   */
+  experimental?: {
+    /**
+     * The runtime to use for the development server. This is an experimental feature and may be removed or changed without a major version bump. Use with caution.
+     * @default null
+     */
+    devServerRuntime?: CommandKitJsRuntime | null;
+  };
 }
