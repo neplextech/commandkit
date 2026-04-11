@@ -62,6 +62,60 @@ export const chatInput: ChatInputCommand = async ({ interaction }) => {
 };
 ```
 
+## Descriptions
+To add more context to each option, use the `description` prop on `RadioGroupOption`. This will render a smaller text below the option label, giving users more information to make their choice:
+
+```tsx title="src/app/commands/radio-descriptions.tsx"
+import {
+	type ChatInputCommand,
+	type OnModalKitSubmit,
+	Modal,
+	Label,
+	RadioGroup,
+	RadioGroupOption,
+} from 'commandkit';
+import { MessageFlags } from 'discord.js';
+
+const handleSubmit: OnModalKitSubmit = async (interaction, context) => {
+	const choice = interaction.fields.getRadioGroup('choice', true);
+
+	await interaction.reply({
+		content: `You chose: ${choice}`,
+		flags: MessageFlags.Ephemeral,
+	});
+
+	context.dispose();
+};
+
+export const chatInput: ChatInputCommand = async ({ interaction }) => {
+	const modal = (
+		<Modal title="Feedback" onSubmit={handleSubmit}>
+			<Label label="How was your experience?">
+				<RadioGroup customId="choice" required>
+					<RadioGroupOption
+						label="Good"
+						value="good"
+						description="Had a great experience"
+					/>
+					<RadioGroupOption
+						label="Okay"
+						value="okay"
+						description="It was fine, nothing special"
+					/>
+					<RadioGroupOption
+						label="Bad"
+						value="bad"
+						description="Had a poor experience"
+					/>
+				</RadioGroup>
+			</Label>
+		</Modal>
+	);
+
+	await interaction.showModal(modal);
+};
+```
+
 ## Default selection
 
 Use `default` on `RadioGroupOption` to pre-select an option:
@@ -78,10 +132,10 @@ import {
 import { MessageFlags } from 'discord.js';
 
 const handleSubmit: OnModalKitSubmit = async (interaction, context) => {
-	const theme = interaction.fields.getRadioGroup('theme');
+	const frequency = interaction.fields.getRadioGroup('frequency', true);
 
 	await interaction.reply({
-		content: `Theme: ${theme ?? 'none'}`,
+		content: `Notification frequency: ${frequency}`,
 		flags: MessageFlags.Ephemeral,
 	});
 
@@ -90,12 +144,12 @@ const handleSubmit: OnModalKitSubmit = async (interaction, context) => {
 
 export const chatInput: ChatInputCommand = async ({ interaction }) => {
 	const modal = (
-		<Modal title="Appearance" onSubmit={handleSubmit}>
-			<Label label="Theme">
-				<RadioGroup customId="theme">
-					<RadioGroupOption label="System" value="system" default />
-					<RadioGroupOption label="Light" value="light" />
-					<RadioGroupOption label="Dark" value="dark" />
+		<Modal title="Notifications" onSubmit={handleSubmit}>
+			<Label label="How often should we notify you?">
+				<RadioGroup customId="frequency" required>
+					<RadioGroupOption label="Daily" value="daily" />
+					<RadioGroupOption label="Weekly" value="weekly" default />
+					<RadioGroupOption label="Never" value="never" />
 				</RadioGroup>
 			</Label>
 		</Modal>
