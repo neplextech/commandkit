@@ -28,10 +28,14 @@
   "packageManager": "pnpm@10.30.3",
   "pnpm": {
     "onlyBuiltDependencies": [
+      "@nestjs/core",
       "@swc/core",
       "@tailwindcss/oxide",
+      "cbor-extract",
       "core-js",
-      "core-js-pure"
+      "core-js-pure",
+      "esbuild",
+      "msgpackr-extract"
     ],
     "overrides": {
       "tmp@<=0.2.3": ">=0.2.4",
