@@ -27,9 +27,7 @@ project/
 import type { MiddlewareContext } from 'commandkit';
 
 export function beforeExecute(ctx: MiddlewareContext) {
-  console.log(
-    `User ${ctx.interaction.user.id} is about to execute a command`,
-  );
+  console.log(`User ${ctx.interaction.user.id} is about to execute a command`);
 }
 
 export function afterExecute(ctx: MiddlewareContext) {
