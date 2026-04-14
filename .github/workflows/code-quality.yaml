@@ -31,7 +31,7 @@ jobs:
         run: pnpm dlx turbo check-types
 
       - name: Run CommandKit Command Handler Tests
-        run: pnpm test:commandkit
+        run: pnpm run test
 
       - name: Check Generated API Docs
         run: pnpm docgen:check
