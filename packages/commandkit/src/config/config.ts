@@ -83,6 +83,12 @@ export function defineConfig(
     experimental: {
       ...defaultConfig.experimental,
       ...config.experimental,
+      pregenerateCommands:
+        config.experimental?.pregenerateCommands ??
+        defaultConfig.experimental.pregenerateCommands,
+      incrementalRouter:
+        config.experimental?.incrementalRouter ??
+        defaultConfig.experimental.incrementalRouter,
     },
   };
 

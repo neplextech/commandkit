@@ -5,6 +5,6 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true
   },
-  "include": ["src/**/*.ts", "helpers/**/*.ts", "spec"],
+  "include": ["src/**/*.ts", "helpers/**/*.ts"],
   "exclude": ["node_modules"]
 }

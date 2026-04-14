@@ -8,9 +8,9 @@ import {
 } from 'discord.js';
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { CommandKit } from '../src/commandkit';
-import { AppCommandHandler } from '../src/app/handlers/AppCommandHandler';
-import { CommandsRouter } from '../src/app/router';
+import { CommandKit } from '../../commandkit';
+import { AppCommandHandler } from './AppCommandHandler';
+import { CommandsRouter } from '../router';
 
 const tmpRoots: string[] = [];
 const tempBaseDir = join(__dirname, '.tmp');

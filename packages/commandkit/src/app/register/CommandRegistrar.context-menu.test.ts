@@ -1,16 +1,16 @@
 import { afterEach, describe, expect, test } from 'vitest';
 import { ApplicationCommandType, Client } from 'discord.js';
 import { join } from 'node:path';
-import { CommandKit } from '../src/commandkit';
+import { CommandKit } from '../../commandkit';
 import {
   AppCommandHandler,
   type LoadedCommand,
-} from '../src/app/handlers/AppCommandHandler';
-import { CommandRegistrar } from '../src/app/register/CommandRegistrar';
-import type { Command } from '../src/app/router/CommandsRouter';
-import type { CommandMetadata } from '../src/types';
+} from '../handlers/AppCommandHandler';
+import { CommandRegistrar } from './CommandRegistrar';
+import type { Command } from '../router/CommandsRouter';
+import type { CommandMetadata } from '../../types';
 
-const fixturesDir = join(__dirname, 'fixtures');
+const fixturesDir = join(__dirname, '__fixtures__');
 const noop = async () => {};
 const slowTestTimeout = 20_000;
 

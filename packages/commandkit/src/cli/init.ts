@@ -1,13 +1,18 @@
 import { existsSync } from 'node:fs';
-import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { generateTypesPackage } from '../utils/types-package';
+import {
+  COMMANDKIT_ENV_FILE,
+  generateTypesPackage,
+  getTypesFilePath,
+  rewriteCommandDeclaration,
+} from '../utils/types-package';
 import { loadConfigFile } from '../config/loader';
 import {
   CompilerPlugin,
   CompilerPluginRuntime,
   isCompilerPlugin,
 } from '../plugins';
+import { CommandsRouter } from '../app/router';
 import { panic } from './common';
 import { COMMANDKIT_CWD } from '../utils/constants';
 
@@ -79,6 +84,49 @@ export async function bootstrapCommandkitCLI(
     });
 
   program
+    .command('typegen')
+    .description('Generate command type declarations for this project.')
+    .option('-c, --config [path]', 'Path to your commandkit config file.')
+    .action(async () => {
+      setCLIEnv();
+      const options = program.opts();
+      const cwd = options.config || COMMANDKIT_CWD;
+
+      await generateTypesPackage(true);
+
+      const commandsEntrypoint = resolveCommandsEntrypoint(cwd);
+
+      if (!commandsEntrypoint) {
+        await rewriteCommandDeclaration([]);
+        return;
+      }
+
+      const router = new CommandsRouter({
+        entrypoint: commandsEntrypoint,
+      });
+
+      if (!router.isValidPath()) {
+        await rewriteCommandDeclaration([]);
+        return;
+      }
+
+      const result = await router.scan();
+      const commandNames = Object.values(result.commands).map(
+        (cmd) => cmd.name,
+      );
+      const routeNames = Object.keys(result.compiledRoutes ?? {});
+      const names = Array.from(
+        new Set([...commandNames, ...routeNames]),
+      ).sort();
+
+      if (!existsSync(join(cwd, COMMANDKIT_ENV_FILE))) {
+        await generateTypesPackage(true);
+      }
+
+      await rewriteCommandDeclaration(names);
+    });
+
+  program
     .command('create')
     .description(
       'Create new files using built-in templates or custom plugin templates',
@@ -143,12 +191,26 @@ export async function bootstrapCommandkitCLI(
       }
     });
 
-  const types = join(COMMANDKIT_CWD, 'node_modules', 'commandkit-types');
+  const types = getTypesFilePath();
 
   if (!existsSync(types)) {
-    await mkdir(types, { recursive: true }).catch(() => {});
     await generateTypesPackage(true).catch(() => {});
   }
 
   await program.parseAsync(argv, options);
+}
+
+function resolveCommandsEntrypoint(cwd: string) {
+  const sourceLikeRoots = [
+    join(cwd, 'src', 'app', 'commands'),
+    join(cwd, 'app', 'commands'),
+  ];
+
+  for (const candidate of sourceLikeRoots) {
+    if (existsSync(candidate)) {
+      return candidate;
+    }
+  }
+
+  return null;
 }

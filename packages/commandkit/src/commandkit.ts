@@ -4,16 +4,31 @@ import colors from './utils/colors';
 import { createElement, Fragment } from './components';
 import { EventInterceptor } from './components/common/EventInterceptor';
 import { Awaitable, Client, Events, Locale, Message } from 'discord.js';
-import { createProxy, findAppDirectory, SimpleProxy } from './utils/utilities';
+import {
+  createProxy,
+  findAppDirectory,
+  getCurrentDirectory,
+  SimpleProxy,
+} from './utils/utilities';
 import { join } from 'node:path';
 import { AppCommandHandler } from './app/handlers/AppCommandHandler';
 import { CommandsRouter, EventsRouter } from './app/router';
+import {
+  hydrateRouterTreeArtifact,
+  ROUTER_TREE_ARTIFACT_DIRECTORY,
+  ROUTER_TREE_ARTIFACT_FILE,
+  validateRouterTreeArtifact,
+} from './app/router/TreeArtifact';
 import { AppEventsHandler } from './app/handlers/AppEventsHandler';
 import { CommandKitPluginRuntime } from './plugins/plugin-runtime/CommandKitPluginRuntime';
 import { loadConfigFile } from './config/loader';
-import { COMMANDKIT_IS_DEV } from './utils/constants';
+import {
+  COMMANDKIT_BOOTSTRAP_MODE,
+  COMMANDKIT_IS_DEV,
+} from './utils/constants';
 import { registerDevHooks } from './utils/dev-hooks';
-import { writeFileSync } from 'node:fs';
+import { existsSync, writeFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { CommandKitEventsChannel } from './events/CommandKitEventsChannel';
 import { isRuntimePlugin } from './plugins';
 import { generateTypesPackage } from './utils/types-package';
@@ -23,6 +38,7 @@ import { FlagStore } from './flags/store';
 import { AnalyticsEngine } from './analytics/analytics-engine';
 import { ResolvedCommandKitConfig } from './config/utils';
 import { getConfig } from './config/config';
+import { version } from './version';
 
 /**
  * Configurations for the CommandKit instance.
@@ -95,6 +111,7 @@ export function onApplicationBootstrap<F extends BootstrapFunction>(
  */
 export class CommandKit extends EventEmitter {
   #started = false;
+  #hydratedFromArtifact = false;
   #clientProxy: SimpleProxy<Client> | null = createProxy({} as Client);
   #client!: Client;
   /**
@@ -403,12 +420,55 @@ export class CommandKit extends EventEmitter {
       return plugin.onEventsRouterInit(ctx);
     });
 
+    this.#hydratedFromArtifact = await this.#hydrateRoutersFromArtifact();
+
     await this.#initEvents();
     await this.#initCommands();
   }
 
+  async #hydrateRoutersFromArtifact() {
+    if (COMMANDKIT_IS_DEV) return false;
+    if (COMMANDKIT_BOOTSTRAP_MODE !== 'production') return false;
+    if (!this.config.experimental.pregenerateCommands) return false;
+
+    const outputRoot = getCurrentDirectory();
+    const artifactPath = join(
+      outputRoot,
+      ROUTER_TREE_ARTIFACT_DIRECTORY,
+      ROUTER_TREE_ARTIFACT_FILE,
+    );
+
+    if (!existsSync(artifactPath)) {
+      return false;
+    }
+
+    try {
+      const json = await readFile(artifactPath, 'utf8');
+      const parsed = JSON.parse(json);
+
+      if (!validateRouterTreeArtifact(parsed, version)) {
+        Logger.warn(
+          `Ignoring router tree artifact at ${artifactPath}: schema/version mismatch. Falling back to dynamic filesystem resolution.`,
+        );
+        return false;
+      }
+
+      const hydrated = hydrateRouterTreeArtifact(parsed, outputRoot);
+
+      this.commandsRouter.populate(hydrated.commands);
+      this.eventsRouter.populate(hydrated.events);
+
+      return true;
+    } catch (error) {
+      Logger.warn(
+        `Failed to load router tree artifact at ${artifactPath}. Falling back to dynamic filesystem resolution. ${error}`,
+      );
+      return false;
+    }
+  }
+
   async #initCommands() {
-    if (this.commandsRouter.isValidPath()) {
+    if (!this.#hydratedFromArtifact && this.commandsRouter.isValidPath()) {
       const result = await this.commandsRouter.scan();
 
       if (COMMANDKIT_IS_DEV) {
@@ -425,7 +485,7 @@ export class CommandKit extends EventEmitter {
   }
 
   async #initEvents() {
-    if (this.eventsRouter.isValidPath()) {
+    if (!this.#hydratedFromArtifact && this.eventsRouter.isValidPath()) {
       await this.eventsRouter.scan();
     }
 

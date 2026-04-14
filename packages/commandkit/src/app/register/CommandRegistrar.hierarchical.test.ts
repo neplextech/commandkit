@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
@@ -6,9 +6,10 @@ import {
 } from 'discord.js';
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { CommandKit } from '../src/commandkit';
-import { AppCommandHandler } from '../src/app/handlers/AppCommandHandler';
-import { CommandsRouter } from '../src/app/router';
+import { CommandKit } from '../../commandkit';
+import { Logger } from '../../logger/Logger';
+import { AppCommandHandler } from '../handlers/AppCommandHandler';
+import { CommandsRouter } from '../router';
 
 const tmpRoots: string[] = [];
 const tempBaseDir = join(__dirname, '.tmp');
@@ -198,6 +199,10 @@ describe('Hierarchical command registration', () => {
       ],
     ]);
 
+    const loggerErrorSpy = vi
+      .spyOn(Logger, 'error')
+      .mockImplementation((() => {}) as any);
+
     try {
       const registrationCommands = handler.registrar.getCommandsData();
 
@@ -205,6 +210,7 @@ describe('Hierarchical command registration', () => {
         registrationCommands.find((entry) => entry.name === 'admin'),
       ).toBeUndefined();
     } finally {
+      loggerErrorSpy.mockRestore();
       await client.destroy();
     }
   });

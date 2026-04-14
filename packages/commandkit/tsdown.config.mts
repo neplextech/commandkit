@@ -5,7 +5,13 @@ const macro = new MacroTransformer();
 
 export default defineConfig({
   format: ['cjs'],
-  entry: ['src/**/*.ts'],
+  entry: [
+    'src/**/*.ts',
+    '!src/**/*.test.ts',
+    '!src/**/*.spec.ts',
+    '!src/**/*.test.tsx',
+    '!src/**/*.spec.tsx',
+  ],
   outDir: './dist',
   sourcemap: true,
   watch: false,

@@ -1,6 +1,10 @@
 import type { CommandKit } from '../commandkit';
 import { Logger } from '../logger/Logger';
-import { COMMANDKIT_IS_DEV, HMREventType } from './constants';
+import {
+  COMMANDKIT_IS_DEV,
+  HMREventChangeType,
+  HMREventType,
+} from './constants';
 
 /**
  * Represents HMR inter-process communication messages.
@@ -14,6 +18,10 @@ export interface IpcMessageCommand {
    * The path associated with the HMR event.
    */
   path: string;
+  /**
+   * The original filesystem change type that triggered this HMR event.
+   */
+  changeType?: HMREventChangeType;
   /**
    * An optional identifier for the HMR event, used for acknowledgment.
    */
@@ -32,6 +40,10 @@ export interface CommandKitHMREvent {
    * The path associated with the HMR event.
    */
   path: string;
+  /**
+   * The original filesystem change type that triggered this HMR event.
+   */
+  changeType?: HMREventChangeType;
   /**
    * Accepts the HMR event, indicating that it has been handled.
    * This prevents further processing of the event.
@@ -54,8 +66,15 @@ export function registerDevHooks(commandkit: CommandKit) {
   process.on('message', async (message) => {
     if (typeof message !== 'object' || message === null) return;
 
-    const { event, path, id } = message as IpcMessageCommand;
+    const {
+      event,
+      path: maybePath,
+      id,
+      changeType,
+    } = message as IpcMessageCommand;
     if (!event) return;
+
+    const path = maybePath ?? '';
 
     if (process.env.COMMANDKIT_DEBUG_HMR === 'true') {
       Logger.info(`Received HMR event: ${event}${path ? ` for ${path}` : ''}`);
@@ -74,6 +93,7 @@ export function registerDevHooks(commandkit: CommandKit) {
       },
       path,
       event,
+      changeType,
     };
 
     try {
@@ -88,11 +108,11 @@ export function registerDevHooks(commandkit: CommandKit) {
 
       switch (event) {
         case HMREventType.ReloadCommands:
-          await commandkit.commandHandler.reloadCommands();
+          await commandkit.commandHandler.reloadCommands(path, changeType);
           handled = true;
           break;
         case HMREventType.ReloadEvents:
-          await commandkit.eventHandler.reloadEvents();
+          await commandkit.eventHandler.reloadEvents(path, changeType);
           handled = true;
           break;
         case HMREventType.Unknown:

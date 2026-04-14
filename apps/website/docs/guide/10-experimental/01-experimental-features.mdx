@@ -1,0 +1,89 @@
+---
+title: Experimental Features
+description: Opt-in experimental runtime and type generation features in
+  CommandKit
+---
+
+CommandKit includes a small set of opt-in experimental features for
+improving startup performance and local developer ergonomics.
+
+:::warning Experimental features are disabled by default and may
+change in future minor releases. :::
+
+## Enable Experimental Flags
+
+Set these flags in `commandkit.config.ts`:
+
+```ts title="commandkit.config.ts"
+import { defineConfig } from 'commandkit/config';
+
+export default defineConfig({
+  experimental: {
+    pregenerateCommands: true,
+    incrementalRouter: true,
+  },
+});
+```
+
+## `experimental.pregenerateCommands`
+
+When enabled, `commandkit build` pre-generates a serialized command
+and event router artifact and writes it into build output:
+
+- `dist/.commandkit/router-tree.json`
+
+At runtime in production, CommandKit attempts to hydrate routers from
+this artifact instead of performing full filesystem traversal.
+
+If the artifact is missing, stale, or invalid (for example version
+mismatch), CommandKit automatically falls back to dynamic runtime
+resolution.
+
+### Why Use It
+
+- Keeps production cold starts predictable as command/event trees
+  grow.
+- Avoids repeated full tree construction work on each startup.
+
+## `experimental.incrementalRouter`
+
+When enabled, development HMR updates only the subtree affected by a
+file change instead of reconciling the full router tree.
+
+This applies to command and event routers during `commandkit dev`,
+including file add/change/delete operations.
+
+### Why Use It
+
+- Reduces reload lag in larger bots.
+- Preserves unchanged router state across updates.
+
+## Type Generation (`commandkit typegen`)
+
+CommandKit can generate command route types for editor autocomplete.
+
+Run:
+
+```sh
+commandkit typegen
+```
+
+This writes:
+
+- `./.commandkit/types.ts` (generated command route registry)
+- `./commandkit-env.d.ts` (type reference file)
+
+`commandkit-env.d.ts` references the generated file:
+
+```ts title="commandkit-env.d.ts"
+/// <reference path="./.commandkit/types" />
+```
+
+During development, CommandKit also refreshes generated command route
+types after command reloads.
+
+### Where You See It
+
+APIs that accept resolvable command names (for example
+`ctx.forwardCommand(...)`) get route-aware autocomplete when generated
+types are present.

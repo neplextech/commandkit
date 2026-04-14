@@ -1,6 +1,6 @@
 import { Collection, ApplicationCommandOptionType, Message } from 'discord.js';
 import { describe, expect, test, vi } from 'vitest';
-import { MessageCommandParser } from '../src/app/commands/MessageCommandParser';
+import { MessageCommandParser } from './MessageCommandParser';
 
 function createMessage(content: string) {
   return {

@@ -1,7 +1,14 @@
 import { Collection } from 'discord.js';
 import { Dirent, existsSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
-import { basename, extname, join, normalize } from 'node:path';
+import {
+  basename,
+  extname,
+  isAbsolute,
+  join,
+  normalize,
+  relative,
+} from 'node:path';
 import {
   CommandRouteDiagnostic,
   CommandTreeNode,
@@ -52,6 +59,8 @@ export interface ParsedCommandData {
 export interface CommandsRouterOptions {
   entrypoint: string;
 }
+
+export type RouterFileChangeType = 'add' | 'change' | 'unlink' | 'unlinkDir';
 
 const ROOT_NODE_ID = '__commandkit_router_root__';
 
@@ -292,6 +301,62 @@ export class CommandsRouter {
   }
 
   /**
+   * Incrementally updates only the top-level command subtree affected by a file change.
+   * Falls back to a full scan when the changed path cannot be safely scoped.
+   */
+  public async scanIncremental(
+    changedPath: string,
+    _changeType: RouterFileChangeType = 'change',
+  ): Promise<ParsedCommandData> {
+    const normalizedPath = normalize(changedPath);
+
+    if (!this.isWithinPath(this.options.entrypoint, normalizedPath)) {
+      return this.toJSON();
+    }
+
+    const relativePath = this.replaceEntrypoint(normalizedPath)
+      .replace(/^[/\\]/, '')
+      .split(/[/\\]/)
+      .filter(Boolean);
+
+    if (!relativePath.length) {
+      return this.scan();
+    }
+
+    const topLevelToken = relativePath[0];
+
+    if (!this.isCommandDirectory(topLevelToken)) {
+      return this.scan();
+    }
+
+    const commandName = topLevelToken.match(COMMAND_DIRECTORY_PATTERN)?.[1];
+
+    if (!commandName) {
+      return this.scan();
+    }
+
+    this.ensureRootNode();
+
+    const commandRootDirectory = join(this.options.entrypoint, topLevelToken);
+    this.pruneCommandSubtree(commandName, commandRootDirectory);
+
+    if (existsSync(commandRootDirectory)) {
+      await this.traverseDirectory(
+        commandRootDirectory,
+        'command',
+        null,
+        ROOT_NODE_ID,
+        commandName,
+      );
+    }
+
+    await this.applyMiddlewares();
+    this.compileTree();
+
+    return this.toJSON();
+  }
+
+  /**
    * Gets the raw command, middleware, and compiled tree collections.
    * @returns Object containing router collections
    */
@@ -361,6 +426,73 @@ export class CommandsRouter {
       shorthand: false,
       executable: false,
     });
+  }
+
+  /**
+   * @private
+   * @internal
+   */
+  private ensureRootNode() {
+    if (!this.treeNodes.has(ROOT_NODE_ID)) {
+      this.initializeRootNode();
+    }
+  }
+
+  /**
+   * @private
+   * @internal
+   */
+  private pruneCommandSubtree(
+    commandName: string,
+    commandRootDirectory: string,
+  ) {
+    const normalizedRootDirectory = normalize(commandRootDirectory);
+
+    for (const [id, command] of this.commands.entries()) {
+      if (
+        command.name === commandName ||
+        this.isWithinPath(normalizedRootDirectory, command.path) ||
+        this.isWithinPath(normalizedRootDirectory, command.parentPath)
+      ) {
+        this.commands.delete(id);
+      }
+    }
+
+    for (const [id, middleware] of this.middlewares.entries()) {
+      if (
+        this.isWithinPath(normalizedRootDirectory, middleware.path) ||
+        this.isWithinPath(normalizedRootDirectory, middleware.parentPath)
+      ) {
+        this.middlewares.delete(id);
+      }
+    }
+
+    const nodeIdsToDelete = new Set<string>();
+
+    for (const [id, node] of this.treeNodes.entries()) {
+      if (id === ROOT_NODE_ID) continue;
+
+      if (
+        node.route[0] === commandName ||
+        this.isWithinPath(normalizedRootDirectory, node.directoryPath) ||
+        (node.definitionPath &&
+          this.isWithinPath(normalizedRootDirectory, node.definitionPath))
+      ) {
+        nodeIdsToDelete.add(id);
+      }
+    }
+
+    if (nodeIdsToDelete.size) {
+      for (const id of nodeIdsToDelete) {
+        this.treeNodes.delete(id);
+      }
+
+      for (const node of this.treeNodes.values()) {
+        node.childIds = node.childIds.filter((childId) => {
+          return !nodeIdsToDelete.has(childId);
+        });
+      }
+    }
   }
 
   /**
@@ -877,5 +1009,21 @@ export class CommandsRouter {
   private replaceEntrypoint(path: string) {
     const normalized = normalize(path);
     return normalized.replace(this.options.entrypoint, '');
+  }
+
+  /**
+   * @private
+   * @internal
+   */
+  private isWithinPath(basePath: string, targetPath: string) {
+    const base = normalize(basePath);
+    const target = normalize(targetPath);
+    const rel = relative(base, target);
+
+    if (!rel) {
+      return true;
+    }
+
+    return !rel.startsWith('..') && !isAbsolute(rel);
   }
 }

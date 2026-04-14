@@ -1,14 +1,21 @@
 import { existsSync } from 'node:fs';
-import { writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { rimraf } from 'rimraf';
 import type { InlineConfig } from 'tsdown';
 
+import { CommandsRouter, EventsRouter } from '../app/router';
+import {
+  createRouterTreeArtifact,
+  ROUTER_TREE_ARTIFACT_DIRECTORY,
+  ROUTER_TREE_ARTIFACT_FILE,
+} from '../app/router/TreeArtifact';
 import { MaybeArray } from '../components';
 import { loadConfigFile } from '../config/loader';
 import { mergeDeep } from '../config/utils';
 import { CompilerPlugin, CompilerPluginRuntime } from '../plugins';
 import { COMMANDKIT_CWD } from '../utils/constants';
+import { version } from '../version';
 import { copyLocaleFiles, loadTsdown } from './common';
 import { devEnvFileArgs, prodEnvFileArgs } from './env';
 import { performTypeCheck } from './type-checker';
@@ -169,6 +176,10 @@ export async function buildApplication({
       ),
       config.distDir,
     );
+
+    if (config.experimental.pregenerateCommands) {
+      await emitPregeneratedRouterArtifact(join(COMMANDKIT_CWD, dest));
+    }
   } catch (error) {
     console.error('Build failed:', error);
     if (error instanceof Error) {
@@ -179,6 +190,45 @@ export async function buildApplication({
     // Ensure plugins are cleaned up
     await pluginRuntime.destroy();
   }
+}
+
+async function emitPregeneratedRouterArtifact(outputRoot: string) {
+  const commandEntrypoint = join(outputRoot, 'app', 'commands');
+  const eventsEntrypoint = join(outputRoot, 'app', 'events');
+
+  const commandsRouter = new CommandsRouter({
+    entrypoint: commandEntrypoint,
+  });
+  const eventsRouter = new EventsRouter({
+    entrypoints: [eventsEntrypoint],
+  });
+
+  const commands = commandsRouter.isValidPath()
+    ? await commandsRouter.scan()
+    : {
+        commands: {},
+        middlewares: {},
+        treeNodes: {},
+        compiledRoutes: {},
+        diagnostics: [],
+      };
+
+  const events = eventsRouter.isValidPath() ? await eventsRouter.scan() : {};
+
+  const artifact = createRouterTreeArtifact({
+    outputRoot,
+    commandkitVersion: version,
+    commands,
+    events,
+  });
+
+  const artifactDirectory = join(outputRoot, ROUTER_TREE_ARTIFACT_DIRECTORY);
+  await mkdir(artifactDirectory, { recursive: true });
+  await writeFile(
+    join(artifactDirectory, ROUTER_TREE_ARTIFACT_FILE),
+    JSON.stringify(artifact, null, 2),
+    'utf8',
+  );
 }
 
 const envScript = (dev: boolean) => `// --- Environment Variables Loader ---

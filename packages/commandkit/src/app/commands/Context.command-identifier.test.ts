@@ -2,10 +2,10 @@ import { afterEach, describe, expect, test } from 'vitest';
 import { Client, Collection, Message } from 'discord.js';
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { CommandKit } from '../src/commandkit';
-import { CommandExecutionMode, Context } from '../src/app/commands/Context';
-import { AppCommandHandler } from '../src/app/handlers/AppCommandHandler';
-import { CommandsRouter } from '../src/app/router';
+import { CommandKit } from '../../commandkit';
+import { CommandExecutionMode, Context } from './Context';
+import { AppCommandHandler } from '../handlers/AppCommandHandler';
+import { CommandsRouter } from '../router';
 
 const tmpRoots: string[] = [];
 const tempBaseDir = join(__dirname, '.tmp');

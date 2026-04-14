@@ -9,12 +9,13 @@ import {
   writeFile,
 } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { CommandKit } from '../src/commandkit';
+import { HMREventChangeType } from '../../utils/constants';
+import { CommandKit } from '../../commandkit';
 import {
   AppCommandHandler,
   PreparedAppCommandExecution,
-} from '../src/app/handlers/AppCommandHandler';
-import { CommandsRouter } from '../src/app/router';
+} from './AppCommandHandler';
+import { CommandsRouter } from '../router';
 
 const tmpRoots: string[] = [];
 const tempBaseDir = join(__dirname, '.tmp');
@@ -295,6 +296,58 @@ export async function message() {}
         }),
       );
       expect(removedBan).toBeNull();
+    } finally {
+      await client.destroy();
+    }
+  });
+
+  test('uses incremental command router reconciliation when enabled', async () => {
+    const { client, handler, entrypoint } = await createHandlerWithCommands([
+      [
+        '[admin]/command.mjs',
+        `export const command = { description: 'Admin' };`,
+      ],
+      [
+        '[admin]/{moderation}/group.mjs',
+        `export const command = { description: 'Moderation' };`,
+      ],
+      [
+        '[admin]/{moderation}/ban.subcommand.mjs',
+        `
+export const command = { description: 'Ban' };
+export async function chatInput() {}
+`,
+      ],
+      [
+        '[tools]/command.mjs',
+        `
+export const command = { description: 'Tools' };
+export async function chatInput() {}
+`,
+      ],
+    ]);
+
+    try {
+      handler.commandkit.config.experimental.incrementalRouter = true;
+
+      await unlink(
+        join(entrypoint, '[admin]', '{moderation}', 'ban.subcommand.mjs'),
+      );
+
+      await handler.reloadCommands(
+        join(entrypoint, '[admin]', '{moderation}', 'ban.subcommand.mjs'),
+        HMREventChangeType.Unlink,
+      );
+
+      expect(
+        handler
+          .getRuntimeCommandsArray()
+          .map(
+            (command) =>
+              (command.data.command as Record<string, any>).__routeKey,
+          )
+          .sort(),
+      ).toEqual(['tools']);
     } finally {
       await client.destroy();
     }

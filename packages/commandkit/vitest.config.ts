@@ -4,7 +4,8 @@ import { join } from 'path';
 
 export default defineConfig({
   test: {
-    include: ['./spec/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+    include: ['./src/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+    exclude: ['dist/**', '.commandkit/**', 'node_modules/**'],
     watch: false,
     dangerouslyIgnoreUnhandledErrors: true,
     env: {
@@ -19,7 +20,7 @@ export default defineConfig({
   plugins: [
     cacheDirectivePlugin({
       directive: 'use cache',
-      importPath: 'commandkit',
+      importPath: '@commandkit/cache',
       importName: '$ckitiucw',
       asyncOnly: true,
     }),
