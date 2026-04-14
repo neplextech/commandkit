@@ -1,5 +1,5 @@
 ---
-title: "RunCommand"
+title: "RouterFileChangeType"
 isDefaultIndex: false
 generated: true
 ---
@@ -11,12 +11,12 @@ import MemberDescription from '@site/src/components/MemberDescription';
 <!-- This file was generated from the CommandKit source. Do not modify. Instead, re-run the "docgen" script -->
 
 
-## RunCommand
+## RouterFileChangeType
 
-<GenerationInfo sourceFile="packages/commandkit/src/app/handlers/AppCommandHandler.ts" sourceLine="55" packageName="commandkit" />
+<GenerationInfo sourceFile="packages/commandkit/src/app/router/CommandsRouter.ts" sourceLine="63" packageName="commandkit" />
 
-Function type for wrapping command execution with custom logic.
+
 
 ```ts title="Signature"
-type RunCommand = <T extends AsyncFunction>(fn: T) => T
+type RouterFileChangeType = 'add' | 'change' | 'unlink' | 'unlinkDir'
 ```
