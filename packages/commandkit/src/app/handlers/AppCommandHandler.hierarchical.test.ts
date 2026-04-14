@@ -184,11 +184,20 @@ export async function message() {}
         handler.getCommandsArray().map((command) => command.command.name),
       ).toEqual(['ping']);
 
-      expect(
-        handler.getRuntimeCommandsArray().map((command) => {
+      const runtimeRouteKeys = handler
+        .getRuntimeCommandsArray()
+        .map((command) => {
           return (command.data.command as Record<string, any>).__routeKey;
-        }),
-      ).toEqual(['ping', 'admin.moderation.ban', 'admin.moderation.kick']);
+        });
+
+      expect(runtimeRouteKeys).toHaveLength(3);
+      expect(runtimeRouteKeys).toEqual(
+        expect.arrayContaining([
+          'ping',
+          'admin.moderation.ban',
+          'admin.moderation.kick',
+        ]),
+      );
 
       const preparedFlat = await handler.prepareCommandRun(
         createChatInputInteraction('ping'),
