@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test } from 'vitest';
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { CommandsRouter } from '../src/app/router/CommandsRouter';
+import { CommandsRouter } from './CommandsRouter';
 
 const tmpRoots: string[] = [];
 const tempBaseDir = join(__dirname, '.tmp');

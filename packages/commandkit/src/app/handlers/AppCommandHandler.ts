@@ -40,6 +40,7 @@ import {
   CompiledCommandRoute,
   Middleware,
 } from '../router';
+import type { RouterFileChangeType } from '../router/CommandsRouter';
 
 const KNOWN_NON_HANDLER_KEYS = [
   'command',
@@ -116,9 +117,26 @@ export interface LoadedCommand {
 }
 
 /**
+ * Global registry used to infer strongly-typed command identifiers.
+ * This namespace is augmented by generated `commandkit/types` declarations.
+ */
+declare global {
+  namespace CommandKitTypes {
+    interface Registry {}
+  }
+}
+
+type CommandTypeDataRegistryKeys = Exclude<
+  keyof CommandKitTypes.Registry,
+  '__commandkit_wide__'
+>;
+
+/**
  * Type representing command data identifier.
  */
-export type CommandTypeData = string;
+export type CommandTypeData = [CommandTypeDataRegistryKeys] extends [never]
+  ? string
+  : Extract<CommandTypeDataRegistryKeys, string>;
 
 /**
  * Type for commands that can be resolved by the handler.
@@ -863,8 +881,15 @@ export class AppCommandHandler {
   /**
    * Reloads all commands and middleware from scratch.
    */
-  public async reloadCommands(): Promise<void> {
-    await this.commandkit.commandsRouter?.scan();
+  public async reloadCommands(
+    path?: string,
+    changeType?: RouterFileChangeType,
+  ): Promise<void> {
+    if (this.commandkit.config.experimental.incrementalRouter && path) {
+      await this.commandkit.commandsRouter?.scanIncremental(path, changeType);
+    } else {
+      await this.commandkit.commandsRouter?.scan();
+    }
 
     this.loadedCommands.clear();
     this.loadedMiddlewares.clear();
@@ -981,9 +1006,7 @@ export class AppCommandHandler {
 
       const allNames = Array.from(new Set([...commandNames, ...aliases]));
 
-      await rewriteCommandDeclaration(
-        `type CommandTypeData = ${allNames.map((name) => JSON.stringify(name)).join(' | ')}`,
-      );
+      await rewriteCommandDeclaration(allNames);
     }
 
     await this.commandkit.plugins.execute((ctx, plugin) => {

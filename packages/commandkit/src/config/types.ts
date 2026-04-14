@@ -133,5 +133,15 @@ export interface CommandKitConfig {
      * @default null
      */
     devServerRuntime?: CommandKitJsRuntime | null;
+    /**
+     * Whether to emit and hydrate a pre-generated commands/events artifact in production builds.
+     * @default false
+     */
+    pregenerateCommands?: boolean;
+    /**
+     * Whether to use incremental router reconciliation in development HMR.
+     * @default false
+     */
+    incrementalRouter?: boolean;
   };
 }

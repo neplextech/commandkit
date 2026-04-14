@@ -13,7 +13,7 @@ import MemberDescription from '@site/src/components/MemberDescription';
 
 ## AppEventsHandler
 
-<GenerationInfo sourceFile="packages/commandkit/src/app/handlers/AppEventsHandler.ts" sourceLine="46" packageName="commandkit" />
+<GenerationInfo sourceFile="packages/commandkit/src/app/handlers/AppEventsHandler.ts" sourceLine="47" packageName="commandkit" />
 
 Handles Discord.js events and CommandKit custom events with support for namespacing and middleware.
 
@@ -21,7 +21,7 @@ Handles Discord.js events and CommandKit custom events with support for namespac
 class AppEventsHandler {
     constructor(commandkit: CommandKit)
     getEvents() => AppEventsHandlerLoadedData[];
-    reloadEvents() => ;
+    reloadEvents(path?: string, changeType?: EventsRouterFileChangeType) => ;
     loadEvents() => ;
     unregisterAll() => ;
     registerAllClientEvents() => ;
@@ -43,7 +43,7 @@ Creates a new AppEventsHandler instance.
 Gets information about all loaded events.
 ### reloadEvents
 
-<MemberInfo kind="method" type={`() => `}   />
+<MemberInfo kind="method" type={`(path?: string, changeType?: <a href='/docs/api-reference/commandkit/types/events-router-file-change-type#eventsrouterfilechangetype'>EventsRouterFileChangeType</a>) => `}   />
 
 Reloads all events by unregistering existing ones and loading them again.
 ### loadEvents

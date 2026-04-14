@@ -13,7 +13,7 @@ import MemberDescription from '@site/src/components/MemberDescription';
 
 ## IpcMessageCommand
 
-<GenerationInfo sourceFile="packages/commandkit/src/utils/dev-hooks.ts" sourceLine="8" packageName="commandkit" />
+<GenerationInfo sourceFile="packages/commandkit/src/utils/dev-hooks.ts" sourceLine="12" packageName="commandkit" />
 
 Represents HMR inter-process communication messages.
 
@@ -21,6 +21,7 @@ Represents HMR inter-process communication messages.
 interface IpcMessageCommand {
     event: HMREventType;
     path: string;
+    changeType?: HMREventChangeType;
     id?: string;
 }
 ```
@@ -37,6 +38,11 @@ The type of HMR event being communicated.
 <MemberInfo kind="property" type={`string`}   />
 
 The path associated with the HMR event.
+### changeType
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/commandkit/types/hmrevent-change-type#hmreventchangetype'>HMREventChangeType</a>`}   />
+
+The original filesystem change type that triggered this HMR event.
 ### id
 
 <MemberInfo kind="property" type={`string`}   />

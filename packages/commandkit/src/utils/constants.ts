@@ -56,6 +56,22 @@ export const HMREventType = {
 } as const;
 
 /**
+ * File system change types delivered through HMR messages.
+ */
+export const HMREventChangeType = {
+  Add: 'add',
+  Change: 'change',
+  Unlink: 'unlink',
+  UnlinkDir: 'unlinkDir',
+} as const;
+
+/**
  * The type for HMR events.
  */
 export type HMREventType = (typeof HMREventType)[keyof typeof HMREventType];
+
+/**
+ * The type for file change events in HMR payloads.
+ */
+export type HMREventChangeType =
+  (typeof HMREventChangeType)[keyof typeof HMREventChangeType];

@@ -37,5 +37,7 @@ export const defaultConfig: ResolvedCommandKitConfig = {
   jsxDefaultOptionalComponents: true,
   experimental: {
     devServerRuntime: null,
+    pregenerateCommands: false,
+    incrementalRouter: false,
   },
 };

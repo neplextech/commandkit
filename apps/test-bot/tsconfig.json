@@ -11,11 +11,9 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "allowJs": true,
-    "alwaysStrict": false,
     "checkJs": false,
     "strict": true,
     "strictNullChecks": true,
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }

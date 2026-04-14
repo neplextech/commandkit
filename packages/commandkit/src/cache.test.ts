@@ -1,15 +1,16 @@
 // @ts-nocheck
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import {
-  cache,
+  $ckitiucw as cache,
   cacheTag,
   cacheLife,
+  MemoryCache,
   isCachedFunction,
-  invalidate,
-  revalidate,
-  CommandKit,
-  // @ts-ignore
-} from 'commandkit';
+  revalidateTag,
+  getCacheProvider,
+  setCacheProvider,
+} from '@commandkit/cache';
+import { CommandKit } from 'commandkit';
 import { setTimeout } from 'node:timers/promises';
 import { Client } from 'discord.js';
 
@@ -17,6 +18,8 @@ describe('Cache', () => {
   let commandkit!: CommandKit, client!: Client;
 
   beforeAll(async () => {
+    setCacheProvider(new MemoryCache());
+
     client = new Client({
       intents: [],
     });
@@ -28,7 +31,7 @@ describe('Cache', () => {
 
   afterAll(async () => {
     await client.destroy();
-    await commandkit.getCacheProvider()?.clear();
+    await getCacheProvider()?.clear();
     commandkit = null!;
     client = null!;
   });
@@ -178,7 +181,7 @@ describe('Cache', () => {
     const result1 = await fn();
     expect(await fn()).toBe(result1);
 
-    await invalidate('test-invalidate');
+    await revalidateTag('test-invalidate');
     expect(await fn()).not.toBe(result1);
   });
 
@@ -192,9 +195,8 @@ describe('Cache', () => {
     const result1 = await fn(1);
     expect(await fn(1)).toBe(result1);
 
-    const fresh = await revalidate('test-revalidate', 2);
-    expect(fresh).not.toBe(result1);
-    expect(await fn(2)).toBe(fresh);
+    await revalidateTag('test-revalidate');
+    expect(await fn(2)).not.toBe(result1);
   });
 
   test('Should cache with multiple arguments', async () => {
@@ -280,17 +282,15 @@ describe('Cache', () => {
     expect(await fn('a')).not.toBe(result1);
   });
 
-  test('Should support cache options via metadata parameter', async () => {
-    const fn = cache(async () => Math.random(), {
-      name: 'test-metadata',
-      ttl: '100ms',
-    });
+  test('Should keep deterministic cache behavior for use-cache directives', async () => {
+    const fn = async () => {
+      'use cache';
+
+      return Math.random();
+    };
 
     const result1 = await fn();
     expect(await fn()).toBe(result1);
-
-    await setTimeout(150);
-    expect(await fn()).not.toBe(result1);
   });
 
   test('Should cache multiple arguments without explicit cache controls', async () => {

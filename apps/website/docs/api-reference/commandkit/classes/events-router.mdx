@@ -13,7 +13,7 @@ import MemberDescription from '@site/src/components/MemberDescription';
 
 ## EventsRouter
 
-<GenerationInfo sourceFile="packages/commandkit/src/app/router/EventsRouter.ts" sourceLine="37" packageName="commandkit" />
+<GenerationInfo sourceFile="packages/commandkit/src/app/router/EventsRouter.ts" sourceLine="43" packageName="commandkit" />
 
 Router for discovering and managing event handler files in a directory structure.
 Events are represented by directories, and handlers are files within those directories.
@@ -26,8 +26,10 @@ class EventsRouter {
     entrypoints: string[]
     isValidPath() => ;
     clear() => ;
+    populate(events: EventsTree) => ;
     reload() => ;
     scan() => Promise<EventsTree>;
+    scanIncremental(changedPath: string, _changeType: EventsRouterFileChangeType = 'change') => Promise<EventsTree>;
     toJSON() => EventsTree;
 }
 ```
@@ -64,6 +66,11 @@ Checks if the entrypoint path is valid
 <MemberInfo kind="method" type={`() => `}   />
 
 Clear all parsed events
+### populate
+
+<MemberInfo kind="method" type={`(events: <a href='/docs/api-reference/commandkit/types/events-tree#eventstree'>EventsTree</a>) => `}   />
+
+Populates router state from pre-resolved event metadata.
 ### reload
 
 <MemberInfo kind="method" type={`() => `}   />
@@ -74,6 +81,11 @@ Reload and re-scan the entrypoint directory for events
 <MemberInfo kind="method" type={`() => Promise&#60;<a href='/docs/api-reference/commandkit/types/events-tree#eventstree'>EventsTree</a>&#62;`}   />
 
 Scan the entrypoint directory for events and their handlers
+### scanIncremental
+
+<MemberInfo kind="method" type={`(changedPath: string, _changeType: <a href='/docs/api-reference/commandkit/types/events-router-file-change-type#eventsrouterfilechangetype'>EventsRouterFileChangeType</a> = 'change') => Promise&#60;<a href='/docs/api-reference/commandkit/types/events-tree#eventstree'>EventsTree</a>&#62;`}   />
+
+Incrementally rescans only the event subtree impacted by a changed path.
 ### toJSON
 
 <MemberInfo kind="method" type={`() => <a href='/docs/api-reference/commandkit/types/events-tree#eventstree'>EventsTree</a>`}   />

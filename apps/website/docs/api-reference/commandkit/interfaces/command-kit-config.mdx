@@ -13,7 +13,7 @@ import MemberDescription from '@site/src/components/MemberDescription';
 
 ## CommandKitConfig
 
-<GenerationInfo sourceFile="packages/commandkit/src/config/types.ts" sourceLine="28" packageName="commandkit" />
+<GenerationInfo sourceFile="packages/commandkit/src/config/types.ts" sourceLine="33" packageName="commandkit" />
 
 
 
@@ -59,6 +59,23 @@ interface CommandKitConfig {
     disablePermissionsMiddleware?: boolean;
     showUnknownPrefixCommandsWarning?: boolean;
     jsxDefaultOptionalComponents?: boolean;
+    experimental?: {
+    /**
+     * The runtime to use for the development server. This is an experimental feature and may be removed or changed without a major version bump. Use with caution.
+     * @default null
+     */
+    devServerRuntime?: CommandKitJsRuntime | null;
+    /**
+     * Whether to emit and hydrate a pre-generated commands/events artifact in production builds.
+     * @default false
+     */
+    pregenerateCommands?: boolean;
+    /**
+     * Whether to use incremental router reconciliation in development HMR.
+     * @default false
+     */
+    incrementalRouter?: boolean;
+  };
 }
 ```
 
@@ -141,6 +158,11 @@ Whether or not to show a warning when a prefix command is not found. This only a
 <MemberInfo kind="property" type={`boolean`} default={`true`}   />
 
 Whether to make interaction components optional by default when using JSX (opposite of Discord's default behavior).
+### experimental
+
+<MemberInfo kind="property" type={`{     /**      * The runtime to use for the development server. This is an experimental feature and may be removed or changed without a major <a href='/docs/api-reference/commandkit/variables/version#version'>version</a> bump. Use with caution.      * @default null      */     devServerRuntime?: <a href='/docs/api-reference/commandkit/types/command-kit-js-runtime#commandkitjsruntime'>CommandKitJsRuntime</a> | null;     /**      * Whether to emit and hydrate a pre-generated commands/events artifact in production builds.      * @default false      */     pregenerateCommands?: boolean;     /**      * Whether to use incremental router reconciliation in development HMR.      * @default false      */     incrementalRouter?: boolean;   }`}   />
+
+Experimental features configuration. These features are not stable and may be removed or changed without a major version bump. Use with caution.
 
 
 </div>

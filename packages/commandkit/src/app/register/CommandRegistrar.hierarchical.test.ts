@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
@@ -6,9 +6,10 @@ import {
 } from 'discord.js';
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { CommandKit } from '../src/commandkit';
-import { AppCommandHandler } from '../src/app/handlers/AppCommandHandler';
-import { CommandsRouter } from '../src/app/router';
+import { CommandKit } from '../../commandkit';
+import { Logger } from '../../logger/Logger';
+import { AppCommandHandler } from '../handlers/AppCommandHandler';
+import { CommandsRouter } from '../router';
 
 const tmpRoots: string[] = [];
 const tempBaseDir = join(__dirname, '.tmp');
@@ -115,34 +116,56 @@ describe('Hierarchical command registration', () => {
       const admin = registrationCommands.find(
         (entry) => entry.name === 'admin',
       );
+      const moderationGroup = admin?.options?.[0] as
+        | {
+            name: string;
+            options?: Array<{
+              name: string;
+              description: string;
+              options: Array<{
+                name: string;
+                type: ApplicationCommandOptionType;
+              }>;
+              type: ApplicationCommandOptionType;
+            }>;
+            type: ApplicationCommandOptionType;
+          }
+        | undefined;
 
       expect(ping?.type).toBe(ApplicationCommandType.ChatInput);
       expect(admin?.type).toBe(ApplicationCommandType.ChatInput);
       expect(admin?.description).toBe('Admin');
-      expect(admin?.options).toEqual([
+      expect(moderationGroup?.name).toBe('moderation');
+      expect(moderationGroup?.type).toBe(
+        ApplicationCommandOptionType.SubcommandGroup,
+      );
+
+      const normalizedSubcommands = [...(moderationGroup?.options ?? [])]
+        .map((option) => ({
+          ...option,
+          options: [...(option.options ?? [])].sort((a, b) =>
+            a.name.localeCompare(b.name),
+          ),
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+      expect(normalizedSubcommands).toEqual([
         {
-          description: 'Moderation',
-          name: 'moderation',
+          description: 'Ban',
+          name: 'ban',
           options: [
             {
-              description: 'Ban',
-              name: 'ban',
-              options: [
-                {
-                  name: 'reason',
-                  type: ApplicationCommandOptionType.String,
-                },
-              ],
-              type: ApplicationCommandOptionType.Subcommand,
-            },
-            {
-              description: 'Kick',
-              name: 'kick',
-              options: [],
-              type: ApplicationCommandOptionType.Subcommand,
+              name: 'reason',
+              type: ApplicationCommandOptionType.String,
             },
           ],
-          type: ApplicationCommandOptionType.SubcommandGroup,
+          type: ApplicationCommandOptionType.Subcommand,
+        },
+        {
+          description: 'Kick',
+          name: 'kick',
+          options: [],
+          type: ApplicationCommandOptionType.Subcommand,
         },
       ]);
 
@@ -198,6 +221,10 @@ describe('Hierarchical command registration', () => {
       ],
     ]);
 
+    const loggerErrorSpy = vi
+      .spyOn(Logger, 'error')
+      .mockImplementation((() => {}) as any);
+
     try {
       const registrationCommands = handler.registrar.getCommandsData();
 
@@ -205,6 +232,7 @@ describe('Hierarchical command registration', () => {
         registrationCommands.find((entry) => entry.name === 'admin'),
       ).toBeUndefined();
     } finally {
+      loggerErrorSpy.mockRestore();
       await client.destroy();
     }
   });

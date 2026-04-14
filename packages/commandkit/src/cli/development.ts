@@ -9,7 +9,11 @@ import colors from '../utils/colors';
 import { ChildProcess } from 'node:child_process';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { randomUUID } from 'node:crypto';
-import { COMMANDKIT_CWD, HMREventType } from '../utils/constants';
+import {
+  COMMANDKIT_CWD,
+  HMREventChangeType,
+  HMREventType,
+} from '../utils/constants';
 import { findEntrypoint } from './common';
 
 /**
@@ -56,8 +60,12 @@ export async function bootstrapDevelopmentServer(configPath?: string): Promise<{
   watcher: ReturnType<typeof watch>;
   isConfigUpdate: (path: string) => boolean;
   performHMR: (path?: string) => Promise<boolean>;
-  hmrHandler: (path: string) => Promise<void>;
-  sendHmrEvent: (event: HMREventType, path?: string) => Promise<boolean>;
+  hmrHandler: (path: string, changeType?: HMREventChangeType) => Promise<void>;
+  sendHmrEvent: (
+    event: HMREventType,
+    path?: string,
+    changeType?: HMREventChangeType,
+  ) => Promise<boolean>;
   getProcess: () => ChildProcess | null;
   buildAndStart: typeof buildAndStart;
 }> {
@@ -103,13 +111,14 @@ export async function bootstrapDevelopmentServer(configPath?: string): Promise<{
   const sendHmrEvent = async (
     event: HMREventType,
     path?: string,
+    changeType?: HMREventChangeType,
   ): Promise<boolean> => {
     if (!ps || !ps.send) return false;
 
     const messageId = randomUUID();
     const messagePromise = waitForAcknowledgment(messageId);
 
-    ps.send({ event, path, id: messageId });
+    ps.send({ event, path, changeType, id: messageId });
 
     // Wait for acknowledgment or timeout after 3 seconds
     try {
@@ -139,41 +148,47 @@ export async function bootstrapDevelopmentServer(configPath?: string): Promise<{
     }
   };
 
-  const performHMR = debounce(async (path?: string): Promise<boolean> => {
-    if (!path || !ps) return false;
+  const performHMR = debounce(
+    async (
+      path?: string,
+      changeType?: HMREventChangeType,
+    ): Promise<boolean> => {
+      if (!path || !ps) return false;
 
-    let eventType: HMREventType | null = null;
-    let eventDescription = '';
+      let eventType: HMREventType | null = null;
+      let eventDescription = '';
 
-    if (isCommandSource(path)) {
-      eventType = HMREventType.ReloadCommands;
-      eventDescription = 'command(s)';
-    } else if (isEventSource(path)) {
-      eventType = HMREventType.ReloadEvents;
-      eventDescription = 'event(s)';
-    } else {
-      eventType = HMREventType.Unknown;
-      eventDescription = 'unknown source';
-    }
-
-    if (eventType) {
-      console.log(
-        `${colors.cyanBright(`Attempting to reload ${eventDescription} at`)} ${colors.yellowBright(path)}`,
-      );
-
-      await buildAndStart(cwd, true);
-      const hmrHandled = await sendHmrEvent(eventType, path);
-
-      if (hmrHandled) {
-        console.log(
-          `${colors.greenBright(`Successfully hot reloaded ${eventDescription} at`)} ${colors.yellowBright(path)}`,
-        );
-        return true;
+      if (isCommandSource(path)) {
+        eventType = HMREventType.ReloadCommands;
+        eventDescription = 'command(s)';
+      } else if (isEventSource(path)) {
+        eventType = HMREventType.ReloadEvents;
+        eventDescription = 'event(s)';
+      } else {
+        eventType = HMREventType.Unknown;
+        eventDescription = 'unknown source';
       }
-    }
 
-    return false;
-  }, 700);
+      if (eventType) {
+        console.log(
+          `${colors.cyanBright(`Attempting to reload ${eventDescription} at`)} ${colors.yellowBright(path)}`,
+        );
+
+        await buildAndStart(cwd, true);
+        const hmrHandled = await sendHmrEvent(eventType, path, changeType);
+
+        if (hmrHandled) {
+          console.log(
+            `${colors.greenBright(`Successfully hot reloaded ${eventDescription} at`)} ${colors.yellowBright(path)}`,
+          );
+          return true;
+        }
+      }
+
+      return false;
+    },
+    700,
+  );
 
   const isConfigUpdate = (path: string) => {
     const isConfig = configPaths.some((configPath) => path === configPath);
@@ -189,9 +204,12 @@ export async function bootstrapDevelopmentServer(configPath?: string): Promise<{
     return isConfig;
   };
 
-  const hmrHandler = async (path: string) => {
+  const hmrHandler = async (
+    path: string,
+    changeType: HMREventChangeType = HMREventChangeType.Change,
+  ) => {
     if (isConfigUpdate(path)) return;
-    const hmr = await performHMR(path);
+    const hmr = await performHMR(path, changeType);
     if (hmr) return;
 
     console.log(
@@ -224,10 +242,12 @@ export async function bootstrapDevelopmentServer(configPath?: string): Promise<{
     }
   });
 
-  watcher.on('change', hmrHandler);
-  watcher.on('add', hmrHandler);
-  watcher.on('unlink', hmrHandler);
-  watcher.on('unlinkDir', hmrHandler);
+  watcher.on('change', (path) => hmrHandler(path, HMREventChangeType.Change));
+  watcher.on('add', (path) => hmrHandler(path, HMREventChangeType.Add));
+  watcher.on('unlink', (path) => hmrHandler(path, HMREventChangeType.Unlink));
+  watcher.on('unlinkDir', (path) =>
+    hmrHandler(path, HMREventChangeType.UnlinkDir),
+  );
   watcher.on('error', (e) => {
     console.error(e);
   });

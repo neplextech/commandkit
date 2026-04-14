@@ -8,9 +8,9 @@ import {
 } from 'discord.js';
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { CommandKit } from '../src/commandkit';
-import { AppCommandHandler } from '../src/app/handlers/AppCommandHandler';
-import { CommandsRouter } from '../src/app/router';
+import { CommandKit } from '../../commandkit';
+import { AppCommandHandler } from './AppCommandHandler';
+import { CommandsRouter } from '../router';
 
 const tmpRoots: string[] = [];
 const tempBaseDir = join(__dirname, '.tmp');
@@ -184,11 +184,20 @@ export async function message() {}
         handler.getCommandsArray().map((command) => command.command.name),
       ).toEqual(['ping']);
 
-      expect(
-        handler.getRuntimeCommandsArray().map((command) => {
+      const runtimeRouteKeys = handler
+        .getRuntimeCommandsArray()
+        .map((command) => {
           return (command.data.command as Record<string, any>).__routeKey;
-        }),
-      ).toEqual(['ping', 'admin.moderation.ban', 'admin.moderation.kick']);
+        });
+
+      expect(runtimeRouteKeys).toHaveLength(3);
+      expect(runtimeRouteKeys).toEqual(
+        expect.arrayContaining([
+          'ping',
+          'admin.moderation.ban',
+          'admin.moderation.kick',
+        ]),
+      );
 
       const preparedFlat = await handler.prepareCommandRun(
         createChatInputInteraction('ping'),

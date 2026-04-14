@@ -13,7 +13,7 @@
     "build": "turbo run --filter=\"./packages/*\" build",
     "docgen": "tsx ./scripts/docs/generate-typescript-docs.ts && pnpm format",
     "docgen:check": "tsx ./scripts/docs/generate-typescript-docs.ts && git diff --exit-code -- apps/website/docs/api-reference",
-    "test:commandkit": "pnpm --filter commandkit test -- --run spec/reload-commands.test.ts spec/context-command-identifier.test.ts spec/hierarchical-command-registration.test.ts spec/hierarchical-command-handler.test.ts spec/commands-router.test.ts spec/message-command-parser.test.ts spec/context-menu-registration.test.ts",
+    "test": "turbo run --filter=\"./packages/*\" test",
     "prettier:check": "prettier --experimental-cli --check . --ignore-path=.prettierignore",
     "format": "prettier --experimental-cli --write . --ignore-path=.prettierignore"
   },

@@ -13,7 +13,7 @@ import MemberDescription from '@site/src/components/MemberDescription';
 
 ## CommandKitHMREvent
 
-<GenerationInfo sourceFile="packages/commandkit/src/utils/dev-hooks.ts" sourceLine="26" packageName="commandkit" />
+<GenerationInfo sourceFile="packages/commandkit/src/utils/dev-hooks.ts" sourceLine="34" packageName="commandkit" />
 
 Represents an HMR event in CommandKit.
 
@@ -21,6 +21,7 @@ Represents an HMR event in CommandKit.
 interface CommandKitHMREvent {
     event: HMREventType;
     path: string;
+    changeType?: HMREventChangeType;
     accept: () => void;
     preventDefault: () => void;
 }
@@ -38,6 +39,11 @@ The type of HMR event.
 <MemberInfo kind="property" type={`string`}   />
 
 The path associated with the HMR event.
+### changeType
+
+<MemberInfo kind="property" type={`<a href='/docs/api-reference/commandkit/types/hmrevent-change-type#hmreventchangetype'>HMREventChangeType</a>`}   />
+
+The original filesystem change type that triggered this HMR event.
 ### accept
 
 <MemberInfo kind="property" type={`() =&#62; void`}   />

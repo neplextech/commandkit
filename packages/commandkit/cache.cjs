@@ -1,4 +1,5 @@
 const {
+  $ckitiucw,
   cacheTag,
   cacheLife,
   revalidateTag,
@@ -11,6 +12,7 @@ const {
 } = require('@commandkit/cache');
 
 module.exports = {
+  $ckitiucw,
   cacheTag,
   cacheLife,
   revalidateTag,

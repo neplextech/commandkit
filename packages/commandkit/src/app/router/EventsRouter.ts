@@ -1,7 +1,13 @@
 import { Collection } from 'discord.js';
 import { existsSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
-import { join } from 'node:path';
+import { isAbsolute, join, normalize, relative } from 'node:path';
+
+export type EventsRouterFileChangeType =
+  | 'add'
+  | 'change'
+  | 'unlink'
+  | 'unlinkDir';
 
 /**
  * Configuration options for the EventsRouter
@@ -95,6 +101,17 @@ export class EventsRouter {
   }
 
   /**
+   * Populates router state from pre-resolved event metadata.
+   */
+  public populate(events: EventsTree) {
+    this.clear();
+
+    for (const [key, event] of Object.entries(events)) {
+      this.events.set(key, event);
+    }
+  }
+
+  /**
    * Reload and re-scan the entrypoint directory for events
    * @returns Promise resolving to the updated events tree
    */
@@ -108,6 +125,8 @@ export class EventsRouter {
    * @returns Promise resolving to the events tree
    */
   public async scan(): Promise<EventsTree> {
+    this.clear();
+
     for (const entrypoint of this.entrypoints) {
       const dirs = await readdir(entrypoint, { withFileTypes: true });
 
@@ -120,6 +139,64 @@ export class EventsRouter {
     }
 
     return Object.fromEntries(this.events);
+  }
+
+  /**
+   * Incrementally rescans only the event subtree impacted by a changed path.
+   */
+  public async scanIncremental(
+    changedPath: string,
+    _changeType: EventsRouterFileChangeType = 'change',
+  ): Promise<EventsTree> {
+    const resolvedChangedPath = normalize(changedPath);
+    const entrypoint = this.entrypoints.find((root) =>
+      this.isWithinPath(root, resolvedChangedPath),
+    );
+
+    if (!entrypoint) {
+      return this.toJSON();
+    }
+
+    const branch = this.resolveTopLevelBranch(entrypoint, resolvedChangedPath);
+
+    if (!branch) {
+      return this.scan();
+    }
+
+    const normalizedBranch = normalize(branch);
+
+    for (const [key, event] of this.events.entries()) {
+      const listeners = event.listeners.filter(
+        (listener) => !this.isWithinPath(normalizedBranch, listener),
+      );
+
+      if (
+        !listeners.length &&
+        this.isWithinPath(normalizedBranch, event.path)
+      ) {
+        this.events.delete(key);
+        continue;
+      }
+
+      this.events.set(key, {
+        ...event,
+        listeners,
+      });
+    }
+
+    if (existsSync(normalizedBranch)) {
+      const branchName = branch
+        .slice(entrypoint.length)
+        .replace(/^[/\\]/, '')
+        .split(/[/\\]/)
+        .filter(Boolean)[0];
+
+      if (branchName) {
+        await this.scanEvent(branchName, normalizedBranch, null, [], true);
+      }
+    }
+
+    return this.toJSON();
   }
 
   /**
@@ -179,5 +256,37 @@ export class EventsRouter {
 
       this.events.set(event, { event, path, listeners, namespace });
     }
+  }
+
+  /**
+   * @private
+   * @internal
+   */
+  private isWithinPath(basePath: string, targetPath: string) {
+    const base = normalize(basePath);
+    const target = normalize(targetPath);
+    const rel = relative(base, target);
+
+    if (!rel) {
+      return true;
+    }
+
+    return !rel.startsWith('..') && !isAbsolute(rel);
+  }
+
+  /**
+   * @private
+   * @internal
+   */
+  private resolveTopLevelBranch(entrypoint: string, changedPath: string) {
+    const rel = relative(entrypoint, changedPath)
+      .split(/[/\\]/)
+      .filter(Boolean);
+
+    if (!rel.length) {
+      return null;
+    }
+
+    return join(entrypoint, rel[0]);
   }
 }

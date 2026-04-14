@@ -7,6 +7,7 @@ import { runInEventWorkerContext } from '../events/EventWorkerContext';
 import { ParsedEvent } from '../router';
 import { CommandKitEventDispatch } from '../../plugins';
 import { CommandKitErrorCodes, isErrorType } from '../../utils/error-codes';
+import type { EventsRouterFileChangeType } from '../router/EventsRouter';
 
 /**
  * Represents an event listener with its configuration.
@@ -82,8 +83,27 @@ export class AppEventsHandler {
   /**
    * Reloads all events by unregistering existing ones and loading them again.
    */
-  public async reloadEvents() {
+  public async reloadEvents(
+    path?: string,
+    changeType?: EventsRouterFileChangeType,
+  ) {
     this.unregisterAll();
+
+    if (this.commandkit.config.experimental.incrementalRouter && path) {
+      await this.commandkit.plugins.execute((ctx, plugin) => {
+        return plugin.onBeforeEventsLoad(ctx);
+      });
+
+      await this.commandkit.eventsRouter.scanIncremental(path, changeType);
+      await this.loadEventsFromTree(this.commandkit.eventsRouter.toJSON());
+
+      await this.commandkit.plugins.execute((ctx, plugin) => {
+        return plugin.onAfterEventsLoad(ctx);
+      });
+
+      return;
+    }
+
     await this.loadEvents();
   }
 
@@ -98,6 +118,20 @@ export class AppEventsHandler {
     const router = this.commandkit.eventsRouter;
 
     const events = await router.scan();
+
+    await this.loadEventsFromTree(events);
+
+    await this.commandkit.plugins.execute((ctx, plugin) => {
+      return plugin.onAfterEventsLoad(ctx);
+    });
+  }
+
+  /**
+   * @private
+   * @internal
+   */
+  private async loadEventsFromTree(events: Record<string, ParsedEvent>) {
+    this.loadedEvents.clear();
 
     for (const event of Object.values(events)) {
       const listeners: EventListener[] = [];
@@ -140,10 +174,6 @@ export class AppEventsHandler {
     }
 
     this.registerAllClientEvents();
-
-    await this.commandkit.plugins.execute((ctx, plugin) => {
-      return plugin.onAfterEventsLoad(ctx);
-    });
   }
 
   /**
