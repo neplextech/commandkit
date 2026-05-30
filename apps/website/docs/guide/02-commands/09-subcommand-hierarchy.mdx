@@ -80,6 +80,46 @@ This produces:
 - `/ops status`
 - `/ops deploy`
 
+## Non-Leaf Command Files
+
+A hierarchical node with children is a non-leaf node. When a directory
+such as `[admin]` contains child subcommands or groups, its
+`command.ts` file can define command metadata and configuration, but it
+must not export executable handlers such as `chatInput`, `message`, or
+`autocomplete`.
+
+Executable handlers belong in leaf nodes, such as `[logs]/command.ts`
+or `logs.subcommand.ts`.
+
+Incorrect:
+
+```text title="Directory Structure"
+src/app/commands/
+└── [admin]/
+    ├── command.ts        # Incorrect: exports chatInput while admin has children
+    └── [logs]/
+        └── command.ts
+```
+
+Correct:
+
+```text title="Directory Structure"
+src/app/commands/
+└── [admin]/
+    ├── command.ts        # Correct: metadata/config only
+    └── [logs]/
+        └── command.ts    # Correct: executable handlers live here
+```
+
+You can also use a shorthand leaf:
+
+```text title="Directory Structure"
+src/app/commands/
+└── [admin]/
+    ├── command.ts        # metadata/config only
+    └── logs.subcommand.ts
+```
+
 ## Middleware Scope In Hierarchical Trees
 
 Hierarchical commands use the same middleware model as flat commands:
