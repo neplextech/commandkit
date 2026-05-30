@@ -157,6 +157,29 @@ describe('CommandsRouter', () => {
     ]);
   });
 
+  test('warns when a non-leaf command node has a definition file', async () => {
+    const entrypoint = await createCommandsFixture([
+      ['[admin]/command.ts'],
+      ['[admin]/[logs]/command.ts'],
+    ]);
+
+    const router = new CommandsRouter({ entrypoint });
+    const result = await router.scan();
+    const diagnostics = result.diagnostics ?? [];
+    const diagnostic = diagnostics.find((diag) => {
+      return diag.code === 'NON_LEAF_NODE_MAY_HAVE_HANDLERS';
+    });
+
+    expect(Object.keys(result.compiledRoutes ?? {})).toEqual(['admin.logs']);
+    expect(diagnostic).toMatchObject({
+      message:
+        'Hierarchical node "admin" has child nodes. Ensure its command.ts file does not export chatInput, message, or autocomplete handlers. Executable handlers must be defined on leaf nodes.',
+    });
+    expect(normalizePath(diagnostic?.path ?? '')).toBe(
+      normalizePath(join(entrypoint, '[admin]/command.ts')),
+    );
+  });
+
   test('emits diagnostics for invalid hierarchical structures', async () => {
     const entrypoint = await createCommandsFixture([
       ['{oops}/group.ts'],
@@ -172,6 +195,7 @@ describe('CommandsRouter', () => {
     const diagnosticCodes = (result.diagnostics ?? []).map((diag) => diag.code);
 
     expect(diagnosticCodes).toContain('ROOT_GROUP_NOT_ALLOWED');
+    expect(diagnosticCodes).toContain('NON_LEAF_NODE_MAY_HAVE_HANDLERS');
     expect(diagnosticCodes).toContain('DUPLICATE_SIBLING_TOKEN');
     expect(diagnosticCodes).toContain('MIXED_ROOT_CHILDREN');
     expect(diagnosticCodes).toContain('MISSING_COMMAND_DEFINITION');

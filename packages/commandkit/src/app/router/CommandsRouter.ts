@@ -830,6 +830,14 @@ export class CommandsRouter {
       node.executable =
         !!node.definitionPath && node.kind !== 'group' && !hasChildren;
 
+      if (hasChildren && node.definitionPath && node.kind !== 'group') {
+        this.addDiagnostic(
+          'NON_LEAF_NODE_MAY_HAVE_HANDLERS',
+          `Hierarchical node "${node.route.join('.')}" has child nodes. Ensure its command.ts file does not export chatInput, message, or autocomplete handlers. Executable handlers must be defined on leaf nodes.`,
+          node.definitionPath,
+        );
+      }
+
       if (node.kind === 'subcommand' && hasChildren) {
         this.addDiagnostic(
           'SUBCOMMAND_CANNOT_HAVE_CHILDREN',
