@@ -102,6 +102,13 @@ This transforms into:
 - `/settings notifications enable`
 - `/settings notifications disable`
 
+`[command]/command.ts` may represent a parent command node. If that
+command directory contains child subcommands or groups, its
+`command.ts` file must only define metadata or configuration and must
+not export executable handlers such as `chatInput`, `message`, or
+`autocomplete`. Place those handlers in leaf command files, such as
+`profile.subcommand.ts` or `[disable]/command.ts`.
+
 Middleware inside these trees follows the same same-directory rule:
 
 - `+middleware.ts` applies only to leaves defined in that directory
