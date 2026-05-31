@@ -1318,7 +1318,7 @@ export class AppCommandHandler {
       }
 
       if (!node.executable && hasExecutableSlashHandlers) {
-        Logger.warn`Ignoring executable handlers exported by non-leaf hierarchical node ${routeKey}. Move chatInput, message, or autocomplete handlers to a leaf command node.`;
+        Logger.warn`Ignoring ${colors.yellow('executable handlers')} exported by ${colors.cyan('[non-leaf]')} hierarchical node ${colors.magenta(`[${routeKey}]`)}. Move ${colors.yellow('chatInput')}, ${colors.yellow('message')}, or ${colors.yellow('autocomplete')} handlers to a ${colors.green('[leaf]')} command node.`;
 
         delete sanitizedCommandFileData.chatInput;
         delete sanitizedCommandFileData.message;

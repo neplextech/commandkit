@@ -289,10 +289,33 @@ export async function message() {}
     try {
       expect(warn).toHaveBeenCalledWith(
         expect.arrayContaining([
-          'Ignoring executable handlers exported by non-leaf hierarchical node ',
-          '. Move chatInput, message, or autocomplete handlers to a leaf command node.',
+          'Ignoring ',
+          ' exported by ',
+          ' hierarchical node ',
+          '. Move ',
+          ', ',
+          ', or ',
+          ' handlers to a ',
+          ' command node.',
         ]),
-        'admin',
+        expect.stringContaining('executable handlers'),
+        expect.stringContaining('[non-leaf]'),
+        expect.stringContaining('[admin]'),
+        expect.stringContaining('chatInput'),
+        expect.stringContaining('message'),
+        expect.stringContaining('autocomplete'),
+        expect.stringContaining('[leaf]'),
+      );
+
+      expect(warn.mock.calls[0]).toEqual(
+        expect.arrayContaining([
+          expect.arrayContaining([
+            ' hierarchical node ',
+            '. Move ',
+            ' command node.',
+          ]),
+          expect.stringContaining('[admin]'),
+        ]),
       );
 
       const hierarchicalNodes = handler.getHierarchicalNodesArray();
