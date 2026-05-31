@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import {
   Client,
   Collection,
@@ -9,6 +9,7 @@ import {
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { CommandKit } from '../../commandkit';
+import { Logger } from '../../logger/Logger';
 import { AppCommandHandler } from './AppCommandHandler';
 import { CommandsRouter } from '../router';
 
@@ -251,6 +252,69 @@ export async function message() {}
         'ban',
       );
     } finally {
+      await client.destroy();
+    }
+  });
+
+  test('warns and ignores executable handlers from non-leaf nodes', async () => {
+    const warn = vi.spyOn(Logger, 'warn').mockImplementation(() => {});
+
+    const { client, handler } = await createHandlerWithCommands([
+      [
+        '[admin]/command.mjs',
+        `
+export const command = {
+  description: "Admin metadata",
+  dm_permission: false
+};
+
+export async function chatInput() {}
+export async function message() {}
+export async function autocomplete() {}
+`,
+      ],
+      [
+        '[admin]/[logs]/command.mjs',
+        `
+export const command = {
+  description: "Admin logs"
+};
+
+export async function chatInput() {}
+export async function message() {}
+`,
+      ],
+    ]);
+
+    try {
+      expect(warn).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          'Ignoring executable handlers exported by non-leaf hierarchical node ',
+          '. Move chatInput, message, or autocomplete handlers to a leaf command node.',
+        ]),
+        'admin',
+      );
+
+      const hierarchicalNodes = handler.getHierarchicalNodesArray();
+      const adminNode = hierarchicalNodes.find((command) => {
+        return command.command.name === 'admin';
+      });
+
+      expect(adminNode?.data.command.description).toBe('Admin metadata');
+      expect(adminNode?.data.command.dm_permission).toBe(false);
+      expect(adminNode?.data.chatInput).toBeUndefined();
+      expect(adminNode?.data.message).toBeUndefined();
+      expect(adminNode?.data.autocomplete).toBeUndefined();
+
+      const runtimeRouteKeys = handler
+        .getRuntimeCommandsArray()
+        .map((command) => {
+          return (command.data.command as Record<string, unknown>).__routeKey;
+        });
+
+      expect(runtimeRouteKeys).toEqual(['admin.logs']);
+    } finally {
+      warn.mockRestore();
       await client.destroy();
     }
   });
