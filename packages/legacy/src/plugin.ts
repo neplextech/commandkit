@@ -192,7 +192,7 @@ export class LegacyHandlerPlugin extends RuntimePlugin<LegacyHandlerPluginOption
                   handler: ctx.commandkit,
                 })
             : undefined,
-          userContextMenu: command.messageContextMenu
+          userContextMenu: command.userContextMenu
             ? (ctx: UserContextMenuCommandContext) =>
                 command.userContextMenu?.({
                   client: ctx.client as any,
