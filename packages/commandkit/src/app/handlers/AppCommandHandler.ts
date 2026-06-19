@@ -1301,6 +1301,9 @@ export class AppCommandHandler {
         commandFileData.message ||
         commandFileData.autocomplete
       );
+      const sanitizedCommandFileData: AppCommandNative = {
+        ...commandFileData,
+      };
 
       if (!isRootHierarchyLeaf && hasContextMenuHandlers) {
         throw new Error(
@@ -1315,9 +1318,11 @@ export class AppCommandHandler {
       }
 
       if (!node.executable && hasExecutableSlashHandlers) {
-        throw new Error(
-          `Invalid export for hierarchical node ${routeKey}: non-leaf hierarchical nodes cannot export executable slash/prefix handlers`,
-        );
+        Logger.warn`Ignoring ${colors.yellow('executable handlers')} exported by ${colors.cyan('[non-leaf]')} hierarchical node ${colors.magenta(`[${routeKey}]`)}. Move ${colors.yellow('chatInput')}, ${colors.yellow('message')}, or ${colors.yellow('autocomplete')} handlers to a ${colors.green('[leaf]')} command node.`;
+
+        delete sanitizedCommandFileData.chatInput;
+        delete sanitizedCommandFileData.message;
+        delete sanitizedCommandFileData.autocomplete;
       }
 
       const loadedCommand: LoadedCommand = {
@@ -1325,7 +1330,7 @@ export class AppCommandHandler {
         command,
         metadata: resolvedMetadata,
         data: {
-          ...commandFileData,
+          ...sanitizedCommandFileData,
           metadata: resolvedMetadata,
           command: {
             ...commandJson,

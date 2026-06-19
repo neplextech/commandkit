@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import {
   Client,
   Collection,
@@ -9,6 +9,7 @@ import {
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { CommandKit } from '../../commandkit';
+import { Logger } from '../../logger/Logger';
 import { AppCommandHandler } from './AppCommandHandler';
 import { CommandsRouter } from '../router';
 
@@ -251,6 +252,92 @@ export async function message() {}
         'ban',
       );
     } finally {
+      await client.destroy();
+    }
+  });
+
+  test('warns and ignores executable handlers from non-leaf nodes', async () => {
+    const warn = vi.spyOn(Logger, 'warn').mockImplementation(() => {});
+
+    const { client, handler } = await createHandlerWithCommands([
+      [
+        '[admin]/command.mjs',
+        `
+export const command = {
+  description: "Admin metadata",
+  dm_permission: false
+};
+
+export async function chatInput() {}
+export async function message() {}
+export async function autocomplete() {}
+`,
+      ],
+      [
+        '[admin]/[logs]/command.mjs',
+        `
+export const command = {
+  description: "Admin logs"
+};
+
+export async function chatInput() {}
+export async function message() {}
+`,
+      ],
+    ]);
+
+    try {
+      expect(warn).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          'Ignoring ',
+          ' exported by ',
+          ' hierarchical node ',
+          '. Move ',
+          ', ',
+          ', or ',
+          ' handlers to a ',
+          ' command node.',
+        ]),
+        expect.stringContaining('executable handlers'),
+        expect.stringContaining('[non-leaf]'),
+        expect.stringContaining('[admin]'),
+        expect.stringContaining('chatInput'),
+        expect.stringContaining('message'),
+        expect.stringContaining('autocomplete'),
+        expect.stringContaining('[leaf]'),
+      );
+
+      expect(warn.mock.calls[0]).toEqual(
+        expect.arrayContaining([
+          expect.arrayContaining([
+            ' hierarchical node ',
+            '. Move ',
+            ' command node.',
+          ]),
+          expect.stringContaining('[admin]'),
+        ]),
+      );
+
+      const hierarchicalNodes = handler.getHierarchicalNodesArray();
+      const adminNode = hierarchicalNodes.find((command) => {
+        return command.command.name === 'admin';
+      });
+
+      expect(adminNode?.data.command.description).toBe('Admin metadata');
+      expect(adminNode?.data.command.dm_permission).toBe(false);
+      expect(adminNode?.data.chatInput).toBeUndefined();
+      expect(adminNode?.data.message).toBeUndefined();
+      expect(adminNode?.data.autocomplete).toBeUndefined();
+
+      const runtimeRouteKeys = handler
+        .getRuntimeCommandsArray()
+        .map((command) => {
+          return (command.data.command as Record<string, unknown>).__routeKey;
+        });
+
+      expect(runtimeRouteKeys).toEqual(['admin.logs']);
+    } finally {
+      warn.mockRestore();
       await client.destroy();
     }
   });
