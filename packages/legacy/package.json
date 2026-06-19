@@ -9,7 +9,8 @@
   ],
   "scripts": {
     "check-types": "tsc --noEmit",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "commandkit": "workspace:*",
     "discord.js": "catalog:discordjs",
     "tsconfig": "workspace:*",
-    "typescript": "catalog:build"
+    "typescript": "catalog:build",
+    "vitest": "^4.0.18"
   }
 }
