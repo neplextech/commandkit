@@ -27,6 +27,7 @@ export interface LoadedEvent {
   event: ParsedEvent;
   listeners: EventListener[];
   mainListener?: EventListener;
+  onceListener?: EventListener;
   executedOnceListeners?: Set<ListenerFunction>; // Track executed once listeners
 }
 
@@ -406,6 +407,10 @@ export class AppEventsHandler {
           onListeners.length > 0
             ? { handler: mainHandler, once: false, parallel: false }
             : undefined,
+        onceListener:
+          onceListeners.length > 0
+            ? { handler: onceHandler, once: true, parallel: false }
+            : undefined,
         executedOnceListeners,
       });
 
@@ -442,7 +447,7 @@ export class AppEventsHandler {
 
     for (const [
       key,
-      { name, mainListener, namespace },
+      { name, mainListener, onceListener, namespace },
     ] of this.loadedEvents.entries()) {
       if (mainListener) {
         if (namespace) {
@@ -450,11 +455,13 @@ export class AppEventsHandler {
         } else {
           client.off(name, mainListener.handler);
         }
-      } else {
+      }
+
+      if (onceListener) {
         if (namespace) {
-          this.commandkit.events.removeAllListeners(namespace, name);
+          this.commandkit.events.off(namespace, name, onceListener.handler);
         } else {
-          client.removeAllListeners(name);
+          client.off(name, onceListener.handler);
         }
       }
 
