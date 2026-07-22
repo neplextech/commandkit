@@ -47,12 +47,12 @@
   },
   "homepage": "https://commandkit.dev",
   "devDependencies": {
-    "bullmq": "^5.70.1",
+    "bullmq": "^5.80.9",
     "commandkit": "workspace:*",
     "tsconfig": "workspace:*",
     "typescript": "catalog:build"
   },
   "dependencies": {
-    "cron-parser": "^5.5.0"
+    "cron-parser": "^5.6.2"
   }
 }

@@ -2,21 +2,13 @@
  * Source types for command tree nodes discovered from the filesystem.
  */
 export type CommandTreeNodeSource =
-  | 'root'
-  | 'flat'
-  | 'directory'
-  | 'group'
-  | 'shorthand';
+  'root' | 'flat' | 'directory' | 'group' | 'shorthand';
 
 /**
  * Logical node kinds after tree compilation.
  */
 export type CommandTreeNodeKind =
-  | 'root'
-  | 'flat'
-  | 'command'
-  | 'group'
-  | 'subcommand';
+  'root' | 'flat' | 'command' | 'group' | 'subcommand';
 
 /**
  * Internal tree node representing either a filesystem command or a

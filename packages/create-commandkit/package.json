@@ -32,14 +32,14 @@
     "build": "tsc && tsx scripts/sync-available-examples.ts"
   },
   "dependencies": {
-    "@clack/prompts": "^1.0.1",
-    "commander": "^14.0.3",
-    "fs-extra": "^11.3.3",
+    "@clack/prompts": "^1.7.0",
+    "commander": "^15.0.0",
+    "fs-extra": "^11.3.6",
     "gradient-string": "^3.0.0",
-    "ora": "^9.3.0",
+    "ora": "^9.4.1",
     "picocolors": "^1.1.1",
-    "tiged": "^2.12.7",
-    "validate-npm-package-name": "^7.0.2"
+    "tiged": "^2.12.8",
+    "validate-npm-package-name": "^8.0.0"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
@@ -47,7 +47,7 @@
     "@types/node": "^25.3.2",
     "@types/validate-npm-package-name": "^4.0.2",
     "tsconfig": "workspace:*",
-    "tsx": "^4.21.0",
+    "tsx": "^4.23.1",
     "typescript": "catalog:build"
   }
 }

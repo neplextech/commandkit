@@ -72,8 +72,7 @@ export interface CommandOptions {
  * Represents the command runner function type.
  */
 export type CommandRunner<T> = ({}: CommandProps<T>) =>
-  | Promise<unknown>
-  | unknown;
+  Promise<unknown> | unknown;
 
 /**
  * Represents the data structure for a command file, including its data, options, and runners.

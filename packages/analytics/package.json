@@ -40,7 +40,7 @@
   "devDependencies": {
     "@umami/node": "^0.4.0",
     "commandkit": "workspace:*",
-    "posthog-node": "^5.26.0",
+    "posthog-node": "^5.46.0",
     "tsconfig": "workspace:*",
     "typescript": "catalog:build"
   }

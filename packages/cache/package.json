@@ -47,9 +47,9 @@
   },
   "homepage": "https://commandkit.dev",
   "devDependencies": {
-    "@types/ms": "^2.0.0",
+    "@types/ms": "^2.1.0",
     "commandkit": "workspace:*",
-    "ioredis": "^5.10.0",
+    "ioredis": "^5.11.1",
     "tsconfig": "workspace:*",
     "typescript": "catalog:build"
   },

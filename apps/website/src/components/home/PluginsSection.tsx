@@ -37,14 +37,6 @@ const plugins = [
     docUrl: '/docs/guide/official-plugins/commandkit-cache',
   },
   {
-    icon: Wrench,
-    name: '@commandkit/devtools',
-    description:
-      'Comprehensive development tools with web interface for debugging and monitoring.',
-    color: 'orange',
-    docUrl: '/docs/guide/official-plugins/commandkit-devtools',
-  },
-  {
     icon: Globe,
     name: '@commandkit/i18n',
     description:

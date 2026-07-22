@@ -58,7 +58,9 @@ export class CommandKitPluginRuntime {
       const path = entrypoint.startsWith('module:')
         ? entrypoint.slice(7)
         : toFileURL(`${getCurrentDirectory()}/${entrypoint}`);
-      await import(path);
+      Logger.debug`Preloading plugin entrypoint: ${path}`;
+      const result = await import(path);
+      Logger.debug`Preloaded plugin entrypoint: ${path} with result: ${result}`;
     }
   }
 

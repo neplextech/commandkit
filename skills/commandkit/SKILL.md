@@ -44,8 +44,7 @@ Use this skill for framework-level architecture and implementation:
 - Register plugins explicitly in `plugins: []`.
 - Use startup guards like `noBuildOnly()` for runtime-only setup (for
   example task/driver init).
-- Keep environment-sensitive plugin toggles explicit (for example
-  devtools in development only).
+- Keep environment-sensitive plugin toggles explicit.
 
 ## Execution workflow
 

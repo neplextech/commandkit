@@ -252,12 +252,10 @@ describe('Cache', () => {
       timestamp: Date;
     }
 
-    const fn = cache(
-      async (): Promise<ComplexType> => ({
-        data: { nested: [Math.random()] },
-        timestamp: new Date(),
-      }),
-    );
+    const fn = cache(async (): Promise<ComplexType> => ({
+      data: { nested: [Math.random()] },
+      timestamp: new Date(),
+    }));
 
     const result1 = await fn();
     const result2 = await fn();

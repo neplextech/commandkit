@@ -22,7 +22,6 @@ with name + description columns.
 - `skills/commandkit-ai`
 - `skills/commandkit-analytics`
 - `skills/commandkit-cache`
-- `skills/commandkit-devtools`
 - `skills/commandkit-i18n`
 - `skills/commandkit-legacy-migration`
 - `skills/commandkit-queue`
@@ -31,11 +30,6 @@ with name + description columns.
 - `skills/commandkit-tasks`
 - `skills/commandkit-workflow`
 - `skills/commandkit-plugin-development`
-
-## Excluded internal packages
-
-- `@commandkit/devtools-ui` (private internal UI package)
-- `tsconfig` (private internal tooling package)
 
 ## Legacy policy
 

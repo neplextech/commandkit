@@ -34,7 +34,6 @@ export default defineConfig({
 ```ts
 import { defineConfig, noBuildOnly } from 'commandkit/config';
 import { i18n } from '@commandkit/i18n';
-import { devtools } from '@commandkit/devtools';
 import { cache } from '@commandkit/cache';
 import { ai } from '@commandkit/ai';
 import { tasks, setDriver } from '@commandkit/tasks';
@@ -55,7 +54,6 @@ noBuildOnly(() => {
 export default defineConfig({
   plugins: [
     i18n(),
-    devtools(),
     cache(),
     ratelimit(),
     ai(),

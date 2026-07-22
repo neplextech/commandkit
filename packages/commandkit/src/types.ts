@@ -92,5 +92,4 @@ export type EventHandler<K extends keyof ClientEvents> = (
  * The command metadata function
  */
 export type CommandMetadataFunction = () =>
-  | Promise<CommandMetadata>
-  | CommandMetadata;
+  Promise<CommandMetadata> | CommandMetadata;

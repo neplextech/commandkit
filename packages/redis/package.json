@@ -31,7 +31,7 @@
   },
   "homepage": "https://commandkit.dev",
   "dependencies": {
-    "ioredis": "^5.10.0"
+    "ioredis": "^5.11.1"
   },
   "devDependencies": {
     "@commandkit/cache": "workspace:*",

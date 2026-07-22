@@ -139,7 +139,9 @@ export async function buildApplication({
           },
           plugins: rolldownPlugins,
           platform: 'node',
-          skipNodeModulesBundle: true,
+          deps: {
+            skipNodeModulesBundle: true,
+          },
           sourcemap:
             config.sourceMap?.[isDev ? 'development' : 'production'] ?? true,
           target: 'node16',

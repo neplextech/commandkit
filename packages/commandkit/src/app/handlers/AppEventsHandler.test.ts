@@ -3,7 +3,11 @@ import { Client, Collection } from 'discord.js';
 import { CommandKit } from '../../commandkit';
 import { CommandKitEventsChannel } from '../../events/CommandKitEventsChannel';
 import { ParsedEvent } from '../router';
-import { AppEventsHandler, EventListener, LoadedEvent } from './AppEventsHandler';
+import {
+  AppEventsHandler,
+  EventListener,
+  LoadedEvent,
+} from './AppEventsHandler';
 
 const clients: Client[] = [];
 

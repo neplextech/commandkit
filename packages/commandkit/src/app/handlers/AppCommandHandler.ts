@@ -165,9 +165,7 @@ export interface PreparedAppCommandExecution {
  * Type representing command builder objects supported by CommandKit.
  */
 export type CommandBuilderLike =
-  | SlashCommandBuilder
-  | ContextMenuCommandBuilder
-  | Record<string, any>;
+  SlashCommandBuilder | ContextMenuCommandBuilder | Record<string, any>;
 
 /**
  * @private
@@ -1125,8 +1123,7 @@ export class AppCommandHandler {
     }
 
     let commandDescription = commandFileData.command.description as
-      | string
-      | undefined;
+      string | undefined;
 
     if (!commandDescription && commandFileData.chatInput) {
       commandDescription = 'No command description set.';

@@ -36,7 +36,7 @@
     "typescript": "catalog:build"
   },
   "dependencies": {
-    "ai": "^6.0.105",
-    "zod": "^4.3.6"
+    "ai": "^7.0.32",
+    "zod": "^4.4.3"
   }
 }

@@ -64,8 +64,7 @@ export interface CommandKitConfiguration {
  * Represents the function executed during the bootstrap phase of CommandKit.
  */
 export type BootstrapFunction =
-  | GenericFunction<[CommandKit]>
-  | AsyncFunction<[CommandKit]>;
+  GenericFunction<[CommandKit]> | AsyncFunction<[CommandKit]>;
 
 const bootstrapHooks = new Set<BootstrapFunction>();
 const onApplicationBootstrapHooks = new Set<BootstrapFunction>();

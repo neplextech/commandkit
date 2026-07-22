@@ -50,9 +50,7 @@ export type Awaitable<T> = Promise<T> | T;
  * Represents a localization module that can be used with the i18next plugin.
  */
 export type LocalizationModule =
-  | NewableModule<Module>
-  | Module
-  | Newable<Module>;
+  NewableModule<Module> | Module | Newable<Module>;
 
 /**
  * Represents a dynamic localization module that can be used with the i18next plugin.
@@ -196,7 +194,6 @@ export class I18nPlugin extends RuntimePlugin<LocalizationPluginOptions> {
         escapeValue: false,
         skipOnVariables: false,
       },
-      showSupportNotice: false,
       ...this.options.i18nOptions,
       backend: this.getBackendOptions(),
     });

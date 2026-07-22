@@ -4,10 +4,7 @@ import { readdir } from 'node:fs/promises';
 import { isAbsolute, join, normalize, relative } from 'node:path';
 
 export type EventsRouterFileChangeType =
-  | 'add'
-  | 'change'
-  | 'unlink'
-  | 'unlinkDir';
+  'add' | 'change' | 'unlink' | 'unlinkDir';
 
 /**
  * Configuration options for the EventsRouter

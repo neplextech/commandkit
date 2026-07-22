@@ -17,7 +17,6 @@ function $getKnownPlugins() {
     'commandkit', // core package itself, not a plugin
     'create-commandkit', // generator, not a plugin
     'tsconfig', // repo config related, not a plugin
-    'devtools-ui', // the ui part of devtools, not a plugin
     // the plugins below are TBD
     'tasks',
   ]);

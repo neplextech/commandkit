@@ -1,4 +1,4 @@
-import { Schema, tool } from 'ai';
+import { JSONSchema7, Schema, tool } from 'ai';
 import { AiContext } from '../../context';
 import { getAiWorkerContext } from '../../ai-context-worker';
 import { z } from 'zod';
@@ -35,16 +35,28 @@ export type InferParameters<T extends ToolParameterType> =
  * @template T - The parameter schema type for the tool
  * @template R - The return type of the tool's execute function
  */
-export interface CreateToolOptions<T extends ToolParameterType, R = unknown> {
+export interface CreateToolOptions<
+  T extends ToolParameterType,
+  R = unknown,
+  C extends JSONSchema7 = JSONSchema7,
+> {
   /** The unique name identifier for the tool */
   name: string;
   /** A human-readable description of what the tool does */
   description: string;
   /** The parameter schema that defines the tool's input structure */
   inputSchema: T;
+  /** The context schema for this tool */
+  contextSchema?: C;
   /** The function that executes when the tool is called */
   execute: ToolExecuteFunction<T, R>;
 }
+
+type Context = Record<string, unknown>;
+
+export type ExecutableTool<T, R, C extends Context> = ReturnType<
+  typeof tool<T, R, C>
+>;
 
 /**
  * Type definition for a tool's execute function.
@@ -87,11 +99,13 @@ export type ToolExecuteFunction<T extends ToolParameterType, R> = (
  * });
  * ```
  */
-export function createTool<T extends ToolParameterType, R = unknown>(
-  options: CreateToolOptions<T, R>,
-) {
-  // @ts-ignore - Suppressing type checking due to complex generic inference
-  const _tool = tool<T, R>({
+export function createTool<
+  T extends ToolParameterType,
+  R = unknown,
+  C extends Context = Context,
+>(options: CreateToolOptions<T, R, C>): ExecutableTool<T, R, C> {
+  // @ts-ignore types
+  const _tool = tool<T, R, C>({
     name: options.name,
     description: options.description,
     inputSchema: options.inputSchema,

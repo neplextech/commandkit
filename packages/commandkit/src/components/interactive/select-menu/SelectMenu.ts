@@ -176,8 +176,7 @@ export function StringSelectMenu(props: StringSelectMenuProps) {
  * This can be either a SelectMenuComponentOptionData or an APISelectMenuOption.
  */
 export type StringSelectMenuOptionProps =
-  | SelectMenuComponentOptionData
-  | APISelectMenuOption;
+  SelectMenuComponentOptionData | APISelectMenuOption;
 
 /**
  * A select menu option for the string select menu.

@@ -141,8 +141,7 @@ export class SQLiteDriver implements TaskDriver {
 
     if (scheduleType === 'cron') {
       const existingTask = this.statements.findCronByName.get(name) as
-        | { id: number }
-        | undefined;
+        { id: number } | undefined;
       if (existingTask) {
         this.statements.deleteByName.run(name);
       }
